@@ -7,23 +7,17 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
-  my ($self, $test, $undo) = @_;
+    my ($self, $test, $undo) = @_;
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $inputDir = $self->getParamValue('inputGroupsDir');
 
-   my $orthoFileFullPath = "$mgr->{dataDir}/mcl/$orthoFile";
+    my $orthoFileFullPath = "$workflowDataDir/$inputDir/groups.txt";
 
-   my $signal = "loadOrthoMCLResult";
-   return if $mgr->startStep("Starting Data Load $signal", $signal);
+    my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
 
-   my $args = " --orthoFile $orthoFileFullPath --extDbName '$extDbName' --extDbVersion '$extDbRlsVer' $addedArgs";
-
-   $mgr->runPlugin($signal, 
-         "OrthoMCLData::Load::Plugin::InsertOrthologousGroupsFromMcl", 
-         $args,
-         "Loading OrthoMCL output");
-
-  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertGroups", "");
+    $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthologousGroupsFromMcl", $args);
 
 }
