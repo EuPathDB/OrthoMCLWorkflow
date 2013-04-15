@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertGroups;
+package OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

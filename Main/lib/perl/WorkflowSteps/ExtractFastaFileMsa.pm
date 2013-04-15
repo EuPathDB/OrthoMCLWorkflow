@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ExtractFilesForMsa;
+package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

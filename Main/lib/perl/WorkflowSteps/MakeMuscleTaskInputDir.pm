@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeMuscleTaskInputDir;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeMuscleTaskInputDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::MakeTaskInputDir);
 use strict;

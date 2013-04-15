@@ -1,34 +1,46 @@
-sub loadMsaResultFiles {
-  my ($mgr,$dir,$regex,$untar) = @_;
+package OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupMsa;
 
-  my $propertySet = $mgr->{propertySet};
-  my $signal = "loadMsaResult";
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
-  return if $mgr->startStep("load MSA results", $signal);
+use strict;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-  my $msaDir = "$mgr->{dataDir}/msa/$dir";
+sub run {
+  my ($self, $test, $undo) = @_;
 
-  $mgr->runCmd("mkdir -p $msaDir");
+  my $inputDir = $self->getParamValue('inputDir'); # should contain cluster results, eg, be master/mainresult
+  my $dataDir = $self->getParamValue('dataDir');
 
-  if ($untar) {
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-    chdir "$mgr->{dataDir}/msa/master/mainresult/";
 
-    opendir(DIR, "$mgr->{dataDir}/msa/master/mainresult/") || die "Can't open directory '$mgr->{dataDir}/msa/master/mainresult/'";
+  if ($test) {
+    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+  }
 
+
+  # delete tmp dir (previous)
+  my $tmpUnzipDir = "$workflowDataDir/$dataDir/tmp";
+
+  if (!$undo) {
+    # untar the results into tmp dir
+    my $cmd = "rm -r $tmpUnzipDir";
+    (system($cmd) || die "Error running '$cmd' \n$?") if -x $tmpUnzipDir;  #delete previously made, if there
+    chdir "$workflowDataDir/$inputDir";
+    opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
     while (my $file = readdir (DIR)) {
-
       next if ($file eq "." || $file eq "..");
-
-      $mgr->runCmd("tar -C $msaDir -zxf $file");
+      $mgr->runCmd("tar -C $tmpUnzipDir -zxf $file");
     }
-
     closedir(DIR);
   }
 
-  my $args = "--msaDir $mgr->{dataDir}/msa/$dir --fileRegex \"$regex\" ";
+  my $args = "--msaDir $tmpUnzipDir --fileRegex '(\S+)\.msa'";
 
-  $mgr->runPlugin($signal,
-		  "OrthoMCLData::Load::Plugin::UpdateOrthGroupWithMsa", $args,
-		  "Updating rows in apidb.orthologgroup from msa files");
+  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthGroupWithMsa", $args);
+
+  #remove tmp dir
+  my $cmd = "rm -r $tmpUnzipDir";
+  (system($cmd) || die "Error running '$cmd' \n$?") if -x $tmpUnzipDir;  #delete previously made, if there
+
 }

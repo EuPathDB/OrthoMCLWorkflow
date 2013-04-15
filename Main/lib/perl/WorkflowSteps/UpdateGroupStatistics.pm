@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::UpdateGroupStatistics;
+package OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
