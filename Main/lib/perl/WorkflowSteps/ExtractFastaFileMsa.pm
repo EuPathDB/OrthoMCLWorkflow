@@ -13,11 +13,9 @@ sub run {
 
     my $outputDir = $self->getParamValue('outputDir');
     my $tarSize = $self->getParamValue('filesPerTarball');
-    
-    $self->testInputFile('outputDir', "$workflowDataDir/$outputDir");
 
     if ($undo) {
-	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");	
+	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
     } else{
 	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize");
     }

@@ -13,24 +13,24 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-
   if ($test) {
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
   }
 
-
-  # delete tmp dir (previous)
   my $tmpUnzipDir = "$workflowDataDir/$dataDir/tmp";
 
-  if (!$undo) {
-    # untar the results into tmp dir
+  # untar the results into tmp dir
+  if (!$undo && !$test) {
+
+    # remove old tmp dir if exists
     my $cmd = "rm -r $tmpUnzipDir";
-    (system($cmd) || die "Error running '$cmd' \n$?") if -x $tmpUnzipDir;  #delete previously made, if there
+    $self->runCmd($test, $cmd)  if -x $tmpUnzipDir;  #delete previously made, if there
+
     chdir "$workflowDataDir/$inputDir";
     opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
     while (my $file = readdir (DIR)) {
       next if ($file eq "." || $file eq "..");
-      $mgr->runCmd("tar -C $tmpUnzipDir -zxf $file");
+      $self->runCmd($test, "tar -C $tmpUnzipDir -zxf $file");
     }
     closedir(DIR);
   }
