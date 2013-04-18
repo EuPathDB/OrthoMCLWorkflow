@@ -26,23 +26,9 @@ sub run {
   if ($undo) {
     $self->runCmd(0,"rm -r $targetDir");
   } else {
-    $self->runCmd(0, "mkdir $targetDir");
-
-    chdir $fromDir || $self->error("can't chdir to '$fromDir' \n $?");
-    my @files = <*/*.fasta.gz>;
-    $self->error("Can't find previous release fasta files") unless scalar(@files) > 3;
-    foreach my $file (@files) {
-      $file =~ /(\d+)\.fasta\.gz/ || $self->error("Fasta file '$fromDir/$file' does not conform to the pattern \\d+.fasta.gz");
-      my $version = $1;
-      $self->runCmd(0, "mkdir $targetDir/$version");
-      open(IN, $file) || $self->error("Can't open file '$file'");
+    if ($test) {
+      $self->runCmd($test, "mkdir $targetDir");
+    } else {
+      $self->runCmd($test, "getOrthomclOldRlsSeqFiles $fromDir $targetDir");
     }
-    opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
-    while (my $file = readdir (DIR)) {
-      next if ($file eq "." || $file eq "..");
-      $mgr->runCmd("tar -C $tmpUnzipDir -zxf $file");
-    }
-    closedir(DIR);
-  }
-
 }
