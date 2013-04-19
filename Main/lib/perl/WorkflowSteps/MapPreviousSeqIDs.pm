@@ -30,14 +30,14 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->testInputFile('inputDir', $fromDir);
+  $self->testInputFile('inputDir', $inputDir);
 
   opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
 
   while (my $release = readdir (DIR)) {
     next if ($release eq "." || $release eq "..");
 
-    $oldAbbrev = $abbrev;
+    my $oldAbbrev = $abbrev;
     $oldAbbrev = $oldAbbrevs->{$release} if ($oldAbbrevs->{$release});
 
     unlink("tmpTaxonMap") if -e "tmpTaxonMap";
@@ -51,6 +51,7 @@ sub run {
 
     unlink("tmpTaxonMap") if -e "tmpTaxonMap";
   }
+}
 
 # return hash of release to old abbrev, if any
 sub parseOldAbbrevsList {

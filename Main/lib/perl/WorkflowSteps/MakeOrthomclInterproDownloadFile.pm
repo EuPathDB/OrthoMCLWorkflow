@@ -9,18 +9,18 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $interproExtDbName = $self->getParamValue('interproExtDbName');
+  my $interproExtDb = $self->getParamValue('interproExtDbName');
   my $downloadSiteDir = $self->getParamValue('downloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
 
-  my $interproExtDbVersion = $self->getExtDbVersion($test,$interproExtDbName);
+  my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDb);
 
   my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
 
-  my $outFile = "$websiteFilesDir/$downloadSiteDir/iprscan_$project-$release.txt";
+  my $downloadFileName = "$websiteFilesDir/$downloadSiteDir/iprscan_$project-$release.txt";
 
-  $sql = <<"EOF";
+  my $sql = <<"EOF";
      SELECT xas.secondary_identifier
            || chr(9) ||
          xd.name
@@ -54,7 +54,7 @@ sub run {
 EOF
 
   if ($undo) {
-    $self->runCmd($test, "rm $outFile");
+    $self->runCmd($test, "rm $downloadFileName");
   } else {
     $self->runCmd($test, "makeFileWithSql --outFile $downloadFileName --sql \"$sql\"");
   }

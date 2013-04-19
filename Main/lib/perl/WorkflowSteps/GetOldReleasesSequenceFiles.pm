@@ -31,4 +31,5 @@ sub run {
     } else {
       $self->runCmd($test, "getOrthomclOldRlsSeqFiles $fromDir $targetDir");
     }
+  }
 }
