@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousSeqIDs;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -34,8 +34,11 @@ sub run {
 
   opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
 
-  while (my $release = readdir (DIR)) {
-    next if ($release eq "." || $release eq "..");
+  while (my $groupFile = readdir (DIR)) {
+    next if ($groupFile eq "." || $groupFile eq "..");
+
+    $groupFile =~ /groups_OrthoMCL-(\d+)\.txt/ || die "invalid groupFile format $groupFile\n";
+    my $release = $1;
 
     my $oldAbbrev = $abbrev;
     $oldAbbrev = $oldAbbrevs->{$release} if ($oldAbbrevs->{$release});
@@ -45,9 +48,9 @@ sub run {
     print F "$oldAbbrev $abbrev\n";
     close(F);
 
-    my $args = "--oldIdsFastaFile $workflowDataDir/$inputDir/$release/$oldAbbrev.fasta.gz --taxonMapFile tmpTaxonMap --dbVersion $release";
+    my $args = "--oldGroupsFile $workflowDataDir/$inputDir/$groupFile --taxonMapFile tmpTaxonMap --dbVersion $release";
 
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthomclOldIdsMap", $args);
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthomclOldGroupsMap", $args);
 
     unlink("tmpTaxonMap") if -e "tmpTaxonMap";
   }
