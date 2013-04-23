@@ -13,9 +13,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  if ($test) {
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-  }
+  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
 
   my $tmpUnzipDir = "$workflowDataDir/$dataDir/tmp";
 

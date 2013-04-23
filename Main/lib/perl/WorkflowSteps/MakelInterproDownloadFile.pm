@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
