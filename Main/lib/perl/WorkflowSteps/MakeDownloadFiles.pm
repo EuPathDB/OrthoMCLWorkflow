@@ -25,9 +25,9 @@ sub run {
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
-    $self->runCmd($test, "rm $deflineDownloadFileName.gz");
-    $self->runCmd($test, "rm $groupsFileName.gz");
-    $self->runCmd($test, "rm -r $pairsDir.tar.gz");
+    $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
+    $self->runCmd($test, "rm $groupsDownloadFileName.gz");
+    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
   } else {
     my $sql = $self->getSql(1);
     $self->runCmd($test, "gusExtractSequences --outputFile $seqsDownloadFileName --idSQL \"$sql\"");
