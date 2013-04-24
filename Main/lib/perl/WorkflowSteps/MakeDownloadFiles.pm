@@ -19,7 +19,7 @@ sub run {
   my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
 
   my $seqsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/aa_seqs_$project-$release.fasta";
-  my $deflinesDownloadFileName = "$websiteFilesDir/$downloadSiteDir/deflines_$project-$release.fasta";
+  my $deflinesDownloadFileName = "$websiteFilesDir/$downloadSiteDir/deflines_$project-$release.txt";
   my $groupsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/groups_$project-$release.txt";
   my $domainsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/domainFreqs_$project-$release.txt";
   my $pairsDownloadDirName = "$websiteFilesDir/$downloadSiteDir/pairs_$project-$release";
