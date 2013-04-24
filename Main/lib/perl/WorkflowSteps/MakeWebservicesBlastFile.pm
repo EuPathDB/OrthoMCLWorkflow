@@ -19,8 +19,6 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
    my $workflowDataDir = $self->getWorkflowDataDir();
 
-   my $fileToFormat = "$workflowDataDir/$sequencesFile";
-
    my $webSvcDir = "$websiteFilesDir/$webservicesDir";
    my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta";
 
