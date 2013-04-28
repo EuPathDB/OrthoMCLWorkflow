@@ -20,4 +20,6 @@ sub getTaskPropFileContents {
 ";
 }
 
-  
+sub getDistribJobTask {
+  return "DJob::DistribJobTasks::MsaTask";
+}
