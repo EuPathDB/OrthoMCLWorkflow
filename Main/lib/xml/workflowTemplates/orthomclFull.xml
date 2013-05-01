@@ -6,6 +6,7 @@
   <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
+  <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
 
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
@@ -21,7 +22,7 @@
     <depends name="initUserGroupProject"/>
   </step>
 
-  <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="GO" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
@@ -29,7 +30,7 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-  <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="SO" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
@@ -37,7 +38,7 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-  <subgraph name="taxonomy_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="taxonomy" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
@@ -45,18 +46,18 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-  <subgraph name="interproscanData_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="interproscanData" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-  <subgraph name="enzymeDB_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
     <depends name="initUserGroupProject"/>
   </subgraph>
@@ -68,19 +69,20 @@
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <depends name="initUserGroupProject"/>
+      <depends name="taxonomy"/>
     </subgraph>
   </datasetTemplate>  
 
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
     <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>  
 
   <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleaseGroupFiles">
     <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>  
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -149,7 +151,7 @@
   </subgraph>
 
   <!-- insert groups -->
-  <step name="InsertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroups">
+  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroups">
     <paramValue name="inputGroupsDir">groupsOutput</paramValue>
     <depends name="makeGroups"/>
   </step>
@@ -161,12 +163,12 @@
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <!--  TODO:  NEEDS TO MAKE A FILE OF SINGLETONS -->
@@ -179,12 +181,12 @@
     <depends name="makeDownloadSiteDir"/>
   </step>
 
-  <!-- run interpro -->
+  <!-- run and load interpro -->
   <subgraph name="interpro" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">good.fasta</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <depends name="mirrorProteinsToCluster"/>
-    <depends name="interproscanData_RSRC"/>
+    <depends name="interproscanData"/>
   </subgraph>
 
   <step name="document-interpro"
@@ -199,8 +201,8 @@
     <paramValue name="downloadSitDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
-    <paramValue name="interproExtDbName">$$interproExtDbName$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
+    <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
+    <depends name="initUserGroupProject"/>
   </step>
 
 
@@ -216,7 +218,7 @@
 
   <step name="mirrorGroupFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDir</paramValue>
-    <depends name="extractMsaFastaFiles"/>
+    <depends name="extractGroupFastaFiles"/>
     <depends name="initClusterHomeDir"/>
   </step>
 
