@@ -22,14 +22,6 @@
     <depends name="initUserGroupProject"/>
   </step>
 
-  <subgraph name="GO" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">GO_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
-    <depends name="makeGlobalDataDir"/>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
   <subgraph name="SO" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -79,7 +71,7 @@
     <depends name="initUserGroupProject"/>
   </step>  
 
-  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleaseGroupFiles">
+  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesGroupFiles">
     <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="initUserGroupProject"/>
