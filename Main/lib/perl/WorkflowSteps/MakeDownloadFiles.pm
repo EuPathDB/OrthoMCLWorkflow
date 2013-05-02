@@ -9,7 +9,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $downloadSiteDir = $self->getParamValue('downloadSiteDir');
+  my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
   my $groupsDir = $self->getParamValue('inputGroupsDir');
@@ -18,11 +18,11 @@ sub run {
 
   my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
 
-  my $seqsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/aa_seqs_$project-$release.fasta";
-  my $deflinesDownloadFileName = "$websiteFilesDir/$downloadSiteDir/deflines_$project-$release.txt";
-  my $groupsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/groups_$project-$release.txt";
-  my $domainsDownloadFileName = "$websiteFilesDir/$downloadSiteDir/domainFreqs_$project-$release.txt";
-  my $pairsDownloadDirName = "$websiteFilesDir/$downloadSiteDir/pairs_$project-$release";
+  my $seqsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/aa_seqs_$project-$release.fasta";
+  my $deflinesDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/deflines_$project-$release.txt";
+  my $groupsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/groups_$project-$release.txt";
+  my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
+  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
