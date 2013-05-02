@@ -18,10 +18,9 @@ sub run {
   my $outputDir = $self->getParamValue('outputDir'); # where to put th 
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $fromDir = "$workflowDataDir/$inputDir";
   my $targetDir = "$workflowDataDir/$outputDir";
 
-  $self->testInputFile('inputDir', $fromDir);
+  $self->testInputFile('inputDir', $inputDir);
 
   if ($undo) {
     $self->runCmd(0,"rm -r $targetDir");
@@ -29,7 +28,7 @@ sub run {
     if ($test) {
       $self->runCmd($test, "mkdir $targetDir");
     } else {
-      $self->runCmd($test, "getOrthomclOldRlsSeqFiles $fromDir $targetDir");
+      $self->runCmd($test, "getOrthomclOldRlsSeqFiles $inputDir $targetDir");
     }
   }
 }

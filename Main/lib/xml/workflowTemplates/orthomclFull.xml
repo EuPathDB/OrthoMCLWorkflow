@@ -2,8 +2,8 @@
   <param name="projectVersionForWebsiteFiles"/>
 
   <constant name="projectName">OrthoMCL</constant>
-  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
-  <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
@@ -66,13 +66,13 @@
   </datasetTemplate>  
 
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
-    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>  
 
   <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesGroupFiles">
-    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>  
