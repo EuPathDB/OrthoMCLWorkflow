@@ -30,6 +30,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
      $self->runCmd($test,"cp $seqsDownloadFileName $webSvcDir/blast/proteinSeqs.gz");
      $self->runCmd($test,"gunzip $webSvcDir/blast/proteinSeqs.gz");
      $self->runCmd($test,"$ncbiBlastPath/formatdb -i $webSvcDir/blast/proteinSeqs -p T");
+     $self->runCmd($test,"grep \> $webSvcDir/blast/proteinSeqs | wc > $webSvcDir/blast/proteinSeqs.count");
      $self->runCmd($test,"rm $webSvcDir/blast/proteinSeqs");
    }
  }
