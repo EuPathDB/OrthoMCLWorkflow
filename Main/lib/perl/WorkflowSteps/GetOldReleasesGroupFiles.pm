@@ -12,18 +12,17 @@ sub run {
   my $outputDir = $self->getParamValue('outputDir'); # where to put the old group files (all with a similar name format)
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $fromDir = "$workflowDataDir/$inputDir";
   my $targetDir = "$workflowDataDir/$outputDir";
 
-  $self->testInputFile('inputDir', $fromDir);
+  $self->testInputFile('inputDir', $inputDir);
 
   if ($undo) {
     $self->runCmd(0,"rm -r $targetDir");
   } else {
     if ($test) {
-      $self->runCmd($test, "mkdir $targetDir");
+      $self->runCmd(0, "mkdir $targetDir");
     } else {
-      $self->runCmd($test, "getOrthomclOldRlsGroupFiles $fromDir $targetDir");
+      $self->runCmd($test, "getOrthomclOldRlsGroupFiles $inputDir $targetDir");
     }
   }
 }

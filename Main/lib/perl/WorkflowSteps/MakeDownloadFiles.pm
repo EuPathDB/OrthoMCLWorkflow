@@ -53,8 +53,8 @@ sub run {
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
-    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $websiteFilesDir/$downloadSiteDir/$pairsDownloadDirName");
-    $self->runCmd($test, "tar -czf $websiteFilesDir/$downloadSiteDir/$pairsDownloadDirName.tar.gz $websiteFilesDir/$downloadSiteDir/$pairsDownloadDirName");
+    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
+    $self->runCmd($test, "tar -czf $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName.tar.gz $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
   }
 }
 

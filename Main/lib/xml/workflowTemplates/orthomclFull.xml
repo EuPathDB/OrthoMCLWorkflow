@@ -93,7 +93,7 @@
       <depends name="initUserGroupProject"/>
     </subgraph>
 
-    <step name="${abbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousSeqIDs">
+    <step name="${abbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -101,9 +101,10 @@
       <depends name="getOldReleaseSeqFiles"/>
     </step>
 
-    <step name="${abbrev}_mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousGroupIDs">
+    <step name="${abbrev}_mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <depends name="${abbrev}_mapPreviousSeqIDs"/>
       <depends name="getOldReleaseGroupFiles"/>
     </step>
@@ -143,13 +144,13 @@
   </subgraph>
 
   <!-- insert groups -->
-  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroups">
+  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsDir">groupsOutput</paramValue>
     <depends name="makeGroups"/>
   </step>
 
   <!-- run group statistics -->
-  <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::UpdateGroupStatistics">
+  <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <depends name="insertGroups"/>
   </step>
 
@@ -164,7 +165,7 @@
   </step>
 
   <!--  TODO:  NEEDS TO MAKE A FILE OF SINGLETONS -->
-  <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::MakeDownloadFiles">
+  <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
@@ -189,8 +190,8 @@
     <depends name="interpro"/>
   </step>
 
-  <step name="makeInterproDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
-    <paramValue name="downloadSitDir">$$relativeDownloadSiteDir$$</paramValue>
+  <step name="makeInterproDownloadFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile">
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
@@ -202,7 +203,7 @@
 
   <!-- extract files for MSA -->
   <!-- NEEDS WORK -->
-  <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
+  <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
     <depends name="insertGroups"/>
@@ -215,12 +216,17 @@
   </step>
 
   <!-- run MSA -->
-  <subgraph name="muscle" xmlFile="muscleMSA.xml">
+  <subgraph name="muscleMsa" xmlFile="muscleMSA.xml">
     <paramValue name="fastaFilesDir">tarredGroupFastaFilesDir</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="dataDir">muscleMSA</paramValue>
     <depends name="mirrorGroupFastaFilesToCluster"/>
   </subgraph>
   
+    <step name="insertMsa" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupMsa" stepLoadTypes="plugin">
+      <paramValue name="inputDir">muscleMSA/master/mainresult</paramValue>
+      <paramValue name="dataDir">muscleMSA</paramValue>
+      <depends name="muscleMsa"/>
+    </step>
   <step name="document-muscle"
 	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
     <paramValue name="method">muscle_MTHD</paramValue>
@@ -233,14 +239,16 @@
   <!-- run biolayout -->
 
   <!-- load GroupTaxonMatrix (phyletic pattern) -->
-  <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroupTaxonMatrix">
+  <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="insertGroups"/>
   </step>
 
   <!-- make web services dir -->
-  <step name="webServiceBlastFile" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::MakeWebservicesBlastFile">
+  <step name="webServiceBlastFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeWebservicesBlastFile">
     <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="makeWebServicesDir"/>
     <depends name="makeDownloadFiles"/>
   </step>
@@ -248,13 +256,13 @@
   <!-- copy blast DB to cluster for proteome service -->
 
   <!-- domain keywords -->
-  <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertDomainKeywords">
+  <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <depends name="insertGroups"/>
     <depends name="interpro"/>
   </step>
 
   <!-- description keywords -->
-  <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertProteinKeywords">
+  <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
     <depends name="insertGroups"/>
   </step>
 

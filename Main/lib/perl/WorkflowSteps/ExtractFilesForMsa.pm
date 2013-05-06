@@ -17,6 +17,10 @@ sub run {
     if ($undo) {
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
     } else{
+      if ($test) {
+	$self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
+      } else {
 	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize");
+      }
     }
 }

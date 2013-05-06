@@ -30,7 +30,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->testInputFile('inputDir', $inputDir);
+  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
 
   opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
 

@@ -26,7 +26,7 @@ sub run {
     $self->runCmd(0,"rm -r $targetDir");
   } else {
     if ($test) {
-      $self->runCmd($test, "mkdir $targetDir");
+      $self->runCmd(0, "mkdir $targetDir");
     } else {
       $self->runCmd($test, "getOrthomclOldRlsSeqFiles $inputDir $targetDir");
     }
