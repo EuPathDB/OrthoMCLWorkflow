@@ -202,7 +202,6 @@
   <!-- run EC analysis -->
 
   <!-- extract files for MSA -->
-  <!-- NEEDS WORK -->
   <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
@@ -222,7 +221,7 @@
     <depends name="mirrorGroupFastaFilesToCluster"/>
   </subgraph>
   
-    <step name="insertMsa" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupMsa" stepLoadTypes="plugin">
+    <step name="insertMsa" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupMsa" stepLoadTypes="plugin">
       <paramValue name="inputDir">muscleMSA/master/mainresult</paramValue>
       <paramValue name="dataDir">muscleMSA</paramValue>
       <depends name="muscleMsa"/>
@@ -232,7 +231,7 @@
     <paramValue name="method">muscle_MTHD</paramValue>
     <paramValue name="version">most recent</paramValue>
     <paramValue name="parameters"></paramValue>
-    <depends name="muscle"/>
+    <depends name="muscleMsa"/>
   </step>
   
 
@@ -253,8 +252,6 @@
     <depends name="makeDownloadFiles"/>
   </step>
 
-  <!-- copy blast DB to cluster for proteome service -->
-
   <!-- domain keywords -->
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <depends name="insertGroups"/>
@@ -265,8 +262,6 @@
   <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
     <depends name="insertGroups"/>
   </step>
-
-
 
 
 </workflowGraph>

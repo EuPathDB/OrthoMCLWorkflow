@@ -3,7 +3,7 @@ package OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupMsa;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use OrthoMCLWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
