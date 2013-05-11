@@ -71,7 +71,6 @@
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
-    <depends name="blast"/>
   </step>
 
   <!-- load BLAST results into SimilarSequences table -->
