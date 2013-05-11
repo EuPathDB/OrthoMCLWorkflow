@@ -195,7 +195,8 @@
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="interpro"/>
+    <depends name="makeDownloadSiteDir"/>
   </step>
 
 
