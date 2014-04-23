@@ -78,6 +78,7 @@
     <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="installSchema"/>
+    <depends name="blast"/>
   </step>
 
   <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
