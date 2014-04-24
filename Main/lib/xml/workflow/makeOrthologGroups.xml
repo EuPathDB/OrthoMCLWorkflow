@@ -68,6 +68,8 @@
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
   <!-- create config file  -->
+  <!-- TODO add depends name="makeLocalDataDir" -->
+
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
