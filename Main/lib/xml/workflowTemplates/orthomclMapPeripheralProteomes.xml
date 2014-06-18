@@ -1,0 +1,176 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="referenceGoodProteinsFile"/>
+  <param name="referenceGroupsFile"/>
+  <param name="outputGoodProteinsFile"/>
+  <param name="outputGroupsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$/mapPeripherals</constant>
+  <constant name="proteomesDir">$$dataDir$/proteomes</constant>
+  <constant name="simSeqsTable">PeripheralSimSeqs</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomesDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <datasetTemplate class="manualDeliveryPeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclEnsemblCorePeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclEnsemblBacterialPeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="ensemblExtendedPeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclQ4OrthlogsPeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclEuPathPeripheralProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
+    <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+    <paramValue name="outputGoodProteinsFile">$$outputGoodProteinsFile$$</paramValue>
+    <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
+    <paramValue name="minLength">10</paramValue>
+    <paramValue name="maxStopPercent">20</paramValue>
+    <dependsPattern name="*_proteome"/>
+  </step>
+
+  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$outputGoodProteinsFile$$</paramValue>
+    <depends name="makeGoodProteinsFile"/>
+  </step>
+
+  <subgraph name="blast" xmlFile="blast.xml" excludeIf="$$useExistingSimSeqs$$">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nickName">blast</paramValue>
+    <paramValue name="queryFile">$$outputGoodProteinsFile$$</paramValue>
+    <paramValue name="subjectFile">$$referenceGoodProteinsFile$$</paramValue>
+    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
+    <paramValue name="idRegex">(\\S+)</paramValue>
+    <paramValue name="blastType">blastp</paramValue>
+    <paramValue name="vendor">ncbi</paramValue>
+    <paramValue name="loadSubjectSubset">false</paramValue>
+    <paramValue name="filterByTaxon">false</paramValue>
+    <paramValue name="maxMemoryGigs">10</paramValue>
+    <paramValue name="loadSimilarities">false</paramValue>
+    <paramValue name="similaritiesTableName">peripheralSimilarities</paramValue>
+    <paramValue name="makeSimSeqsFile">true</paramValue>
+
+    <!-- parameters below are not relevant for us -->
+    <paramValue name="queryTable"></paramValue>
+    <paramValue name="queryExtDbName"></paramValue>
+    <paramValue name="subjectTable"></paramValue>
+    <paramValue name="subjectExtDbName"></paramValue>
+    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
+    <paramValue name="taxonHierarchyForFilter"></paramValue>
+    <paramValue name="loadOptions"></paramValue>
+  </subgraph>
+
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="referenceGroupsFile">referenceGroupsFile</paramValue>
+    <paramValue name="outputGroupsFile">referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="outputResidualsFile">initialResiduals.fasta</paramValue>
+    <paramValue name="similarSequencesTableName">$$PeripheralSimSeqs$$</paramValue>
+    <depends name="blast"/>
+  </step>
+
+  <!-- add peripheral proteins that did not match any representatives to the residuals file -->
+  <step name="addNonsimilarToResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="">groupsOutput</paramValue>
+    <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
+    <paramValue name="inputResidualsFile">initialResiduals.fasta</paramValue>
+    <paramValue name="outputResidualsFile">finalResiduals.fasta</paramValue>
+    <depends name="mapPeripheralsToGroups"/>
+  </step>
+
+  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">finalResiduals.fasta</paramValue>
+    <depends name="addNonsimilarToResiduals"/>
+  </step>
+
+  <!-- NEEDS WORK -->
+  <subgraph name="makeGroupsFromResiduals" xmlFile="makeOrthologGroups.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="inputProteinFile">finalResiduals.fasta</paramValue>
+    <paramValue name="inputTaxaDir">dontcare</paramValue>
+    <paramValue name="outputGroupsDir">$$dataDir$$/residualsGroup</paramValue>
+    <paramValue name="suffix"></paramValue>
+    <paramValue name="useExistingSimSeqs">false</paramValue>
+    <paramValue name="collapseClades">false</paramValue>
+    <paramValue name="includeSingletonGroups">false</paramValue>
+    <depends name="mirrorProteinsToCluster"/>
+  </subgraph>
+  
+  <step name="combineGroupFiles" stepClass="">
+    <paramValue name="mappedGroupsFile">referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
+    <paramValue name="outputGroupsFile"></paramValue>
+    <depends name="makeGroupsFromResiduals"/>
+  </step>
+
+
+</workflowGraph>
