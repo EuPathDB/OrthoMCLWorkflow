@@ -1,6 +1,7 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="outputGoodProteinsFile"/>
+  <param name="outputGroupsDir"/>
 
   <constant name="proteomesDir">$$parentDataDir$/referenceProteomes</constant>
 
@@ -11,7 +12,7 @@
   <datasetTemplate class="manualDeliveryReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -23,7 +24,7 @@
   <datasetTemplate class="orthomclEnsemblCoreReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -35,7 +36,7 @@
   <datasetTemplate class="orthomclEnsemblBacterialReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -47,7 +48,7 @@
   <datasetTemplate class="ensemblExtendedReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -59,7 +60,7 @@
   <datasetTemplate class="orthomclQ4OrthlogsReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -71,7 +72,7 @@
   <datasetTemplate class="orthomclEuPathReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_orthomclReferenceProteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -86,7 +87,7 @@
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
-    <dependsPattern name="*_orthomclReferenceReferenceProteome"/>
+    <dependsPattern name="*_proteome"/>
   </step>
 
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -99,19 +100,13 @@
   <subgraph name="makeGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
-    <paramValue name="inputTaxaDir">???</paramValue>
-    <paramValue name="outputGroupsDir">groupsOutput</paramValue>
+    <paramValue name="inputTaxaDir">dontcare</paramValue>
+    <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <paramValue name="suffix"></paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
     <paramValue name="includeSingletonGroups">true</paramValue>
     <depends name="mirrorProteinsToCluster"/>
   </subgraph>
-
-  <!-- insert groups -->
-  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsDir">groupsOutput</paramValue>
-    <depends name="makeGroups"/>
-  </step>
 
 </workflowGraph>

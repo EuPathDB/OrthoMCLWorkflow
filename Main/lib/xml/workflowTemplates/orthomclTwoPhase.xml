@@ -74,6 +74,7 @@ des" xmlFile="loadDataset.xml">
   <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="orthomclMakeReferenceGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">referenceGood.fasta</paramValue>
+    <paramValue name="outputGroupsDir">referenceGroups</paramValue>
     <depends name="taxonomy"/>
     <depends name="SequenceOntology"/>
   </subgraph>
@@ -81,8 +82,20 @@ des" xmlFile="loadDataset.xml">
   <subgraph name="getAndMapPeriphProteomes" xmlFile="orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
+    <paramValue name="referenceGoodProteinsFile">referenceGood.fasta</paramValue>
+    <paramValue name="referenceGroupsDir">referenceGroups/groups.txt</paramValue>
+    <paramValue name="outputGroupsDir">finalGroups</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
   </subgraph>
+
+  <!-- remove singletons from final groups -->
+
+
+  <!-- insert groups -->
+  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="inputGroupsDir">finalGroups</paramValue>
+    <depends name="makeGroups"/>
+  </step>
 
   <step name="makeRefInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">refInterpro</paramValue>
