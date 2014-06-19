@@ -130,16 +130,16 @@
     <paramValue name="loadOptions"></paramValue>
   </subgraph>
 
-  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
     <paramValue name="referenceGroupsFile">referenceGroupsFile</paramValue>
     <paramValue name="outputGroupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">initialResiduals.fasta</paramValue>
-    <paramValue name="similarSequencesTableName">$$PeripheralSimSeqs$$</paramValue>
+    <paramValue name="outputSimilarSequencesTableName">$$PeripheralSimSeqs$$</paramValue>
     <depends name="blast"/>
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
-  <step name="addNonsimilarToResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+  <step name="addOrphansToResiduals" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
     <paramValue name="">groupsOutput</paramValue>
     <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualsFile">initialResiduals.fasta</paramValue>
@@ -149,7 +149,7 @@
 
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">finalResiduals.fasta</paramValue>
-    <depends name="addNonsimilarToResiduals"/>
+    <depends name="addOrphansToResiduals"/>
   </step>
 
   <!-- NEEDS WORK -->
@@ -165,7 +165,7 @@
     <depends name="mirrorProteinsToCluster"/>
   </subgraph>
   
-  <step name="combineGroupFiles" stepClass="">
+  <step name="combineGroupFiles" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::CombineGroupFiles">
     <paramValue name="mappedGroupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
     <paramValue name="outputGroupsFile"></paramValue>
