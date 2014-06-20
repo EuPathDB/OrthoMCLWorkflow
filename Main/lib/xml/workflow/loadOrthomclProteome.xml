@@ -2,29 +2,25 @@
     <param name="abbrev"/>
     <param name="oldAbbrevsList"/>
     <param name="oldReleasesSequenceFilesDir"/>
-    <param name="parentDir"/>
+    <param name="proteomesDir"/>
 
     <subgraph name="loadProteome" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$abbrev$$_orthomclProteome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">proteomes</paramValue>
-      <depends name="makeProteomesDir"/>
-      <depends name="initUserGroupProject"/>
+      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
     </subgraph>
 
-    <step name="${abbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
+    <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
       <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <depends name="${abbrev}_orthomclReferenceProteome"/>
-      <depends name="getOldReleaseSeqFiles"/>
+      <depends name="loadProteome"/>
     </step>
 
-    <step name="${abbrev}_mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
+    <step name="mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
       <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
       <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <depends name="${abbrev}_mapPreviousSeqIDs"/>
-      <depends name="getOldReleaseGroupFiles"/>
+      <depends name="mapPreviousSeqIDs"/>
     </step>
 </workflowGraph>

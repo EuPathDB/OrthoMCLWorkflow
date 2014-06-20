@@ -2,11 +2,13 @@
   <param name="parentDataDir"/>
   <param name="outputGoodProteinsFile"/>
   <param name="outputGroupsDir"/>
+  <param name="oldReleasesSequenceFilesDir"/>
+  <param name="oldReleasesGroupFilesDir"/>
 
-  <constant name="proteomesDir">$$parentDataDir$/referenceProteomes</constant>
+  <constant name="proteomesDir">$$parentDataDir$$/referenceProteomes</constant>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="dataDir">$$proteomesDir$$</paramValue>
   </step>
 
   <datasetTemplate class="manualDeliveryReferenceProteome">
@@ -16,7 +18,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -28,7 +31,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -40,7 +44,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -52,7 +57,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -64,7 +70,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -76,7 +83,8 @@
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
   </datasetTemplate>
@@ -93,7 +101,6 @@
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$outputGoodProteinsFile$$</paramValue>
     <depends name="makeGoodProteinsFile"/>
-    <depends name="initClusterHomeDir"/>
   </step>
 
   <!-- NEEDS WORK -->
