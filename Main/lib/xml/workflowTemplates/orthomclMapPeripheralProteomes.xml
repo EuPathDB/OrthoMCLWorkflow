@@ -136,6 +136,7 @@
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
+    <depends name="mirrorProteinsToCluster"/>
   </subgraph>
 
   <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">

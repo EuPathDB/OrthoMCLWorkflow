@@ -7,7 +7,6 @@
 
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
-
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
 
@@ -81,6 +80,8 @@
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="taxonomy"/>
+    <depends name="getOldReleaseSeqFiles"/>
+    <depends name="getOldReleaseGroupFiles"/>
     <depends name="initClusterHomeDir"/>
     <depends name="SequenceOntology"/>
   </subgraph>
@@ -114,6 +115,7 @@
     <paramValue name="proteinsFile">refGood.fasta</paramValue>
     <paramValue name="parentDataDir">refInterpro</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
+    <depends name="makeRefInterproDir"/>
     <depends name="interproscanData"/>
   </subgraph>
 
@@ -126,6 +128,7 @@
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
     <paramValue name="parentDataDir">periphInterpro</paramValue>
     <depends name="getAndMapPeriphProteomes"/>
+    <depends name="makePeriphInterproDir"/>
     <depends name="interproscanData"/>
   </subgraph>
 
@@ -138,8 +141,7 @@
   </step>
 
   <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
-    <depends name="getRefProteomesAndMakeRefGroups"/>
-    <depends name="getAndMapPeriphProteomes"/>
+    <depends name="insertGroups"/>
   </step>
 
   <subgraph name="EcAssignments" xmlFile="makeOrthomclEcAssignments.xml">
