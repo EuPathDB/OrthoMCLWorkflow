@@ -125,7 +125,7 @@
     <paramValue name="filterByTaxon">false</paramValue>
     <paramValue name="maxMemoryGigs">10</paramValue>
     <paramValue name="loadSimilarities">true</paramValue>
-    <paramValue name="similaritiesTableName">peripheralSimilarities</paramValue>
+    <paramValue name="similaritiesTableName">apidb.peripheralSimilarities</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
 
     <!-- parameters below are not relevant for us -->
@@ -143,7 +143,7 @@
     <paramValue name="referenceGroupsFile">referenceGroupsFile</paramValue>
     <paramValue name="outputGroupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">initialResiduals.fasta</paramValue>
-    <paramValue name="inputSimilarSequencesTable">peripheralSimilarities</paramValue>
+    <paramValue name="inputSimilarSequencesTable">apidb.peripheralSimilarities</paramValue>
     <depends name="blast"/>
   </step>
 
