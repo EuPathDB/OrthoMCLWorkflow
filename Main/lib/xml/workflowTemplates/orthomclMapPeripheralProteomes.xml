@@ -149,7 +149,7 @@
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
   <step name="addOrphansToResiduals" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
-    <paramValue name="inputSimilarSequencesTable">peripheralSimilarities</paramValue>
+    <paramValue name="groupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualsFile">initialResiduals.fasta</paramValue>
     <paramValue name="outputResidualsFile">finalResiduals.fasta</paramValue>

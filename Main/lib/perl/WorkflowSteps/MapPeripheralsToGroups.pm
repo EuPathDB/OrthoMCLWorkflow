@@ -1,11 +1,9 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-
-
 
 sub run {
   my ($self, $test, $undo) = @_;
