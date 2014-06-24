@@ -3,7 +3,7 @@
   <param name="referenceGoodProteinsFile"/>
   <param name="referenceGroupsFile"/>
   <param name="outputGoodProteinsFile"/>
-  <param name="outputGroupsDir"/>
+  <param name="outputGroupsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
@@ -13,6 +13,11 @@
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -124,8 +129,7 @@
     <paramValue name="loadSubjectSubset">false</paramValue>
     <paramValue name="filterByTaxon">false</paramValue>
     <paramValue name="maxMemoryGigs">10</paramValue>
-    <paramValue name="loadSimilarities">true</paramValue>
-    <paramValue name="similaritiesTableName">apidb.peripheralSimilarities</paramValue>
+    <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
 
     <!-- parameters below are not relevant for us -->
@@ -137,47 +141,45 @@
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
     <depends name="mirrorProteinsToCluster"/>
+    <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
   <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
-    <paramValue name="referenceGroupsFile">referenceGroupsFile</paramValue>
-    <paramValue name="outputGroupsFile">referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="outputResidualsFile">initialResiduals.fasta</paramValue>
-    <paramValue name="inputSimilarSequencesTable">apidb.peripheralSimilarities</paramValue>
+    <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
+    <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
+    <paramValue name="inputSimilarSequencesFile">$$dataDir$$/blast/similarSequences.out</paramValue>
     <depends name="blast"/>
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
   <step name="addOrphansToResiduals" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
-    <paramValue name="groupsFile">referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="inputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
-    <paramValue name="inputResidualsFile">initialResiduals.fasta</paramValue>
-    <paramValue name="outputResidualsFile">finalResiduals.fasta</paramValue>
+    <paramValue name="inputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
+    <paramValue name="outputResidualsFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <depends name="mapPeripheralsToGroups"/>
-  </step>
-
-  <step name="mirrorResidualsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">finalResiduals.fasta</paramValue>
-    <depends name="addOrphansToResiduals"/>
   </step>
 
   <!-- NEEDS WORK -->
   <subgraph name="makeGroupsFromResiduals" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="inputProteinFile">finalResiduals.fasta</paramValue>
+    <paramValue name="inputProteinFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
     <paramValue name="outputGroupsDir">$$dataDir$$/residualsGroup</paramValue>
-    <paramValue name="suffix"></paramValue>
+    <paramValue name="suffix">Residuals</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
     <paramValue name="includeSingletonGroups">false</paramValue>
-    <depends name="mirrorResidualsToCluster"/>
+    <paramValue name="groupIdPrefix">PREFIX_</paramValue>
+    <paramValue name="groupIdStart">1</paramValue>
+    <depends name="addOrphansToResiduals"/>
   </subgraph>
   
   <step name="combineGroupFiles" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::CombineGroupFiles">
     <paramValue name="mappedGroupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
-    <paramValue name="outputGroupsFile"></paramValue>
+    <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>
 

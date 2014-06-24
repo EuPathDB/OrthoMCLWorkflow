@@ -1,5 +1,7 @@
 <workflowGraph name="">
   <param name="projectVersionForWebsiteFiles"/>
+  <param name="groupIdPrefix"/>
+  <param name="groupIdStart"/>
 
   <constant name="projectName">OrthoMCL</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
@@ -73,12 +75,15 @@
     <depends name="initUserGroupProject"/>
   </step>  
 
+  <!-- runs before making of ref groups because needs an empty sim seqs table as input, to copy schema from -->
   <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="generated/OrthoMCLTwoPhase/orthomclMakeReferenceGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="outputGroupsDir">refGroups</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="groupIdPrefix">$$groupIdPrefix$$</paramValue>
+    <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
     <depends name="taxonomy"/>
     <depends name="getOldReleaseSeqFiles"/>
     <depends name="getOldReleaseGroupFiles"/>
@@ -91,18 +96,15 @@
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="referenceGroupsFile">refGroups/groups.txt</paramValue>
-    <paramValue name="outputGroupsDir">finalGroups</paramValue>
+    <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
   </subgraph>
 
-  <!-- remove singletons from final groups -->
-
-
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsDir">finalGroups</paramValue>
+    <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
     <depends name="getAndMapPeriphProteomes"/>
   </step>
 

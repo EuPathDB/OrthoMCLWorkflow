@@ -4,6 +4,8 @@
   <param name="outputGroupsDir"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
+  <param name="groupIdPrefix"/>
+  <param name="groupIdStart"/>
 
   <constant name="proteomesDir">$$parentDataDir$$/referenceProteomes</constant>
 
@@ -109,10 +111,12 @@
     <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
-    <paramValue name="suffix"></paramValue>
+    <paramValue name="suffix">Ref</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
     <paramValue name="includeSingletonGroups">true</paramValue>
+    <paramValue name="groupIdPrefix">$$groupIdPrefix$$</paramValue>
+    <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
     <depends name="mirrorProteinsToCluster"/>
   </subgraph>
 
