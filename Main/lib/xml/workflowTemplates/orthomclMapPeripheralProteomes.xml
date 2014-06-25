@@ -145,6 +145,7 @@
   </subgraph>
 
   <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
+    <paramValue name="peripheralsFastaFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
