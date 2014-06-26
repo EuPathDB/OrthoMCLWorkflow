@@ -7,6 +7,8 @@
   <param name="useExistingSimSeqs"/>
   <param name="collapseClades"/>  
   <param name="includeSingletonGroups"/>  
+  <param name="groupIdPrefix"/>
+  <param name="groupIdStart"/>
 
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
@@ -66,9 +68,6 @@
     <depends name="makeBlastDbOnCluster"/>
   </subgraph>
 
-  <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
-  <!-- create config file  -->
-
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
@@ -117,11 +116,11 @@
 
   <!-- write groups out to file -->
   <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
-    <paramValue name="orthomclIdPrefix">OG6_</paramValue>
+    <paramValue name="orthomclIdPrefix">$$groupIdPrefix$$</paramValue>
+    <paramValue name="startingOrthologGroupNumber">$$groupIdStart$$</paramValue>
     <paramValue name="inputFile">$$outputGroupsDir$$/mcl.out</paramValue>
     <paramValue name="proteinFile">$$goodProteinFile$$</paramValue>
     <paramValue name="outputFile">$$outputGroupsDir$$/orthomclGroups.txt</paramValue>
-    <paramValue name="startingOrthologGroupNumber">400000</paramValue>
     <paramValue name="includeSingletons">$$includeSingletonGroups$$</paramValue>
     <depends name="runMcl"/>
   </step>
