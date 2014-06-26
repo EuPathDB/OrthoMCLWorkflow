@@ -28,7 +28,7 @@
   <datasetTemplate class="manualDeliveryPeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -41,7 +41,7 @@
   <datasetTemplate class="orthomclEnsemblCorePeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -54,7 +54,7 @@
   <datasetTemplate class="orthomclEnsemblBacterialPeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -67,7 +67,7 @@
   <datasetTemplate class="ensemblExtendedPeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -80,7 +80,7 @@
   <datasetTemplate class="orthomclQ4OrthlogsPeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -93,7 +93,7 @@
   <datasetTemplate class="orthomclEuPathPeripheralProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+    <subgraph name="${abbrev}_proteome" xmlFile="orthomclLoadProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -163,7 +163,7 @@
   </step>
 
   <!-- NEEDS WORK -->
-  <subgraph name="makeGroupsFromResiduals" xmlFile="makeOrthologGroups.xml">
+  <subgraph name="makeGroupsFromResiduals" xmlFile="orthomclMakeGroups.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>

@@ -32,7 +32,7 @@
   </step>
 
   <!-- format the blast database on the cluster -->
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
+  <step name="makeBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="seqType">p</paramValue>
@@ -63,7 +63,7 @@
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
 
-    <depends name="makeNrdbBlastDbOnCluster"/>
+    <depends name="makeBlastDbOnCluster"/>
   </subgraph>
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
