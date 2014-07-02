@@ -54,6 +54,23 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+  <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+<subgraph name="GO_evidence_codes_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+ 
+
   <!-- load the OrthomclTaxon table with our tree of life -->
   <datasetTemplate class="orthomclClades">
     <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
