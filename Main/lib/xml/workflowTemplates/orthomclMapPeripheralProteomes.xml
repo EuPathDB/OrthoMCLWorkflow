@@ -144,17 +144,19 @@
     <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
-  <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
     <paramValue name="peripheralsFastaFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
-    <paramValue name="inputSimilarSequencesFile">$$dataDir$$/blast/similarSequences.out</paramValue>
+    <paramValue name="similarSequencesFile">$$dataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="threshold">.05</paramValue>
+    <paramValue name="minPercentMatch">80</paramValue>
     <depends name="blast"/>
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
-  <step name="addOrphansToResiduals" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
+  <step name="addOrphansToResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
     <paramValue name="inputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
@@ -177,9 +179,9 @@
     <depends name="addOrphansToResiduals"/>
   </subgraph>
   
-  <step name="combineGroupFiles" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::CombineGroupFiles">
-    <paramValue name="mappedGroupsFile">referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
+  <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
+    <paramValue name="mappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>

@@ -2,7 +2,7 @@
   <param name="parentDataDir"/>
   <param name="inputProteinFile"/>
 
-  <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
+  <constant name="localDataDir">$$parentDataDir$$/ecAssignments</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
   <constant name="uniprotFastaFile">$$localDataDir$$/uniprot.fasta</constant>
 
@@ -32,10 +32,9 @@
   </step>
 
   <step name="downloadAndUnpackSwissprotXml" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DownloadUniprotXml">
-    <paramValue name="inputTaxaFile"></paramValue>
     <paramValue name="reviewedStatus">yes</paramValue>
-    <paramValue name="ouputFastaFile">$$uniprotFastaFile$$</paramValue>
-    <paramValue name="ouputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
+    <paramValue name="outputFastaFile">$$uniprotFastaFile$$</paramValue>
+    <paramValue name="outputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
     <depends name="makeLocalDataDir"/>
   </step>
 
@@ -64,24 +63,24 @@
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
 
-    <depends name="downloadAndUnpackUniprotXml"/>
+    <depends name="downloadAndUnpackSwissprotXml"/>
     <depends name="makeBlastDbOnCluster"/>
   </subgraph>
 
   <!-- process BLAST output to create protein ID / EC number pairs -->
   <!-- matchOrthomclEcNumbers -blastFile blastSimilarity.out -inputEcMappingFile uniprot.ec -outputEcMappingFile orthomcl.ec -->
-  <step name="getProteinEcPairs" stepClass="OrthomclWorkflow::Main::WorkflowSteps::AssignEcBySimilarity">
-    <paramValue name="inputBlastFile">$$localDataDir$$/blastSimilarity.out</paramValue>
+  <step name="getProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AssignEcBySimilarity">
+    <paramValue name="inputBlastFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="inputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
-    <paramValue name="ouputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
+    <paramValue name="outputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
     <depends name="blast"/>
     <depends name="downloadAndUnpackSwissprotXml"/>
   </step>
 
   <!-- load EC number assignments -->
-  <!-- ga GUS::Community::Plugin::InsertECMapping - -ECMappingFile orthomcl.ec - -evidenceCode 'UniProt' - -aaSeqLocusTagMappingSql "select aa_sequence_id from dots.ExternalAaSequence where secondary_identifier = ?" -->
-  <step name="loadProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadProteinEcPairs">
-    <paramValue name="inputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
+  <step name="loadProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEcAssignments">
+    <paramValue name="inputEcMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
+    <paramValue name="evidence">swissprot</paramValue>
     <depends name="getProteinEcPairs"/>
   </step>
 

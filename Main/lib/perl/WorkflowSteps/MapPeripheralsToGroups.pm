@@ -8,10 +8,13 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $peripheralsFastaFile = $self->getParamValue('peripheralsFastaFile');
   my $referenceGroupsFile = $self->getParamValue('referenceGroupsFile');
+  my $similarSequencesFile = $self->getParamValue('similarSequencesFile');
   my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
   my $outputResidualsFile = $self->getParamValue('outputResidualsFile');
-  my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
+  my $threshold = $self->getParamValue('threshold');
+  my $minPercentMatch = $self->getParamValue('minPercentMatch');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -20,12 +23,14 @@ sub run {
     $self->runCmd(0, "rm $workflowDataDir/$outputResidualsFile") if -e "$workflowDataDir/$outputResidualsFile";
   } else {
     $self->testInputFile('referenceGroupsFile', "$workflowDataDir/$referenceGroupsFile");
+    $self->testInputFile('peripheralsFastaFile', "$workflowDataDir/$peripheralsFastaFile");
+    $self->testInputFile('similarSequencesFile', "$workflowDataDir/$similarSequencesFile");
 
-    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile $inputSimilarSequencesTable";
+    my $cmd = "mapPeripheralsToGroups $peripheralsFastaFile $referenceGroupsFile $similarSequencesFile $outputGroupsFile $outputResidualsFile $threshold $minPercentMatch";
     $self->runCmd($test, $cmd);
     if ($test) {
-      $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");
-      $self->runCmd(0, "touch $workflowDataDir/$outputResidualsFile");
+      $self->runCmd(0, "echo test > $workflowDataDir/$outputGroupsFile");
+      $self->runCmd(0, "echo test > $workflowDataDir/$outputResidualsFile");
     }
 
   }

@@ -95,7 +95,7 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
-    <paramValue name="referenceGroupsFile">refGroups/groups.txt</paramValue>
+    <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -113,6 +113,12 @@
     <depends name="initUserGroupProject"/>
   </step>
 
+  <step name="mirrorRefInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">refInterpro</paramValue>
+    <depends name="makeRefInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <subgraph name="interproScanRefProteins" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">refGood.fasta</paramValue>
     <paramValue name="parentDataDir">refInterpro</paramValue>
@@ -126,6 +132,12 @@
     <depends name="initUserGroupProject"/>
   </step>
 
+  <step name="mirrorPeriphInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">periphInterpro</paramValue>
+    <depends name="makePeriphInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <subgraph name="interproScanPeriphProteins" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
     <paramValue name="parentDataDir">periphInterpro</paramValue>
@@ -134,7 +146,7 @@
     <depends name="interproscanData"/>
   </subgraph>
 
-  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CatTwoFiles">
+  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
     <paramValue name="inputFile1">refGood.fasta</paramValue>
     <paramValue name="inputFile2">periphGood.fasta</paramValue>
     <paramValue name="outputFile">good.fasta</paramValue>
