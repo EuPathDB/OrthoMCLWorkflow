@@ -91,7 +91,7 @@
     </subgraph>
   </datasetTemplate>
 
-  <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
+  <step name="makeGoodProteinsFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGoodProteins">
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <paramValue name="outputGoodProteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
