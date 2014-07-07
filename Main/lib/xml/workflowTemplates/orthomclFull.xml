@@ -137,6 +137,13 @@
     <dependsPattern name="*_orthomclProteome"/>
   </step>
 
+ <step name="makeAllProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeAllProteins">
+    <paramValue name="outputFile">allproteins.fasta</paramValue>
+    <paramValue name="minLength">10</paramValue>
+    <paramValue name="maxStopPercent">20</paramValue>
+    <dependsPattern name="*_orthomclProteome"/>
+  </step>
+
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
   </step>
@@ -144,6 +151,12 @@
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
     <depends name="makeGoodProteinsFile"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
+  <step name="mirrorAllProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
+    <depends name="makeAllProteinsFile"/>
     <depends name="initClusterHomeDir"/>
   </step>
 
@@ -193,7 +206,7 @@
 
   <!-- run and load interpro -->
   <subgraph name="interpro" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">good.fasta</paramValue>
+    <paramValue name="proteinsFile">allproteins.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="mirrorProteinsToCluster"/>
     <depends name="interproscanData"/>
