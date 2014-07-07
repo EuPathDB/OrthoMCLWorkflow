@@ -155,7 +155,7 @@
   </step>
 
   <step name="mirrorAllProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
+    <paramValue name="fileOrDirToMirror">allproteins.fasta</paramValue>
     <depends name="makeAllProteinsFile"/>
     <depends name="initClusterHomeDir"/>
   </step>
