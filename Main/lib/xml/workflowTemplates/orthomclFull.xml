@@ -208,7 +208,7 @@
   <subgraph name="interpro" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">allproteins.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
-    <depends name="mirrorProteinsToCluster"/>
+    <depends name="mirrorAllProteinsToCluster"/>
     <depends name="interproscanData"/>
   </subgraph>
 
