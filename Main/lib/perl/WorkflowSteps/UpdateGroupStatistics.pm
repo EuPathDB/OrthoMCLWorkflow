@@ -11,6 +11,6 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthologGroups", "");
+  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthologGroup", "");
 
 }
