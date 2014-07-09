@@ -144,6 +144,12 @@
     <dependsPattern name="*_orthomclProteome"/>
   </step>
 
+  <step name="updateAASecondaryIdColumn" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclUpdateAASecondaryId">
+      <dependsPattern name="orthomclClades"/>
+      <dependsPattern name="*_orthomclProteome"/>
+  </step>
+
+
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
   </step>
@@ -182,6 +188,7 @@
   <!-- run group statistics -->
   <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <depends name="insertGroups"/>
+    <depends name="updateAASecondaryIdColumn"/>
   </step>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
