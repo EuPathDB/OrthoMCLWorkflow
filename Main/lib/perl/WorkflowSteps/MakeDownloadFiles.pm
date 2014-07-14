@@ -24,6 +24,8 @@ sub run {
   my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
   my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
 
+  
+
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
     $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
@@ -34,6 +36,7 @@ sub run {
 
     # fasta
     my $sql = $self->getSql(1);
+    $self->runCmd($test, "mkdir -p $websiteFilesDir/$relativeDownloadSiteDir");
     $self->runCmd($test, "gusExtractSequences --outputFile $seqsDownloadFileName --idSQL \"$sql\"");
     $self->runCmd($test, "gzip $seqsDownloadFileName");
 
@@ -49,7 +52,7 @@ sub run {
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
-    $self->runCmd($test, "cp $workflowDataDir/$groupsDir/groups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $workflowDataDir/$groupsDir/orthomclGroups.txt $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
