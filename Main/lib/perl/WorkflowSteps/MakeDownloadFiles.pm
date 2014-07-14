@@ -56,8 +56,8 @@ sub run {
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
-    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
-    $self->runCmd($test, "tar -czf $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName.tar.gz $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
+    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $pairsDownloadDirName");
+    $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
   }
 }
 
