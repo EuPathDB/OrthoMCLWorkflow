@@ -20,7 +20,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
    my $workflowDataDir = $self->getWorkflowDataDir();
 
    my $webSvcDir = "$websiteFilesDir/$project/$release/real/$webservicesDir";
-   my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta";
+   my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta.gz";
 
 
    if ($undo) {
