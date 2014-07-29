@@ -54,6 +54,23 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+  <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+<subgraph name="GO_evidence_codes_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+ 
+
   <!-- load the OrthomclTaxon table with our tree of life -->
   <datasetTemplate class="orthomclClades">
     <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
@@ -120,6 +137,19 @@
     <dependsPattern name="*_orthomclProteome"/>
   </step>
 
+ <step name="makeAllProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeAllProteins">
+    <paramValue name="outputFile">allproteins.fasta</paramValue>
+    <paramValue name="minLength">10</paramValue>
+    <paramValue name="maxStopPercent">20</paramValue>
+    <dependsPattern name="*_orthomclProteome"/>
+  </step>
+
+  <step name="updateAASecondaryIdColumn" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclUpdateAASecondaryId">
+      <dependsPattern name="orthomclClades"/>
+      <dependsPattern name="*_orthomclProteome"/>
+  </step>
+
+
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
   </step>
@@ -127,6 +157,12 @@
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
     <depends name="makeGoodProteinsFile"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
+  <step name="mirrorAllProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">allproteins.fasta</paramValue>
+    <depends name="makeAllProteinsFile"/>
     <depends name="initClusterHomeDir"/>
   </step>
 
@@ -152,6 +188,7 @@
   <!-- run group statistics -->
   <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <depends name="insertGroups"/>
+    <depends name="updateAASecondaryIdColumn"/>
   </step>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
@@ -176,9 +213,9 @@
 
   <!-- run and load interpro -->
   <subgraph name="interpro" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">good.fasta</paramValue>
+    <paramValue name="proteinsFile">allproteins.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
-    <depends name="mirrorProteinsToCluster"/>
+    <depends name="mirrorAllProteinsToCluster"/>
     <depends name="interproscanData"/>
   </subgraph>
 

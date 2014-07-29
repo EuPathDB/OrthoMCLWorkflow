@@ -30,9 +30,8 @@ sub run {
       if ($test){
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputGoodProteinsFile");
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputBadProteinsFile");
-      }else{
-	  $self->runCmd($test, $cmd);
       }
+      $self->runCmd($test, $cmd);
   }
 
 }
