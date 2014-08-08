@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeGoodProteins;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
