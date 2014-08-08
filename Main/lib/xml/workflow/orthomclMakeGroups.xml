@@ -120,7 +120,7 @@
     <paramValue name="startingOrthologGroupNumber">$$groupIdStart$$</paramValue>
     <paramValue name="inputFile">$$outputGroupsDir$$/mcl.out</paramValue>
     <paramValue name="proteinFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="outputFile">$$outputGroupsDir$$/groups.txt</paramValue>
+    <paramValue name="outputFile">$$outputGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="includeSingletons">$$includeSingletonGroups$$</paramValue>
     <depends name="runMcl"/>
   </step>
