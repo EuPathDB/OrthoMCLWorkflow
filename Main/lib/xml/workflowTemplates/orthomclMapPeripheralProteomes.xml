@@ -6,6 +6,7 @@
   <param name="outputGroupsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
+  <param name="groupsDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/mapPeripherals</constant>
   <constant name="proteomesDir">$$dataDir$$/proteomes</constant>
@@ -182,6 +183,7 @@
   <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
     <paramValue name="mappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/orthomclGroups.txt</paramValue>
+    <paramValue name="groupsDir">$$groupsDir$$</paramValue>
     <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>
