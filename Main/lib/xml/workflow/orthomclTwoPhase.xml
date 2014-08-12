@@ -96,6 +96,7 @@
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="groupsDr">groupsOutput</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -104,6 +105,7 @@
 
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="groupsDr">groupsOutput</paramValue>
     <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
     <depends name="getAndMapPeriphProteomes"/>
   </step>
