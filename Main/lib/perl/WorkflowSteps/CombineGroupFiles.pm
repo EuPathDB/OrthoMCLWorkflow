@@ -17,7 +17,7 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputGroupsDir/$outputGroupsFile") if -e "$workflowDataDir/$outputGroupsDir/$outputGroupsFile";
-    $self->runCmd(0, "rm rf $workflowDataDir/$outputGroupsDir") if -d "$workflowDataDir/$outputGroupsDir";
+    $self->runCmd(0, "rm -rf $workflowDataDir/$outputGroupsDir") if -d "$workflowDataDir/$outputGroupsDir";
   } else {
     $self->testInputFile('mappedGroupsFile', "$workflowDataDir/$mappedGroupsFile");
     $self->testInputFile('residualsGroupsFile', "$workflowDataDir/$residualsGroupsFile");
