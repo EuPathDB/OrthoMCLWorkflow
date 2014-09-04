@@ -1,5 +1,7 @@
 <project name="OrthoMCL" default="OrthoMCLWorkflow-Installation" basedir=".">
 
+  <import file="${projectsDir}/ApiCommonWorkflow/build.xml" optional="true" />
+
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
