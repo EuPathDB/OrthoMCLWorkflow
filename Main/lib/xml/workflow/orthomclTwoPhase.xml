@@ -209,6 +209,11 @@
   </step>
 
   <!-- run biolayout -->
+  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
+    <paramValue name="numberOfThreadsToUse">4</paramValue>
+    <paramValue name="maxGroupSize">500</paramValue>
+    <depends name="insertGroups"/>
+  </step>
 
   <!-- load GroupTaxonMatrix (phyletic pattern) -->
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
@@ -226,6 +231,7 @@
   </step>
 
   <!-- domain keywords -->
+  <!-- apparently the plugin called by this step needs work -->
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <depends name="insertGroups"/>
     <depends name="interproScanRefProteins"/>
