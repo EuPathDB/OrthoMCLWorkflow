@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterGraphs;
+package OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
