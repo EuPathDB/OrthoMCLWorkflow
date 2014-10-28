@@ -42,7 +42,21 @@
   </subgraph>
 
   <subgraph name="interproscanData" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
+    <paramValue name="datasetName">interproscanData_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">geneOntology_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">geneOntologyEvidenceCodes_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
