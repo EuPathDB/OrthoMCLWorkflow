@@ -182,6 +182,7 @@
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="concatGoodProteins"/>
+    <depends name="enzymeDB"/>
   </subgraph>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
