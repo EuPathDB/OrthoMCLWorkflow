@@ -141,6 +141,8 @@
     <depends name="getRefProteomesAndMakeRefGroups"/>
     <depends name="makeRefInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
   <step name="makePeriphInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -160,6 +162,8 @@
     <depends name="getAndMapPeriphProteomes"/>
     <depends name="makePeriphInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
   <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
