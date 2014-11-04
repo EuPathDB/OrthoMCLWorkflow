@@ -178,7 +178,7 @@
     <depends name="insertGroups"/>
   </step>
 
-  <subgraph name="EcAssignments" xmlFile="orthomclMakeEcAssignments.xml">
+  <subgraph name="EcAssignments" xmlFile="makeOrthomclEcAssignments.xml">
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="concatGoodProteins"/>
