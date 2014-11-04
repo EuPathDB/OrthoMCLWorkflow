@@ -31,7 +31,7 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <step name="downloadAndUnpackSwissprotXml" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DownloadUniprotXml">
+  <step name="downloadAndUnpackUniprotXml" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DownloadUniprotXml">
     <paramValue name="inputTaxaFile"></paramValue>
     <paramValue name="reviewedStatus">yes</paramValue>
     <paramValue name="ouputFastaFile">$$uniprotFastaFile$$</paramValue>
@@ -75,7 +75,7 @@
     <paramValue name="inputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
     <paramValue name="ouputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
     <depends name="blast"/>
-    <depends name="downloadAndUnpackSwissprotXml"/>
+    <depends name="downloadAndUnpackUniprotXml"/>
   </step>
 
   <!-- load EC number assignments -->
