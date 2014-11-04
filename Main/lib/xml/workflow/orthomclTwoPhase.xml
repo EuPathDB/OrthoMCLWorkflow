@@ -48,6 +48,20 @@
     <depends name="makeGlobalDataDir"/>
   </subgraph>
 
+  <subgraph name="geneOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
   <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -112,13 +126,22 @@
     <paramValue name="dataDir">refInterpro</paramValue>
     <depends name="initUserGroupProject"/>
   </step>
+  
+   <step name="mirrorRefInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">refInterpro</paramValue>
+    <depends name="makeRefInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
 
   <subgraph name="interproScanRefProteins" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">refGood.fasta</paramValue>
     <paramValue name="parentDataDir">refInterpro</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
-    <depends name="makeRefInterproDir"/>
+    <depends name="mirrorRefInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
+    
   </subgraph>
 
   <step name="makePeriphInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -126,12 +149,20 @@
     <depends name="initUserGroupProject"/>
   </step>
 
+  <step name="mirrorPeriphInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">periphInterpro</paramValue>
+    <depends name="makePeriphInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <subgraph name="interproScanPeriphProteins" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
     <paramValue name="parentDataDir">periphInterpro</paramValue>
     <depends name="getAndMapPeriphProteomes"/>
-    <depends name="makePeriphInterproDir"/>
+    <depends name="mirrorPeriphInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
   <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CatTwoFiles">
