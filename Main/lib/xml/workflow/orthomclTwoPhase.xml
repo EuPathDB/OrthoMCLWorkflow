@@ -109,7 +109,8 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
-    <paramValue name="referenceGroupsFile">refGroups/groups.txt</paramValue>
+    <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="groupsDir">groupsOutput</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -127,7 +128,7 @@
     <depends name="initUserGroupProject"/>
   </step>
   
-   <step name="mirrorRefInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+  <step name="mirrorRefInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">refInterpro</paramValue>
     <depends name="makeRefInterproDir"/>
     <depends name="initClusterHomeDir"/>
@@ -165,7 +166,7 @@
     <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
-  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CatTwoFiles">
+  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
     <paramValue name="inputFile1">refGood.fasta</paramValue>
     <paramValue name="inputFile2">periphGood.fasta</paramValue>
     <paramValue name="outputFile">good.fasta</paramValue>
@@ -177,10 +178,11 @@
     <depends name="insertGroups"/>
   </step>
 
-  <subgraph name="EcAssignments" xmlFile="makeOrthomclEcAssignments.xml">
+  <subgraph name="EcAssignments" xmlFile="orthomclMakeEcAssignments.xml">
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="concatGoodProteins"/>
+    <depends name="enzymeDB"/>
   </subgraph>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
