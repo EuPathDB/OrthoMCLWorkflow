@@ -11,7 +11,7 @@ sub run {
   my $referenceGroupsFile = $self->getParamValue('referenceGroupsFile');
   my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
   my $outputResidualsFile = $self->getParamValue('outputResidualsFile');
-  my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
+  #my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -21,7 +21,7 @@ sub run {
   } else {
     $self->testInputFile('referenceGroupsFile', "$workflowDataDir/$referenceGroupsFile");
 
-    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile $inputSimilarSequencesTable";
+    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");
