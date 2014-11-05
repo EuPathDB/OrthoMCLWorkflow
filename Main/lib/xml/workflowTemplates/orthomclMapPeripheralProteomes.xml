@@ -144,7 +144,7 @@
     <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
-  <step name="mapPeripheralsToGroups" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
     <paramValue name="peripheralsFastaFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
@@ -154,7 +154,7 @@
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
-  <step name="addOrphansToResiduals" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
+  <step name="addOrphansToResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
     <paramValue name="inputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputProteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
@@ -177,7 +177,7 @@
     <depends name="addOrphansToResiduals"/>
   </subgraph>
   
-  <step name="combineGroupFiles" stepClass="OrthoMclWorkflow::Main::WorkflowSteps::CombineGroupFiles">
+  <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
     <paramValue name="mappedGroupsFile">referenceAndMappedGroupsFile</paramValue>
     <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
     <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
