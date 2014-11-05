@@ -177,7 +177,7 @@
   
   <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
     <paramValue name="mappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/groups.txt</paramValue>
+    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>
