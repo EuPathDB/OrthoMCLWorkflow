@@ -145,11 +145,9 @@
   </subgraph>
 
   <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
-    <paramValue name="peripheralsFastaFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
-    <paramValue name="inputSimilarSequencesFile">$$dataDir$$/blast/similarSequences.out</paramValue>
     <depends name="blast"/>
   </step>
 
