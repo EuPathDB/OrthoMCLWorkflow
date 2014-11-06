@@ -9,7 +9,6 @@
    <step name="symLinkProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
     <paramValue name="toFile">$$goodProteinFile$$</paramValue>
-    <depends name="makeLocalDataDir"/>
   </step>
 
   <!-- mirror our data dir to the cluster -->
@@ -31,7 +30,6 @@
     <paramValue name="reviewedStatus">yes</paramValue>
     <paramValue name="ouputFastaFile">$$uniprotFastaFile$$</paramValue>
     <paramValue name="ouputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
-    <depends name="makeLocalDataDir"/>
   </step>
 
   <!-- run BLAST to match up UniProt and OrthoMCL protein sequences -->
