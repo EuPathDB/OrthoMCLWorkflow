@@ -13,7 +13,7 @@ sub run {
 
     my $inputDir = $self->getParamValue('finalGroups.txt');
 
-    my $orthoFileFullPath = "$workflowDataDir/$finalGroups.txt";
+    my $orthoFileFullPath = "$workflowDataDir/finalGroups.txt";
 
     my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
 
