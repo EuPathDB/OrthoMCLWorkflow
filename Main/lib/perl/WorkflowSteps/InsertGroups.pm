@@ -11,9 +11,9 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $inputDir = $self->getParamValue('inputGroupsDir');
+    my $inputDir = $self->getParamValue('finalGroups.txt');
 
-    my $orthoFileFullPath = "$workflowDataDir/$inputDir/orthomclGroups.txt";
+    my $orthoFileFullPath = "$workflowDataDir/$finalGroups.txt";
 
     my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
 
