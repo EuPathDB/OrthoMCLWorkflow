@@ -6,12 +6,7 @@
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
   <constant name="uniprotFastaFile">$$localDataDir$$/uniprot.fasta</constant>
 
-  <!-- make a data dir - do we need this?  -->
-  <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$localDataDir$$</paramValue>
-  </step>
-
-  <step name="symLinkProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+   <step name="symLinkProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
     <paramValue name="toFile">$$goodProteinFile$$</paramValue>
     <depends name="makeLocalDataDir"/>
