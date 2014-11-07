@@ -2,9 +2,15 @@
   <param name="parentDataDir"/>
   <param name="inputProteinFile"/>
 
-  <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
+  <constant name="localDataDir">$$parentDataDir$$/ecAssignments</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
   <constant name="uniprotFastaFile">$$localDataDir$$/uniprot.fasta</constant>
+
+
+  <!-- make a data dir  -->
+  <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$localDataDir$$</paramValue>
+  </step>
 
    <step name="symLinkProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
