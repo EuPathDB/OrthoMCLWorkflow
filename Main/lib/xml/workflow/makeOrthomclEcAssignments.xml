@@ -81,8 +81,9 @@
 
   <!-- load EC number assignments -->
   <!-- ga GUS::Community::Plugin::InsertECMapping - -ECMappingFile orthomcl.ec - -evidenceCode 'UniProt' - -aaSeqLocusTagMappingSql "select aa_sequence_id from dots.ExternalAaSequence where secondary_identifier = ?" -->
-  <step name="loadProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadProteinEcPairs">
+  <step name="loadProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEcAssignments">
     <paramValue name="inputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
+    <paramValue name="evidence">UniProt</paramValue>
     <depends name="getProteinEcPairs"/>
   </step>
 
