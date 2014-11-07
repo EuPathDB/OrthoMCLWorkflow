@@ -200,7 +200,6 @@
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
-    <paramValue name="inputGroupsDir">groupsOutput</paramValue>
     <depends name="insertGroups"/>
     <depends name="makeDownloadSiteDir"/>
   </step>
