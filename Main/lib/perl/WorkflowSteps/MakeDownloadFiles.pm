@@ -12,7 +12,6 @@ sub run {
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
-  my $groupsDir = $self->getParamValue('inputGroupsDir');
 
   $self->testInputFile('groupsDir', "$workflowDataDir/$groupsDir");
 
@@ -52,7 +51,7 @@ sub run {
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
-    $self->runCmd($test, "cp $workflowDataDir/$groupsDir/orthomclGroups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
