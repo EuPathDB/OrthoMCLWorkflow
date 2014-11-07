@@ -13,7 +13,7 @@ sub run {
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
 
-  $self->testInputFile('groupsDir', "$workflowDataDir/$groupsDir");
+  $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
 
   my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
 
@@ -55,7 +55,7 @@ sub run {
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
-    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $pairsDownloadDirName");
+    $self->runCmd($test, "cp -r $workflowDataDir/pairs $pairsDownloadDirName");
     $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
   }
 }
