@@ -34,7 +34,7 @@
   <step name="downloadAndUnpackUniprotXml" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DownloadUniprotXml">
     <paramValue name="inputTaxaFile"></paramValue>
     <paramValue name="reviewedStatus">yes</paramValue>
-    <paramValue name="ouputFastaFile">$$uniprotFastaFile$$</paramValue>
+    <paramValue name="outputFastaFile">$$uniprotFastaFile$$</paramValue>
     <paramValue name="ouputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
   </step>
 
