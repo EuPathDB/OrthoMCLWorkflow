@@ -72,7 +72,7 @@
   <!-- process BLAST output to create protein ID / EC number pairs -->
   <!-- matchOrthomclEcNumbers -blastFile blastSimilarity.out -inputEcMappingFile uniprot.ec -outputEcMappingFile orthomcl.ec -->
   <step name="getProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AssignEcBySimilarity">
-    <paramValue name="inputBlastFile">$$localDataDir$$/blastSimilarity.out</paramValue>
+    <paramValue name="inputBlastFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="inputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
     <paramValue name="outputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
     <depends name="blast"/>
