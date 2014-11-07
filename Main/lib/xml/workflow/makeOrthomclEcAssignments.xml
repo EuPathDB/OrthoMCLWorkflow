@@ -74,7 +74,7 @@
   <step name="getProteinEcPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AssignEcBySimilarity">
     <paramValue name="inputBlastFile">$$localDataDir$$/blastSimilarity.out</paramValue>
     <paramValue name="inputEcFile">$$localDataDir$$/uniprot.ec</paramValue>
-    <paramValue name="ouputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
+    <paramValue name="outputMappingFile">$$localDataDir$$/orthomcl.ec</paramValue>
     <depends name="blast"/>
     <depends name="downloadAndUnpackUniprotXml"/>
   </step>
