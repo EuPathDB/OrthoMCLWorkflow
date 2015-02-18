@@ -26,59 +26,21 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="orthomclEnsemblCoreReferenceProteome">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-      <depends name="makeProteomesDir"/>
-    </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="orthomclEnsemblBacterialReferenceProteome">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-      <depends name="makeProteomesDir"/>
-    </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="ensemblExtendedReferenceProteome">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-      <depends name="makeProteomesDir"/>
-    </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="orthomclQ4OrthlogsReferenceProteome">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-      <depends name="makeProteomesDir"/>
-    </subgraph>
-  </datasetTemplate>
 
   <datasetTemplate class="orthomclEuPathReferenceProteome">
+    <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+      <depends name="makeProteomesDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclUniprotReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
@@ -97,7 +59,7 @@
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
-    <dependsPattern name="*_proteome"/>
+    <dependsPattern name="*Proteome"/>
   </step>
 
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">

@@ -76,7 +76,7 @@
     <paramValue name="parentDataDir"></paramValue>
     <depends name="taxonomy"/>
   </subgraph>
-
+ 
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
     <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
