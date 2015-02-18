@@ -35,9 +35,21 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$/</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
+
+    <!-- a bit of a hack.  reach into the proteome dataset's dir to find extra ID mapping files provided by the Eupath proteome dataset class -->
+    <step name="insertRepGeneIds" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertRepGeneIds">
+      <paramValue name="inputFile">$$proteomesDir$$/$$abbrev$$_orthomclProteome_RSRC/eupathRepresentedIdMapping.tab</paramValue>
+      <depends name="${abbrev}_proteome"/>
+    </step>
+
+    <step name="insertRepGeneIds" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertEupathAliases">
+      <paramValue name="inputFile">$$proteomesDir$$/$$abbrev$$_orthomclProteome_RSRC/eupathAliases.tab</paramValue>
+      <depends name="${abbrev}_proteome"/>
+    </step>
+
   </datasetTemplate>
 
   <datasetTemplate class="orthomclUniprotReferenceProteome">
