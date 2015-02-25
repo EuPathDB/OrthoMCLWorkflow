@@ -125,4 +125,29 @@
     <depends name="getAndMapPeriphProteomes"/>
   </step>
 
+  <!-- extract peripheral group fasta tar -->
+  <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas">
+    <paramValue name="outputDir">$$$$</paramValue>
+    <paramValue name="outputTar">$$$$</paramValue>
+    <depends name="makeGroupsFromResiduals"/>
+  </step>
+
+
+  <subgraph name="peripheralSelfBlast" xmlFile="multiBlast.xml">
+    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
+    <paramValue name="nickName">blast</paramValue>
+    <paramValue name="fastaDirTarFile">$$fastaDirTarFile$$</paramValue>
+    <paramValue name="referenceDatabaseFasta">refGood.fasta</paramValue>
+    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
+    <paramValue name="idRegex">(\\S+)</paramValue>
+    <paramValue name="blastType">blastp</paramValue>
+    <paramValue name="vendor">ncbi</paramValue>
+    <paramValue name="loadSubjectSubset">false</paramValue>
+    <paramValue name="filterByTaxon">false</paramValue>
+    <paramValue name="maxMemoryGigs">10</paramValue>
+    <paramValue name="loadSimilarities">false</paramValue>
+    <paramValue name="makeSimSeqsFile">true</paramValue>
+    <depends name="makeNrdbBlastDbOnCluster"/>
+  </subgraph>
+
 </workflowGraph>
