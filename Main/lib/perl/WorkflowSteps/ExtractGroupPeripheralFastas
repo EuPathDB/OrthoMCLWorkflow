@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa;
+package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -12,16 +12,18 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $outputDir = $self->getParamValue('outputDir');
-    my $tarSize = $self->getParamValue('filesPerTarball');
-    my $maxGroupSize = $self->getParamValue('maxGroupSize');
+    my $outputTar = $self->getParamValue('outputTar');
 
     if ($undo) {
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
+	$self->runCmd($test, "rm -r $workflowDataDir/$outputTar");
     } else{
       if ($test) {
 	$self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
+	$self->runCmd(0, "touch $workflowDataDir/$outputTar");
       } else {
-	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize --maxGroupSize $maxGroupSize");
+	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --peripheralsOnly");
+	$self->runCmd($test, "tar -zcf $workflowDataDir/$outputDir $workflowDataDir/${outputDir}.tar.gz");
       }
     }
 }

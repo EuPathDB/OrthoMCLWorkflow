@@ -127,16 +127,15 @@
 
   <!-- extract peripheral group fasta tar -->
   <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas">
-    <paramValue name="outputDir">$$$$</paramValue>
-    <paramValue name="outputTar">$$$$</paramValue>
+    <paramValue name="outputDir">peripheralGroupFastas</paramValue>
+    <paramValue name="outputTar">peripheralGroupFastas.tar</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>
-
 
   <subgraph name="peripheralSelfBlast" xmlFile="multiBlast.xml">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="fastaDirTarFile">$$fastaDirTarFile$$</paramValue>
+    <paramValue name="fastaDirTarFile">peripheralGroupFastas.tar</paramValue>
     <paramValue name="referenceDatabaseFasta">refGood.fasta</paramValue>
     <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>

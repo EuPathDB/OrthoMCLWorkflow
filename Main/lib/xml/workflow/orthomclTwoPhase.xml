@@ -218,6 +218,7 @@
   <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
+    <paramValue name="maxGroupSize">100</paramValue>
     <depends name="insertGroups"/>
   </step>
 
