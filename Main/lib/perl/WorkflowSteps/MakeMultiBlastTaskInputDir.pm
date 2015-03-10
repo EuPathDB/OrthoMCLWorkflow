@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeMultiBlastTaskInputDir;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeMultiBlastTaskInputDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastTaskInputDir);
 
@@ -6,7 +6,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastTaskInputDir;
 
 sub testInput {
-    my ($self, $worflowDataDir) = @_;
+    my ($self, $workflowDataDir) = @_;
 
     my $fastaDirTarFile = $self->getParamValue("fastaDirTarFile");
     my $referenceDatabaseFasta = $self->getParamValue("referenceDatabaseFasta");

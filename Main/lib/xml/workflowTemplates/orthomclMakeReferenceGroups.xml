@@ -8,9 +8,19 @@
   <param name="groupIdStart"/>
 
   <constant name="proteomesDir">$$parentDataDir$$/referenceProteomes</constant>
+  <constant name="dataDir">$$parentDataDir$$/makeReferenceGroups</constant>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomesDir$$</paramValue>
+  </step>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <datasetTemplate class="manualDeliveryReferenceProteome">
@@ -70,20 +80,22 @@
   <datasetTemplate class="referenceProteomeEupathDB_EC">
     <prop name="abbrev"/>
 
-    <subgraph name="loadProteome" xmlFile="loadDataset.xml">
+    <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$abbrev$$_Eupath_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="${abbrev}_proteome"/>
     </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="referenceProteomeUniprotEC">
     <prop name="abbrev"/>
 
-    <subgraph name="loadProteome" xmlFile="loadDataset.xml">
+    <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$abbrev$$_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <depends name="${abbrev}_proteome"/>
     </subgraph>
   </datasetTemplate>
 
@@ -93,7 +105,7 @@
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
-    <dependsPattern name="*Proteome"/>
+    <dependsPattern name="*_proteome"/>
   </step>
 
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -116,19 +128,10 @@
     <depends name="mirrorProteinsToCluster"/>
   </subgraph>
 
-  <step name="makeInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">interpro</paramValue>
-  </step>
-  
-  <step name="mirrorInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">interpro</paramValue>
-    <depends name="makeRefInterproDir"/>
-  </step>
-
   <subgraph name="interproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">$$outputGoodProteinsFile$$</paramValue>
-    <paramValue name="parentDataDir">interpro</paramValue>
-    <depends name="mirrorInterproDir"/>    
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="mirrorDataDirToCluster"/>    
     <depends name="makeGoodProteinsFile"/>
   </subgraph>
 

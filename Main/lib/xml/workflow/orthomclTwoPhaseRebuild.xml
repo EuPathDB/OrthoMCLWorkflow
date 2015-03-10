@@ -129,11 +129,11 @@
   <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas">
     <paramValue name="outputDir">peripheralGroupFastas</paramValue>
     <paramValue name="outputTar">peripheralGroupFastas.tar</paramValue>
-    <depends name="makeGroupsFromResiduals"/>
+    <depends name="insertGroups"/>
   </step>
 
   <subgraph name="peripheralSelfBlast" xmlFile="multiBlast.xml">
-    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="fastaDirTarFile">peripheralGroupFastas.tar</paramValue>
     <paramValue name="referenceDatabaseFasta">refGood.fasta</paramValue>
@@ -146,7 +146,7 @@
     <paramValue name="maxMemoryGigs">10</paramValue>
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
-    <depends name="makeNrdbBlastDbOnCluster"/>
+    <depends name="extractGroupFastas"/>
   </subgraph>
 
 </workflowGraph>
