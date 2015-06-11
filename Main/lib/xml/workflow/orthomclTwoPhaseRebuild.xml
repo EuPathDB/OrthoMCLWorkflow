@@ -90,7 +90,7 @@
   </step>  
 
   <!-- runs before making of ref groups because needs an empty sim seqs table as input, to copy schema from -->
-  <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="generated/OrthoMCLTwoPhase/orthomclMakeReferenceGroups.xml">
+  <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="generated/OrthoMCL/orthomclMakeReferenceGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="outputGroupsDir">refGroups</paramValue>
@@ -108,7 +108,7 @@
     <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
-  <subgraph name="getAndMapPeriphProteomes" xmlFile="generated/OrthoMCLTwoPhase/orthomclMapPeripheralProteomes.xml">
+  <subgraph name="getAndMapPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>

@@ -22,7 +22,7 @@ sub run {
     if ($test) {
       $self->runCmd(0, "mkdir $targetDir");
     } else {
-      $self->runCmd($test, "getOrthomclOldRlsGroupFiles $inputDir $targetDir");
+      $self->runCmd($test, "orthomclGetOldRlsGroupFiles $inputDir $targetDir");
     }
   }
 }

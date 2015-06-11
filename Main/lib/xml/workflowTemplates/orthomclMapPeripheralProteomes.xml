@@ -51,8 +51,8 @@
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertAliases">
-      <paramValue name="externalDatabase">$$abbrev$$_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomesDir$$/$$abbrev$$_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomesDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
 
@@ -72,8 +72,8 @@
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertAliases">
-      <paramValue name="externalDatabase">$$abbrev$$_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomesDir$$/$$abbrev$$_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomesDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
 
@@ -83,7 +83,7 @@
     <prop name="abbrev"/>
 
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">$$abbrev$$_Eupath_ECAssociations_RSRC</paramValue>
+      <paramValue name="datasetName">${abbrev}_Eupath_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
       <depends name="${abbrev}_proteome"/>
@@ -94,7 +94,7 @@
     <prop name="abbrev"/>
 
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">$$abbrev$$_Uniprot_ECAssociations_RSRC</paramValue>
+      <paramValue name="datasetName">${abbrev}_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
       <depends name="${abbrev}_proteome"/>
