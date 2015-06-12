@@ -11,7 +11,7 @@
     </subgraph>
 
     <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
-      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
       <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <depends name="loadProteome"/>

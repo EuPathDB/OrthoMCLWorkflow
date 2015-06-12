@@ -40,16 +40,16 @@ sub run {
     my $oldAbbrev = $abbrev;
     $oldAbbrev = $oldAbbrevs->{$releaseDir} if ($oldAbbrevs->{$releaseDir});
 
-    unlink("tmpTaxonMap") if -e "tmpTaxonMap";
-    open(F, ">tmpTaxonMap");
+    unlink("tmpAbbrevMap") if -e "tmpAbbrevMap";
+    open(F, ">tmpAbbrevMap");
     print F "$oldAbbrev $abbrev\n";
     close(F);
 
-    my $args = "--oldIdsFastaFile $workflowDataDir/$inputDir/$releaseDir/$oldAbbrev.fasta.gz --taxonMapFile tmpTaxonMap --dbVersion $releaseDir";
+    my $args = "--oldIdsFastaFile $workflowDataDir/$inputDir/$releaseDir/$oldAbbrev.fasta.gz --abbrevMapFile tmpAbbrevMap --oldReleaseNum $releaseDir";
 
     $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthomclOldIdsMap", $args);
 
-    unlink("tmpTaxonMap") if -e "tmpTaxonMap";
+    unlink("tmpAbbrevMap") if -e "tmpAbbrevMap";
   }
 }
 
@@ -59,7 +59,7 @@ sub parseOldAbbrevsList {
   my @oldAbbrevs = split(/,\s*/, $oldAbbrevsList);
   my $answer;
   foreach my $oldAbbrev (@oldAbbrevs) {
-    $oldAbbrev =~ /(\d+)\:(\w+)/ || $self->error("oldAbbrevsList '' is not in correct format.  Must be like this:  '3:pfa, 4:pfa'");
+    $oldAbbrev =~ /(\d+)\:(\w+)/ || $self->error("oldAbbrevsList '$oldAbbrev' is not in correct format.  Must be like this:  '3:pfa, 4:pfa'");
     my $release = $1;
     my $abb = $2;
     $answer->{$release} = $abb;
