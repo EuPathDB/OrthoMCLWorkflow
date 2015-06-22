@@ -12,10 +12,11 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $externalDatabase = $self->getParamValue('externalDatabase');
-    my $aliasesFile = $self->getParamValue('aliasesFile');
+    my $extDbVer = $self->getExtDbVersion($test, $externalDatabase);
+    my $aliasesFile = $self->getParamValue('inputMappingFile');
     my $fileFullPath = "$workflowDataDir/$aliasesFile";
 
-    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber dontcare --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef";
+    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef";
 
     $self->testInputFile('aliasesFile', "$fileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDBxRefs", $args);
