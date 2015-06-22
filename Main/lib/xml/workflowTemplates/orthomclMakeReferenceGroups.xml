@@ -31,6 +31,7 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
@@ -44,14 +45,15 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$/</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
-    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertAliases">
+    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomesDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="inputMappingFile">$$dataDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
   </datasetTemplate>
@@ -64,14 +66,15 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
-    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertAliases">
+    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomesDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="inputMappingFile">$$dataDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
 
@@ -83,7 +86,7 @@
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${abbrev}_Eupath_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="${abbrev}_proteome"/>
     </subgraph>
   </datasetTemplate>
@@ -94,7 +97,7 @@
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${abbrev}_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$proteomesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="${abbrev}_proteome"/>
     </subgraph>
   </datasetTemplate>
