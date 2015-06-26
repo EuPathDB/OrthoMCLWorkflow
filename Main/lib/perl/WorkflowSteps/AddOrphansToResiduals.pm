@@ -22,7 +22,7 @@ sub run {
     $self->testInputFile('inputProteinsFile', "$workflowDataDir/$inputProteinsFile");
     $self->testInputFile('inputResidualsFile', "$workflowDataDir/$inputResidualsFile");
 
-    my $cmd = "addOrphansToResiduals $workflowDataDir/$inputGroupsFile $workflowDataDir/$inputResidualsFile $workflowDataDir/$inputProteinsFile  $workflowDataDir/$outputResidualsFile";
+    my $cmd = "addOrphansToResiduals $workflowDataDir/$inputGroupsFile $workflowDataDir/$inputProteinsFile $workflowDataDir/$inputResidualsFile  $workflowDataDir/$outputResidualsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputResidualsFile");

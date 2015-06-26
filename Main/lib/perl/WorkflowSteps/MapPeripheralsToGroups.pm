@@ -8,10 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $referenceGroupsFile = $self->getParamValue('referenceGroupsFile');
+  my $referenceGroupsFile = $self->getParamValue('inputReferenceGroupsFile');
   my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
   my $outputResidualsFile = $self->getParamValue('outputResidualsFile');
-  #my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
+  my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -21,7 +21,7 @@ sub run {
   } else {
     $self->testInputFile('referenceGroupsFile', "$workflowDataDir/$referenceGroupsFile");
 
-    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile";
+    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile $inputSimilarSequencesTable";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");

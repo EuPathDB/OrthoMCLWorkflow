@@ -40,6 +40,8 @@ sub run {
     my $oldAbbrev = $abbrev;
     $oldAbbrev = $oldAbbrevs->{$releaseDir} if ($oldAbbrevs->{$releaseDir});
 
+    next unless -e  "$workflowDataDir/$inputDir/$releaseDir/$oldAbbrev.fasta.gz";
+
     unlink("tmpAbbrevMap") if -e "tmpAbbrevMap";
     open(F, ">tmpAbbrevMap");
     print F "$oldAbbrev $abbrev\n";

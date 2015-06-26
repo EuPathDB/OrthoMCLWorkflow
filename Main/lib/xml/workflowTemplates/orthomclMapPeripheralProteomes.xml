@@ -152,8 +152,23 @@
     <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
+  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">$$dataDir$$/orthomclPairs.config</paramValue>
+    <paramValue name="suffix">Peripheral</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <!-- load BLAST results into SimilarSequences table -->
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
+    <paramValue name="inputFile">$$dataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="suffix">Peripheral</paramValue>
+    <depends name="installSchema"/>
+    <depends name="blast"/>
+  </step>
+
   <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
-    <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
+    <paramValue name="inputReferenceGroupsFile">$$referenceGroupsFile$$</paramValue>
+    <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequencesPeripheral</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
     <depends name="blast"/>
