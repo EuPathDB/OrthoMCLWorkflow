@@ -23,7 +23,7 @@ sub run {
 	$self->runCmd(0, "touch $workflowDataDir/$outputTar");
       } else {
 	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --peripheralsOnly");
-	$self->runCmd($test, "tar -zcf $workflowDataDir/$outputDir $workflowDataDir/${outputDir}.tar.gz");
+	$self->runCmd($test, "tar -zcf $workflowDataDir/${outputDir}.tar.gz $workflowDataDir/$outputDir");
       }
     }
 }
