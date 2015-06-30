@@ -135,7 +135,7 @@
   <subgraph name="peripheralSelfBlast" xmlFile="multiBlast.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="fastaDirTarFile">peripheralGroupFastas.tar</paramValue>
+    <paramValue name="fastaDirTarFile">peripheralGroupFastas.tar.gz</paramValue>
     <paramValue name="referenceDatabaseFasta">refGood.fasta</paramValue>
     <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>
