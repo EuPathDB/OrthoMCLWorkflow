@@ -134,6 +134,9 @@
   <subgraph name="interproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="insertVersion">2</paramValue>
+    <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+    <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="mirrorDataDirToCluster"/>    
     <depends name="makeGoodProteinsFile"/>
   </subgraph>
