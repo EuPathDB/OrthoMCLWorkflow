@@ -7,8 +7,9 @@
   <param name="groupIdPrefix"/>
   <param name="groupIdStart"/>
 
-  <constant name="proteomesDir">$$parentDataDir$$/referenceProteomes</constant>
   <constant name="dataDir">$$parentDataDir$$/makeReferenceGroups</constant>
+  <constant name="proteomesDir">$$parentDataDir$$/makeReferenceGroups/referenceProteomes</constant>
+  <constant name="proteomeDatasetsDir">$$parentDataDir$$/makeReferenceGroups/proteomeDatasets</constant>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomesDir$$</paramValue>
@@ -23,6 +24,11 @@
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <datasetTemplate class="manualDeliveryReferenceProteome">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
@@ -31,7 +37,7 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
@@ -45,15 +51,15 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$/</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
+      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$dataDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
   </datasetTemplate>
@@ -66,7 +72,7 @@
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$/</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
     </subgraph>
@@ -74,7 +80,7 @@
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$dataDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
 
@@ -105,7 +111,7 @@
   <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <paramValue name="outputGoodProteinsFile">$$outputGoodProteinsFile$$</paramValue>
-    <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
+    <paramValue name="outputBadProteinsFile">$$dataDir$$/bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
     <dependsPattern name="*_proteome"/>
@@ -118,7 +124,7 @@
 
   <!-- NEEDS WORK -->
   <subgraph name="makeGroups" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>

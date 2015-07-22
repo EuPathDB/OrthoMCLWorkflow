@@ -79,6 +79,7 @@
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
+    <paramValue name="dataDir">$$localDataDir$$</paramValue>
     <depends name="installSchema"/>
     <depends name="blast"/>
   </step>
