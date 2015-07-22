@@ -20,9 +20,12 @@ sub getPathParamsString {
 
     my $fastaDirTarFile = $self->getParamValue("fastaDirTarFile");
 
-    return "dbFilePath=$clusterWorkflowDataDir/$fastaDirTarFile";
+    return "fastasTarPath=$clusterWorkflowDataDir/$fastaDirTarFile";
 }
 
+sub getTask {
+  return "DJob::DistribJobTasks::MultiBlastSimilarityTask";
+}
 sub addExtraBlastArgs {
     my ($self, $worflowDataDir, $blastArgs) = @_;
 
