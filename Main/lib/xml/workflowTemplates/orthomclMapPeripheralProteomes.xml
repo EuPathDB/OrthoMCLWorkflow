@@ -9,7 +9,7 @@
   <constant name="dataDir">$$parentDataDir$$/mapPeripherals</constant>
   <constant name="proteomesDir">$$dataDir$$/proteomes</constant>
   <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
-  <constant name="goodProteinsFile">$$dataDir$$/goodProteins</constant>
+  <constant name="periphGoodProteinsFile">$$dataDir$$/periphGoodProteins</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -115,7 +115,7 @@
 
   <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-    <paramValue name="outputGoodProteinsFile">$$goodProteinsFile$$</paramValue>
+    <paramValue name="outputGoodProteinsFile">$$periphGoodProteinsFile$$</paramValue>
     <paramValue name="outputBadProteinsFile">>$$dataDir$$/bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
@@ -123,7 +123,7 @@
   </step>
 
   <subgraph name="interproScan" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">$$goodProteinsFile$$</paramValue>
+    <paramValue name="proteinsFile">$$periphGoodProteinsFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="insertVersion">2</paramValue>
     <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
@@ -133,14 +133,14 @@
   </subgraph>
 
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$goodProteinsFile$$</paramValue>
+    <paramValue name="fileOrDirToMirror">$$periphGoodProteinsFile$$</paramValue>
     <depends name="makeGoodProteinsFile"/>
   </step>
 
   <subgraph name="blast" xmlFile="blast.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="queryFile">$$goodProteinsFile$$</paramValue>
+    <paramValue name="queryFile">$$periphGoodProteinsFile$$</paramValue>
     <paramValue name="subjectFile">$$referenceGoodProteinsFile$$</paramValue>
     <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>
@@ -182,16 +182,19 @@
     <paramValue name="inputReferenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequencesPeripheral</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="outputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
+    <paramValue name="outputResidualsFile">$$dataDir$$/initialResidualIds</paramValue>
     <depends name="blast"/>
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
   <step name="addOrphansToResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddOrphansToResiduals">
-    <paramValue name="inputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="inputProteinsFile">$$goodProteinsFile$$</paramValue>
-    <paramValue name="inputResidualsFile">$$dataDir$$/initialResiduals.fasta</paramValue>
+    <paramValue name="inputReferenceGroupsFile">$$referenceGroupsFile$$</paramValue>
+    <paramValue name="inputMappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
+    <paramValue name="inputRefFastaFile">$$referenceGoodProteinsFile$$</paramValue>
+    <paramValue name="inputPeriphFastaFile">$$periphGoodProteinsFile$$</paramValue>
+    <paramValue name="inputResidualIdsFile">$$dataDir$$/initialResidualIds</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/finalResiduals.fasta</paramValue>
+    <paramValue name="outputReducedMappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>
     <depends name="mapPeripheralsToGroups"/>
   </step>
 
@@ -200,7 +203,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">$$dataDir$$/residualsGroup</paramValue>
+    <paramValue name="outputGroupsDir">$$dataDir$$/residualsGroups</paramValue>
     <paramValue name="suffix">Residuals</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
@@ -211,8 +214,8 @@
   </subgraph>
   
   <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
-    <paramValue name="mappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
-    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroup/orthomclGroups.txt</paramValue>
+    <paramValue name="mappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>
+    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroups/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
     <depends name="makeGroupsFromResiduals"/>
   </step>
