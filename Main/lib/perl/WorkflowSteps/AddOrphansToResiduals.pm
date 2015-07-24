@@ -27,7 +27,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0, "rm $workflowDataDir/$outputResidualsFile") if -e "$workflowDataDir/$outputResidualsFile";
+    $self->runCmd(0, "rm $workflowDataDir/$outputResidualsFastaFile") if -e "$workflowDataDir/$outputResidualsFastaFile";
   } else {
     $self->testInputFile('inputReferenceGroupsFile', "$workflowDataDir/$inputReferenceGroupsFile");
     $self->testInputFile('inputMappedGroupsFile', "$workflowDataDir/$inputMappedGroupsFile");
@@ -35,7 +35,7 @@ sub run {
     $self->testInputFile('inputPeriphFastaFile', "$workflowDataDir/$inputPeriphFastaFile");
     $self->testInputFile('inputResidualIdsFile', "$workflowDataDir/$inputResidualIdsFile");
 
-    my $cmd = "addOrphansToResiduals $workflowDataDir/$inputReferenceGroupsFile $workflowDataDir/$inputMappedGroupsFile $workflowDataDir/$inputProteinsFile $workflowDataDir/$inputResidualIdsFile  $workflowDataDir/$outputResidualsFastaFile $workflowDataDir/$outputReducedMappedGroupsFile";
+    my $cmd = "addOrphansToResiduals $workflowDataDir/$inputReferenceGroupsFile $workflowDataDir/$inputMappedGroupsFile $workflowDataDir/$inputRefFastaFile $workflowDataDir/$inputPeriphFastaFile $workflowDataDir/$inputResidualIdsFile  $workflowDataDir/$outputResidualsFastaFile $workflowDataDir/$outputReducedMappedGroupsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputResidualsFastaFile");
