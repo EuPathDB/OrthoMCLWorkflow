@@ -8,12 +8,8 @@
   <param name="groupIdStart"/>
 
   <constant name="dataDir">$$parentDataDir$$/makeReferenceGroups</constant>
-  <constant name="proteomesDir">$$parentDataDir$$/makeReferenceGroups/referenceProteomes</constant>
-  <constant name="proteomeDatasetsDir">$$parentDataDir$$/makeReferenceGroups/proteomeDatasets</constant>
-
-  <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$proteomesDir$$</paramValue>
-  </step>
+  <constant name="proteomesDir">$$dataDir$$/referenceProteomes</constant>
+  <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -21,6 +17,11 @@
 
   <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomesDir$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
@@ -40,6 +41,7 @@
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
+      <depends name="makeProteomeDatasetsDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -54,6 +56,7 @@
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
+      <depends name="makeProteomeDatasetsDir"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
@@ -75,6 +78,7 @@
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeProteomesDir"/>
+      <depends name="makeProteomeDatasetsDir"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->

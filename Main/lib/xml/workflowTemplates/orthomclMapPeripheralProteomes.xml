@@ -116,7 +116,7 @@
   <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <paramValue name="outputGoodProteinsFile">$$periphGoodProteinsFile$$</paramValue>
-    <paramValue name="outputBadProteinsFile">>$$dataDir$$/bad.fasta</paramValue>
+    <paramValue name="outputBadProteinsFile">$$dataDir$$/bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
     <dependsPattern name="*_proteome"/>
@@ -184,7 +184,7 @@
     <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequencesPeripheral</paramValue>
     <paramValue name="outputGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="outputResidualsFile">$$dataDir$$/initialResidualIds</paramValue>
-    <depends name="blast"/>
+    <depends name="loadBlast"/>
   </step>
 
   <!-- add peripheral proteins that did not match any representatives to the residuals file -->
@@ -194,7 +194,7 @@
     <paramValue name="inputRefFastaFile">$$referenceGoodProteinsFile$$</paramValue>
     <paramValue name="inputPeriphFastaFile">$$periphGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualIdsFile">$$dataDir$$/initialResidualIds</paramValue>
-    <paramValue name="outputResidualsFile">$$dataDir$$/finalResiduals.fasta</paramValue>
+    <paramValue name="outputResidualsFastaFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="outputReducedMappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>
     <depends name="mapPeripheralsToGroups"/>
   </step>

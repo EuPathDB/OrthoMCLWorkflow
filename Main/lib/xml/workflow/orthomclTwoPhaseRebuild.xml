@@ -11,7 +11,7 @@
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
-  <constant name="peripheralSelfBlastDir">peripheralSelfBlast</constant>
+  <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" 
@@ -126,27 +126,27 @@
     <depends name="getAndMapPeriphProteomes"/>
   </step>
 
-  <step name="makePeripheralBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$peripheralSelfBlastDir$$</paramValue>
+  <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
   </step>
 
   <!-- extract peripheral group fasta tar -->
   <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas">
-    <paramValue name="outputDir">$$peripheralSelfBlastDir$$/peripheralGroupFastas</paramValue>
+    <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
     <paramValue name="tarAndZip">true</paramValue>
     <depends name="insertGroups"/>
-    <depends name="makePeripheralBlastDir"/>
+    <depends name="makeGroupsSelfBlastDir"/>
   </step>
 
-  <step name="mirrorPeripheralFastasToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$peripheralSelfBlastDir$$</paramValue>
+  <step name="mirrorGroupFastasToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$groupsSelfBlastDir$$</paramValue>
     <depends name="extractGroupFastas"/>
   </step>
 
-  <subgraph name="peripheralSelfBlast" xmlFile="multiBlast.xml">
-    <paramValue name="parentDataDir">$$peripheralSelfBlastDir$$</paramValue>
+  <subgraph name="groupsSelfBlast" xmlFile="multiBlast.xml">
+    <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="fastaDirTarFile">$$peripheralSelfBlastDir$$/peripheralGroupFastas.tar.gz</paramValue>
+    <paramValue name="fastaDirTarFile">$$groupsSelfBlastDir$$/groupFastas.tar.gz</paramValue>
     <paramValue name="referenceDatabaseFasta">refGood.fasta</paramValue>
     <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>
@@ -158,7 +158,7 @@
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
     <depends name="extractGroupFastas"/>
-    <depends name="mirrorPeripheralFastasToCluster"/>
+    <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
 </workflowGraph>
