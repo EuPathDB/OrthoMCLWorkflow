@@ -99,7 +99,7 @@
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="groupIdPrefix">$$groupIdPrefix$$</paramValue>
     <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
-    <depends name="taxonomy"/>
+    <depends name="orthomclClades"/>
     <depends name="getOldReleaseSeqFiles"/>
     <depends name="getOldReleaseGroupFiles"/>
     <depends name="initClusterHomeDir"/>
