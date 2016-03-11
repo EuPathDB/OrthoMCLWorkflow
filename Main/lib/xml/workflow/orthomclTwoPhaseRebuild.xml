@@ -120,6 +120,15 @@
     <depends name="getRefProteomesAndMakeRefGroups"/>
   </subgraph>
 
+<!--
+  <subgraph name="ecMappings" xmlFile="generated/OrthoMCL/orthomclEcMappings.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="enzymeDB"/>
+    <depends name="getAndMapPeriphProteomes"/>
+  </subgraph>
+-->
+
+
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
