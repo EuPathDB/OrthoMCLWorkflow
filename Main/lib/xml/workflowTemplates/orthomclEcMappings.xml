@@ -15,7 +15,7 @@
       <paramValue name="datasetName">${abbrev}_Eupath_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${abbrev}_proteome"/>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -26,7 +26,7 @@
       <paramValue name="datasetName">${abbrev}_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${abbrev}_proteome"/>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
