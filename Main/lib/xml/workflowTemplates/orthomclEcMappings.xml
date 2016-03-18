@@ -8,7 +8,7 @@
   </step>
 
 
-  <datasetTemplate class="eupathdbEcMappings">
+  <datasetTemplate class="eupathEcMappings">
     <prop name="abbrev"/>
 
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
