@@ -1,7 +1,7 @@
 <workflowGraph name="">
   <param name="refGoodFasta"/>
   <param name="periphGoodFasta"/>
-  <param name="groupIdStart"/>
+  <param name="relativeDownloadSiteDir"/>
   <param name="projectVersionForWebsiteFiles"/>
 
 

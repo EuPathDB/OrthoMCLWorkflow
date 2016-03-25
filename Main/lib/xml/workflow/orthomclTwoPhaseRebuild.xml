@@ -168,4 +168,15 @@
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
+<!--
+  <subgraph name="postProcessGroups" xmlFile="orthomclPostProcessGroups.xml">
+    <paramValue name="refGoodFasta">refGood.fasta</paramValue>
+    <paramValue name="periphGoodFasta">mapPeripherals/periphGoodProteins</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="insertGroups"/>
+  </subgraph>
+
+-->
+
 </workflowGraph>
