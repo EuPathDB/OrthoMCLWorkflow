@@ -32,12 +32,11 @@
 -->
  
   <!--  TODO:  NEEDS TO MAKE A FILE OF SINGLETONS -->
-<!--
+
   <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
-    <depends name="insertGroups"/>
     <depends name="makeDownloadSiteDir"/>
   </step>
 
@@ -50,7 +49,7 @@
     <depends name="interproScanPeriphProteins"/>
     <depends name="makeDownloadSiteDir"/>
   </step>
--->
+
 
   <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
