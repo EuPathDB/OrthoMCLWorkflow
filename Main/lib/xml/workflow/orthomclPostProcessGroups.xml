@@ -61,7 +61,6 @@
   <step name="mirrorGroupFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDir</paramValue>
     <depends name="extractGroupFastaFiles"/>
-    <depends name="initClusterHomeDir"/>
   </step>
 
   <subgraph name="muscleMsa" xmlFile="muscleMSA.xml">
