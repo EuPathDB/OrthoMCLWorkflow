@@ -168,8 +168,6 @@
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
-<!--
-
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">orthomclPairs.config</paramValue>
     <paramValue name="suffix"></paramValue>
@@ -192,7 +190,7 @@
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="loadBlast"/>
   </subgraph>
--->
+
 
 
 </workflowGraph>
