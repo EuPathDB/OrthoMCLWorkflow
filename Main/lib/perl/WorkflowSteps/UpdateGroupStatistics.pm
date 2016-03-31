@@ -10,9 +10,9 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $suffix = $self->getParamValue('simSeqsTableSuffix');
+#  my $suffix = $self->getParamValue('simSeqsTableSuffix');
 
 
-  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthologGroup", "--simSeqsTableSuffix $suffix");
+  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthologGroup", "");
 
 }
