@@ -15,5 +15,5 @@ sub run {
     my $toSuffix = $self->getParamValue('toSuffix');
 
     my $undoFlag = $undo? "-undo" : "";
-    $self->runCmd($test, "orthomclCopyPairsTables $fromSuffix $toSuffix $undoFlag");
+    $self->runCmd($test, "orthomclCopyPairsTables '$fromSuffix' '$toSuffix' $undoFlag");
 }
