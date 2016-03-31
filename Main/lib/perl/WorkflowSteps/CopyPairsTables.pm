@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa;
+package OrthoMCLWorkflow::Main::WorkflowSteps::CopyPairsTables;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
