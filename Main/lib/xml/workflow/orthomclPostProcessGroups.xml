@@ -9,6 +9,12 @@
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
+
+  <step name="CopyPairsTables" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyPairsTables">
+    <paramValue name="fromSuffix">Ref</paramValue>
+    <paramValue name="toSuffix"></paramValue>
+  </step>
+
   <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
   </step>
 

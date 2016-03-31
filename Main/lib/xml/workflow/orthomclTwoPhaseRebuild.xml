@@ -169,6 +169,21 @@
   </subgraph>
 
 <!--
+
+  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
+    <paramValue name="suffix"></paramValue>
+    <depends name="makeLocalDataDir"/>
+  </step>
+
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="suffix"></paramValue>
+    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
+    <depends name="groupsSelfBlast"/>
+  </step>
+
+
   <subgraph name="postProcessGroups" xmlFile="orthomclPostProcessGroups.xml">
     <paramValue name="refGoodFasta">refGood.fasta</paramValue>
     <paramValue name="periphGoodFasta">mapPeripherals/periphGoodProteins</paramValue>
