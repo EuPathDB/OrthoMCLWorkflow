@@ -12,7 +12,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
    my $webservicesDir = $self->getParamValue('webServicesDir');
 
-   my $$webSvcDir = "$websiteFilesDir/$webServicesDir";
+   my $webSvcDir = "$websiteFilesDir/$webServicesDir";
 
    my $downloadsDir = $self->getParamValue('downloadSiteDir');
   
