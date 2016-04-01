@@ -16,7 +16,7 @@ sub run {
 
   my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDb);
 
-  my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $downloadFileName = "$websiteFilesDir/$downloadSiteDir/iprscan_$project-$release.txt";
 
