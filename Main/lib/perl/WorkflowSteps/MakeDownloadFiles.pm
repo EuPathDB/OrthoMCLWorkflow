@@ -21,16 +21,14 @@ sub run {
   my $deflinesDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/deflines_$project-$release.txt";
   my $groupsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/groups_$project-$release.txt";
   my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
-  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
-
-  
+#  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
     $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
     $self->runCmd($test, "rm $groupsDownloadFileName.gz");
     $self->runCmd($test, "rm $domainsDownloadFileName.gz");
-    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
+#    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
   } else {
 
     # fasta
@@ -55,8 +53,8 @@ sub run {
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
-    $self->runCmd($test, "cp -r $workflowDataDir/pairs $pairsDownloadDirName");
-    $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
+ #   $self->runCmd($test, "cp -r $workflowDataDir/pairs $pairsDownloadDirName");
+  #  $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
   }
 }
 
