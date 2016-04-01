@@ -10,7 +10,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
    my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-   my $webservicesDir = $self->getParamValue('webServicesDir');
+   my $webServicesDir = $self->getParamValue('webServicesDir');
 
    my $webSvcDir = "$websiteFilesDir/$webServicesDir";
 
