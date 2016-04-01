@@ -33,7 +33,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
      $self->runCmd($test,"mkdir $webSvcDir/blast");
      $self->runCmd($test,"cp $seqsDownloadFileName $webSvcDir/blast/proteinSeqs.gz");
      $self->runCmd($test,"gunzip $webSvcDir/blast/proteinSeqs.gz");
-     $self->runCmd($test,"$ncbiBlastPath/formatdb -i $webSvcDir/blast/proteinSeqs -p T");
+     $self->runCmd($test,"$ncbiBlastPath/makeblastdb  -in $webSvcDir/blast/proteinSeqs -dbtype prot");
      $self->runCmd($test,"grep \> $webSvcDir/blast/proteinSeqs | wc > $webSvcDir/blast/proteinSeqs.count");
      $self->runCmd($test,"rm $webSvcDir/blast/proteinSeqs");
    }
