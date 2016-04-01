@@ -8,8 +8,14 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
  sub run {
    my ($self, $test, $undo) = @_;
 
-   my $downloadsDir = $self->getParamValue('downloadSiteDir');
+   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
    my $webservicesDir = $self->getParamValue('webServicesDir');
+
+   my $$webSvcDir = "$websiteFilesDir/$webServicesDir";
+
+   my $downloadsDir = $self->getParamValue('downloadSiteDir');
+  
    my $release = $self->getParamValue('release');
    my $project = $self->getParamValue('project');
 
@@ -19,7 +25,6 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
    my $workflowDataDir = $self->getWorkflowDataDir();
 
-   my $webSvcDir = "$websiteFilesDir/$project/$release/real/$webservicesDir";
    my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta.gz";
 
 
