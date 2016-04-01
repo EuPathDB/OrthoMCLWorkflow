@@ -15,7 +15,7 @@ sub run {
 
   $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
 
-  my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $seqsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/aa_seqs_$project-$release.fasta";
   my $deflinesDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/deflines_$project-$release.txt";
