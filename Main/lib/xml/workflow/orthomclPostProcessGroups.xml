@@ -82,7 +82,7 @@
     <depends name="makeDownloadFiles"/>
   </step>
 
-  <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
+  <step name="extractFastaFilesForMsa" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
     <paramValue name="maxGroupSize">100</paramValue>
@@ -90,7 +90,7 @@
 
   <step name="mirrorGroupFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDir</paramValue>
-    <depends name="extractGroupFastaFiles"/>
+    <depends name="extractFastaFilesForMsa"/>
   </step>
 
   <subgraph name="muscleMsa" xmlFile="muscleMSA.xml">
