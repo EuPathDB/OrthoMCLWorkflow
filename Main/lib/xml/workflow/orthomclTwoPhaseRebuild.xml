@@ -137,7 +137,7 @@
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
   </step>
 
-  <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFastas">
+  <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta">
     <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
     <paramValue name="tarAndZip">true</paramValue>
     <paramValue name="peripheralsOnly">false</paramValue>
