@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupPeripheralFastas;
+package OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
