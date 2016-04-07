@@ -13,9 +13,9 @@ sub run {
     my $maxGroupSize = $self->getParamValue('maxGroupSize');
 
     if ($undo) {
-	$self->runCmd($test, "orthomclClusterLayout -d ApiDB.GroupLayout -u");
+	$self->runCmd($test, "orthomclClusterLayout -undo");
     } else{
-	$self->runCmd($test, "orthomclClusterLayout -d ApiDB.GroupLayout -m $maxGroupSize -t $threads");
+	$self->runCmd($test, "orthomclClusterLayout -max $maxGroupSize -task $threads");
     }
 }
 
