@@ -24,6 +24,7 @@ sub run {
     my $cmd = "rm -r $tmpUnzipDir";
     $self->runCmd($test, $cmd)  if -x $tmpUnzipDir;  #delete previously made, if there
 
+    mkdir $tmpUnzipDir || die "Can't mkdir '$tmpUnzipDir'";
     chdir "$workflowDataDir/$inputDir";
     opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
     while (my $file = readdir (DIR)) {
