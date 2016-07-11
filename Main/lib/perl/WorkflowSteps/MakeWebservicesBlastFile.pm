@@ -8,19 +8,23 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
  sub run {
    my ($self, $test, $undo) = @_;
 
+   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
+   my $webServicesDir = $self->getParamValue('webServicesDir');
+
+   my $webSvcDir = "$websiteFilesDir/$webServicesDir";
+
    my $downloadsDir = $self->getParamValue('downloadSiteDir');
-   my $webservicesDir = $self->getParamValue('webServicesDir');
+  
    my $release = $self->getParamValue('release');
    my $project = $self->getParamValue('project');
 
-   my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
 
    my $ncbiBlastPath = $self->getConfig('ncbiBlastPath');
 
    my $workflowDataDir = $self->getWorkflowDataDir();
 
-   my $webSvcDir = "$websiteFilesDir/$webservicesDir";
-   my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta";
+   my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta.gz";
 
 
    if ($undo) {
@@ -29,7 +33,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
      $self->runCmd($test,"mkdir $webSvcDir/blast");
      $self->runCmd($test,"cp $seqsDownloadFileName $webSvcDir/blast/proteinSeqs.gz");
      $self->runCmd($test,"gunzip $webSvcDir/blast/proteinSeqs.gz");
-     $self->runCmd($test,"$ncbiBlastPath/formatdb -i $webSvcDir/blast/proteinSeqs -p T");
+     $self->runCmd($test,"$ncbiBlastPath/makeblastdb  -in $webSvcDir/blast/proteinSeqs -dbtype prot");
      $self->runCmd($test,"grep \> $webSvcDir/blast/proteinSeqs | wc > $webSvcDir/blast/proteinSeqs.count");
      $self->runCmd($test,"rm $webSvcDir/blast/proteinSeqs");
    }

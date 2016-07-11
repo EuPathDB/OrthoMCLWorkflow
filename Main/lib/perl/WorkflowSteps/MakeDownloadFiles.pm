@@ -12,28 +12,28 @@ sub run {
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
-  my $groupsDir = $self->getParamValue('inputGroupsDir');
 
-  $self->testInputFile('groupsDir', "$workflowDataDir/$groupsDir");
+  $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
 
-  my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $seqsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/aa_seqs_$project-$release.fasta";
   my $deflinesDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/deflines_$project-$release.txt";
   my $groupsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/groups_$project-$release.txt";
   my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
-  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
+#  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
     $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
     $self->runCmd($test, "rm $groupsDownloadFileName.gz");
     $self->runCmd($test, "rm $domainsDownloadFileName.gz");
-    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
+#    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
   } else {
 
     # fasta
     my $sql = $self->getSql(1);
+    $self->runCmd($test, "mkdir -p $websiteFilesDir/$relativeDownloadSiteDir");
     $self->runCmd($test, "gusExtractSequences --outputFile $seqsDownloadFileName --idSQL \"$sql\"");
     $self->runCmd($test, "gzip $seqsDownloadFileName");
 
@@ -49,12 +49,12 @@ sub run {
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
-    $self->runCmd($test, "cp $workflowDataDir/$groupsDir/groups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
-    $self->runCmd($test, "cp -r $workflowDataDir/$groupsDir/pairs $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
-    $self->runCmd($test, "tar -czf $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName.tar.gz $websiteFilesDir/$relativeDownloadSiteDir/$pairsDownloadDirName");
+ #   $self->runCmd($test, "cp -r $workflowDataDir/pairs $pairsDownloadDirName");
+  #  $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
   }
 }
 

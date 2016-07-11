@@ -1,15 +1,11 @@
-<project name="OrthoMCL" default="OrthoMCLWorkflow-Installation" basedir=".">
+<project name="OrthoMCLWorkflow" default="OrthoMCLWorkflow-Installation" basedir=".">
+
+  <import file="${projectsDir}/ApiCommonWorkflow/build.xml" optional="true" />
+  <import file="${projectsDir}/OrthoMCLData/build.xml" optional="true" />
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="ApiCommonWorkflow-Installation">
-    <ant antfile="../ApiCommonWorkflow/build.xml" target="ApiCommonWorkflow-Installation">
-      <property name="project" value="ApiCommonWorkflow"/>
-      <property name="version" value="api-august-2006"/>
-    </ant>
-  </target>
 
   <target name="ApiCommonWorkflow-Checkout" unless="ApiCommonWorkflow.present">
     <ant target="defaultProjectCheckout" inheritAll="false">
@@ -19,13 +15,6 @@
     </ant>
   </target>
   
-  <target name="OrthoMCLData-Installation">
-    <ant antfile="../OrthoMCLData/build.xml" target="OrthoMCLData-Installation">
-      <property name="project" value="OrthoMCLData"/>
-      <property name="version" value="api-august-2006"/>
-    </ant>
-  </target>
-
   <target name="OrthoMCLData-Checkout" unless="OrthoMCLData.present">
     <ant target="defaultProjectCheckout" inheritAll="false">
       <property name="svnurl" value="https://www.cbil.upenn.edu/svn/apidb/OrthoMCLData"/>

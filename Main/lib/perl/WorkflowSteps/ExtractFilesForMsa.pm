@@ -13,6 +13,7 @@ sub run {
 
     my $outputDir = $self->getParamValue('outputDir');
     my $tarSize = $self->getParamValue('filesPerTarball');
+    my $maxGroupSize = $self->getParamValue('maxGroupSize');
 
     if ($undo) {
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
@@ -20,7 +21,7 @@ sub run {
       if ($test) {
 	$self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       } else {
-	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize");
+	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize --maxGroupSize $maxGroupSize");
       }
     }
 }

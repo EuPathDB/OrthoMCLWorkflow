@@ -1,5 +1,7 @@
 <workflowGraph name="">
   <param name="projectVersionForWebsiteFiles"/>
+  <param name="groupIdPrefix"/>
+  <param name="groupIdStart"/>
 
   <constant name="projectName">OrthoMCL</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
@@ -7,7 +9,6 @@
 
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
-
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
 
@@ -17,12 +18,16 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
   </step>
 
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+  </step>
+
   <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>
 
-  <subgraph name="SequenceOntoloty" xmlFile="loadDataset.xml">
+  <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
@@ -43,6 +48,20 @@
     <depends name="makeGlobalDataDir"/>
   </subgraph>
 
+  <subgraph name="geneOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
   <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -51,14 +70,13 @@
   </subgraph>
 
   <!-- load the OrthomclTaxon table with our tree of life -->
-  <subgraph name="orthomclCla
-des" xmlFile="loadDataset.xml">
+  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="taxonomy"/>
   </subgraph>
-
+ 
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
     <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -71,29 +89,60 @@ des" xmlFile="loadDataset.xml">
     <depends name="initUserGroupProject"/>
   </step>  
 
-  <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="orthomclMakeReferenceGroups.xml">
+  <!-- runs before making of ref groups because needs an empty sim seqs table as input, to copy schema from -->
+  <subgraph name="getRefProteomesAndMakeRefGroups" xmlFile="generated/OrthoMCLTwoPhase/orthomclMakeReferenceGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="outputGoodProteinsFile">referenceGood.fasta</paramValue>
+    <paramValue name="outputGoodProteinsFile">refGood.fasta</paramValue>
+    <paramValue name="outputGroupsDir">refGroups</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="groupIdPrefix">$$groupIdPrefix$$</paramValue>
+    <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
     <depends name="taxonomy"/>
+    <depends name="getOldReleaseSeqFiles"/>
+    <depends name="getOldReleaseGroupFiles"/>
+    <depends name="initClusterHomeDir"/>
     <depends name="SequenceOntology"/>
   </subgraph>
 
-  <subgraph name="getAndMapPeriphProteomes" xmlFile="orthomclMapPeripheralProteomes.xml">
+  <subgraph name="getAndMapPeriphProteomes" xmlFile="generated/OrthoMCLTwoPhase/orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
+    <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
+    <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="groupsDir">groupsOutput</paramValue>
+    <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
   </subgraph>
+
+  <!-- insert groups -->
+  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
+    <depends name="getAndMapPeriphProteomes"/>
+  </step>
 
   <step name="makeRefInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">refInterpro</paramValue>
     <depends name="initUserGroupProject"/>
   </step>
+  
+  <step name="mirrorRefInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">refInterpro</paramValue>
+    <depends name="makeRefInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
 
-  <subgraph name="interproScanReferenceProteins" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">referenceGood.fasta</paramValue>
+  <subgraph name="interproScanRefProteins" xmlFile="interpro.xml">
+    <paramValue name="proteinsFile">refGood.fasta</paramValue>
     <paramValue name="parentDataDir">refInterpro</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
+    <depends name="mirrorRefInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
+    
   </subgraph>
 
   <step name="makePeriphInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -101,15 +150,24 @@ des" xmlFile="loadDataset.xml">
     <depends name="initUserGroupProject"/>
   </step>
 
+  <step name="mirrorPeriphInterproDir" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">periphInterpro</paramValue>
+    <depends name="makePeriphInterproDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <subgraph name="interproScanPeriphProteins" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
     <paramValue name="parentDataDir">periphInterpro</paramValue>
     <depends name="getAndMapPeriphProteomes"/>
+    <depends name="mirrorPeriphInterproDir"/>
     <depends name="interproscanData"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
   </subgraph>
 
-  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CatTwoFiles">
-    <paramValue name="inputFile1">referenceGood.fasta</paramValue>
+  <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
+    <paramValue name="inputFile1">refGood.fasta</paramValue>
     <paramValue name="inputFile2">periphGood.fasta</paramValue>
     <paramValue name="outputFile">good.fasta</paramValue>
     <depends name="getRefProteomesAndMakeRefGroups"/>
@@ -117,14 +175,14 @@ des" xmlFile="loadDataset.xml">
   </step>
 
   <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
-    <depends name="getRefProteomesAndMakeRefGroups"/>
-    <depends name="getAndMapPeriphProteomes"/>
+    <depends name="insertGroups"/>
   </step>
 
   <subgraph name="EcAssignments" xmlFile="makeOrthomclEcAssignments.xml">
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="concatGoodProteins"/>
+    <depends name="enzymeDB"/>
   </subgraph>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
@@ -142,7 +200,6 @@ des" xmlFile="loadDataset.xml">
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
-    <paramValue name="inputGroupsDir">groupsOutput</paramValue>
     <depends name="insertGroups"/>
     <depends name="makeDownloadSiteDir"/>
   </step>
@@ -152,7 +209,8 @@ des" xmlFile="loadDataset.xml">
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
-    <depends name="interproScan"/>
+    <depends name="interproScanRefProteins"/>
+    <depends name="interproScanPeriphProteins"/>
     <depends name="makeDownloadSiteDir"/>
   </step>
 
@@ -160,6 +218,7 @@ des" xmlFile="loadDataset.xml">
   <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
+    <paramValue name="maxGroupSize">100</paramValue>
     <depends name="insertGroups"/>
   </step>
 
@@ -183,6 +242,11 @@ des" xmlFile="loadDataset.xml">
   </step>
 
   <!-- run biolayout -->
+  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
+    <paramValue name="numberOfThreadsToUse">4</paramValue>
+    <paramValue name="maxGroupSize">500</paramValue>
+    <depends name="insertGroups"/>
+  </step>
 
   <!-- load GroupTaxonMatrix (phyletic pattern) -->
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
@@ -200,9 +264,11 @@ des" xmlFile="loadDataset.xml">
   </step>
 
   <!-- domain keywords -->
+  <!-- apparently the plugin called by this step needs work -->
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <depends name="insertGroups"/>
-    <depends name="interpro"/>
+    <depends name="interproScanRefProteins"/>
+    <depends name="interproScanPeriphProteins"/>
   </step>
 
   <!-- description keywords -->
