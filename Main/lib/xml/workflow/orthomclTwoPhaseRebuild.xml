@@ -167,7 +167,7 @@
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="getRefProteomesAndMakeRefGroups"/>
+    <depends name="makeReferenceGroups"/>
   </subgraph>
 
   <!-- insert groups -->
