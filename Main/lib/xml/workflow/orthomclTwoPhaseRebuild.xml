@@ -173,7 +173,7 @@
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
-    <depends name="getAndMapPeriphProteomes"/>
+    <depends name="mapPeriphProteomes"/>
   </step>
 
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
