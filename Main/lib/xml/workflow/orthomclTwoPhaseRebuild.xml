@@ -156,7 +156,7 @@
   </subgraph>
 
   <subgraph name="makeReferenceGroups" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
