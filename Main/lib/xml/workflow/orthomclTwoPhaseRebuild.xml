@@ -90,7 +90,7 @@
     <depends name="initUserGroupProject"/>
   </step>  
 
-  <subgraph name="getRefProteomes" xmlFile="generated/OrthoMCL/orthomclGetReferenceProteomes.xml">
+  <subgraph name="getRefProteomes" xmlFile="generated/OrthoMCL/orthomclGetReferenceProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -104,7 +104,7 @@
     <depends name="initClusterHomeDir"/>
   </subgraph>
 
-  <subgraph name="getPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteomes.xml">
+  <subgraph name="getPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
