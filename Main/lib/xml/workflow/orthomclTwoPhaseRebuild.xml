@@ -157,7 +157,7 @@
 
   <subgraph name="makeReferenceGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
+    <paramValue name="inputProteinFile">refGood.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <paramValue name="suffix">Ref</paramValue>
