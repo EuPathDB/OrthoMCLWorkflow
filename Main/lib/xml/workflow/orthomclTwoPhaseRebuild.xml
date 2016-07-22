@@ -159,7 +159,7 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">refGood.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
+    <paramValue name="outputGroupsDir">groupsOutput</paramValue>
     <paramValue name="suffix">Ref</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
