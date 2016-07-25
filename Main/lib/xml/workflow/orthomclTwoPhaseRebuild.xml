@@ -169,7 +169,7 @@
     <depends name="getRefProteomes"/>
   </subgraph>
 
-  <subgraph name="mapPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclMapPeripheralProteomes.xml">
+  <subgraph name="mapPeriphProteomes" xmlFile="orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
