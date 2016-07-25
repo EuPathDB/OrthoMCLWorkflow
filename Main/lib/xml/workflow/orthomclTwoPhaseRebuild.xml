@@ -172,8 +172,8 @@
   <subgraph name="mapPeriphProteomes" xmlFile="orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
+    <paramValue name="peripheralGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
-    <paramValue name="groupsDir">groupsOutput</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>

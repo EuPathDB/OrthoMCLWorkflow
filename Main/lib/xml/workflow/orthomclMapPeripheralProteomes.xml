@@ -1,7 +1,7 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
-  <param name="peripheralGoodProteinsFile"/>
   <param name="referenceGoodProteinsFile"/>
+  <param name="peripheralGoodProteinsFile"/>
   <param name="referenceGroupsFile"/>
   <param name="outputGroupsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
