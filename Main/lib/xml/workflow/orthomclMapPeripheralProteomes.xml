@@ -41,7 +41,6 @@
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
-    <depends name="mirrorProteinsToCluster"/>
     <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
