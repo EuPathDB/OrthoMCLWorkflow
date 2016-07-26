@@ -72,7 +72,7 @@
     <paramValue name="inputReferenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="inputMappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputRefFastaFile">$$referenceGoodProteinsFile$$</paramValue>
-    <paramValue name="inputPeriphFastaFile">$$periphalGoodProteinsFile$$</paramValue>
+    <paramValue name="inputPeriphFastaFile">$$peripheralGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualIdsFile">$$dataDir$$/initialResidualIds</paramValue>
     <paramValue name="outputResidualsFastaFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="outputReducedMappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>
