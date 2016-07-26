@@ -4,7 +4,7 @@
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/getReferenceProteins</constant>
+  <constant name="dataDir">$$parentDataDir$$/getPeripheralProteins</constant>
   <constant name="proteomesDir">$$dataDir$$/referenceProteomes</constant>
   <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
 
