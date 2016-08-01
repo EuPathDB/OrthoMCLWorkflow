@@ -12,6 +12,7 @@
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
   <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
+  <constant name="refGroupsDir">refGroups</constant>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" 
@@ -155,11 +156,15 @@
     <depends name="getRefProteomes"/>
   </subgraph>
 
+  <step name="makeRefGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$refGroupsDir$$</paramValue>
+  </step>
+
   <subgraph name="makeReferenceGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">refGood.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">groupsOutput</paramValue>
+    <paramValue name="outputGroupsDir">$$refGroupsDir$$</paramValue>
     <paramValue name="suffix">Ref</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
@@ -173,7 +178,7 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="peripheralGoodProteinsFile">periphGood.fasta</paramValue>
-    <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="referenceGroupsFile">$$refGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
