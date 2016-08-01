@@ -178,6 +178,7 @@
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="makeReferenceGroups"/>
+    <depends name="getPeriphProteomes"/>    
   </subgraph>
 
   <!-- insert groups -->
