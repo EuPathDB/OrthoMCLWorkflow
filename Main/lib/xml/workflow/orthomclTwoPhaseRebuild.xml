@@ -156,10 +156,6 @@
     <depends name="getRefProteomes"/>
   </subgraph>
 
-  <step name="makeRefGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$refGroupsDir$$</paramValue>
-  </step>
-
   <subgraph name="makeReferenceGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">refGood.fasta</paramValue>
