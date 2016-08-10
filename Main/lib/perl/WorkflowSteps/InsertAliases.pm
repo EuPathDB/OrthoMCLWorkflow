@@ -16,7 +16,7 @@ sub run {
     my $aliasesFile = $self->getParamValue('inputMappingFile');
     my $fileFullPath = "$workflowDataDir/$aliasesFile";
 
-    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef";
+    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --viewName 'ExternalAASequence' --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef";
 
     $self->testInputFile('aliasesFile', "$fileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDBxRefs", $args);
