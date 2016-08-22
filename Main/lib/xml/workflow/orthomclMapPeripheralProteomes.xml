@@ -1,7 +1,7 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
-  <param name="peripheralGoodProteinsFile"/>
   <param name="referenceGoodProteinsFile"/>
+  <param name="peripheralGoodProteinsFile"/>
   <param name="referenceGroupsFile"/>
   <param name="outputGroupsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
@@ -41,7 +41,6 @@
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
-    <depends name="mirrorProteinsToCluster"/>
     <depends name="mirrorDataDirToCluster"/>
   </subgraph>
 
@@ -73,7 +72,7 @@
     <paramValue name="inputReferenceGroupsFile">$$referenceGroupsFile$$</paramValue>
     <paramValue name="inputMappedGroupsFile">$$dataDir$$/referenceAndMappedGroupsFile</paramValue>
     <paramValue name="inputRefFastaFile">$$referenceGoodProteinsFile$$</paramValue>
-    <paramValue name="inputPeriphFastaFile">$$periphGoodProteinsFile$$</paramValue>
+    <paramValue name="inputPeriphFastaFile">$$peripheralGoodProteinsFile$$</paramValue>
     <paramValue name="inputResidualIdsFile">$$dataDir$$/initialResidualIds</paramValue>
     <paramValue name="outputResidualsFastaFile">$$dataDir$$/finalResiduals.fasta</paramValue>
     <paramValue name="outputReducedMappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>

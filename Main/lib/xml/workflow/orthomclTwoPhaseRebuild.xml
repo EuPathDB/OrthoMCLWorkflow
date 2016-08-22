@@ -12,6 +12,7 @@
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
   <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
+  <constant name="refGroupsDir">refGroups</constant>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" 
@@ -90,7 +91,7 @@
     <depends name="initUserGroupProject"/>
   </step>  
 
-  <subgraph name="getRefProteomes" xmlFile="generated/OrthoMCL/orthomclGetReferenceProteomes.xml">
+  <subgraph name="getRefProteomes" xmlFile="generated/OrthoMCL/orthomclGetReferenceProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">refGood.fasta</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -104,7 +105,7 @@
     <depends name="initClusterHomeDir"/>
   </subgraph>
 
-  <subgraph name="getPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteomes.xml">
+  <subgraph name="getPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">periphGood.fasta</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -118,24 +119,34 @@
     <depends name="initClusterHomeDir"/>
   </subgraph>
 
+  <step name="makeRefInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">refInterpro</paramValue>
+  </step>
+
   <subgraph name="refInterproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">refGood.fasta</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">refInterpro</paramValue>
     <paramValue name="insertVersion">2</paramValue>
     <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="interproscanData"/>
     <depends name="getRefProteomes"/>    
+    <depends name="makeRefInterproDir"/>    
   </subgraph>
+
+  <step name="makePeriphInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">periphInterpro</paramValue>
+  </step>
 
   <subgraph name="periphInterproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">periphInterpro</paramValue>
     <paramValue name="insertVersion">2</paramValue>
     <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="interproscanData"/>
     <depends name="getPeriphProteomes"/>    
+    <depends name="makePeriphInterproDir"/>    
   </subgraph>
 
   <subgraph name="ecMappings" xmlFile="generated/OrthoMCL/orthomclEcMappings.xml">
@@ -146,10 +157,10 @@
   </subgraph>
 
   <subgraph name="makeReferenceGroups" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="inputProteinFile">$$outputGoodProteinsFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="inputProteinFile">refGood.fasta</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
+    <paramValue name="outputGroupsDir">$$refGroupsDir$$</paramValue>
     <paramValue name="suffix">Ref</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
@@ -159,21 +170,22 @@
     <depends name="getRefProteomes"/>
   </subgraph>
 
-  <subgraph name="mapPeriphProteomes" xmlFile="generated/OrthoMCL/orthomclMapPeripheralProteomesNew.xml">
+  <subgraph name="mapPeriphProteomes" xmlFile="orthomclMapPeripheralProteomes.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="referenceGoodProteinsFile">refGood.fasta</paramValue>
-    <paramValue name="referenceGroupsFile">refGroups/orthomclGroups.txt</paramValue>
-    <paramValue name="groupsDir">groupsOutput</paramValue>
+    <paramValue name="peripheralGoodProteinsFile">periphGood.fasta</paramValue>
+    <paramValue name="referenceGroupsFile">$$refGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="outputGroupsFile">finalGroups.txt</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="getRefProteomesAndMakeRefGroups"/>
+    <depends name="makeReferenceGroups"/>
+    <depends name="getPeriphProteomes"/>    
   </subgraph>
 
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
-    <depends name="getAndMapPeriphProteomes"/>
+    <depends name="mapPeriphProteomes"/>
   </step>
 
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
