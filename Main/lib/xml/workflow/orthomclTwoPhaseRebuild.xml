@@ -123,6 +123,11 @@
     <paramValue name="dataDir">refInterpro</paramValue>
   </step>
 
+  <step name="mirrorRefInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">refInterpro</paramValue>
+    <depends name="makeRefInterproDir"/>
+  </step>
+  
   <subgraph name="refInterproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">refGood.fasta</paramValue>
     <paramValue name="parentDataDir">refInterpro</paramValue>
@@ -131,13 +136,18 @@
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="interproscanData"/>
     <depends name="getRefProteomes"/>    
-    <depends name="makeRefInterproDir"/>    
+    <depends name="mirrorRefInterproDirToCluster"/>    
   </subgraph>
 
   <step name="makePeriphInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">periphInterpro</paramValue>
   </step>
 
+  <step name="mirrorPeriphInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">periphInterpro</paramValue>
+    <depends name="makePeriphInterproDir"/>
+  </step>
+  
   <subgraph name="periphInterproScan" xmlFile="interpro.xml">
     <paramValue name="proteinsFile">periphGood.fasta</paramValue>
     <paramValue name="parentDataDir">periphInterpro</paramValue>
@@ -146,7 +156,7 @@
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="interproscanData"/>
     <depends name="getPeriphProteomes"/>    
-    <depends name="makePeriphInterproDir"/>    
+    <depends name="mirrorPeriphInterproDirToCluster"/>    
   </subgraph>
 
   <subgraph name="ecMappings" xmlFile="generated/OrthoMCL/orthomclEcMappings.xml">
