@@ -2,7 +2,7 @@
   <param name="projectVersionForWebsiteFiles"/>
   <param name="groupIdPrefix"/>
   <param name="groupIdStart"/>
-
+<!--  projectName should be changed, was orthoMCL -->
   <constant name="projectName">OrthoMCL</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
