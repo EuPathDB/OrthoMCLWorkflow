@@ -49,7 +49,8 @@ sub run {
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
-    $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
+    # original for ref plu periph proteomes $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $workflowDataDir/refGroups/orthomclGroups.txt $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs
