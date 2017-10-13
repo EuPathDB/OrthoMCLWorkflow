@@ -150,7 +150,7 @@
 
   <!-- insert groups -->
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsFile">finalGroups.txt</paramValue>
+    <paramValue name="inputGroupsFile">$$refGroupsDir$$/orthomclGroups.txt</paramValue>
     <depends name="makeReferenceGroups"/>
   </step>
 
