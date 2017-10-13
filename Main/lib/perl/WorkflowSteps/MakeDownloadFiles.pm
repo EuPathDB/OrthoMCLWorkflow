@@ -13,7 +13,8 @@ sub run {
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
 
-  $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
+  #original for ref plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
+  $self->testInputFile('groupsFile', "$workflowDataDir/refGroups/orthomclGroups.txt");
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
