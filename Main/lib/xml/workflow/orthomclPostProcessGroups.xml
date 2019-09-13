@@ -1,5 +1,5 @@
 <workflowGraph name="">
-  <param name="refGoodFasta"/>
+  <param name="coreGoodFasta"/>
   <param name="periphGoodFasta"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="projectVersionForWebsiteFiles"/>
@@ -19,8 +19,11 @@
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
   </step>
 
+  <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroup">
+  </step>
+
   <step name="copyPairsTables" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyPairsTables">
-    <paramValue name="fromSuffix">Ref</paramValue>
+    <paramValue name="fromSuffix">Core</paramValue>
     <paramValue name="toSuffix"></paramValue>
   </step>
 
@@ -32,6 +35,7 @@
     <paramValue name="numberOfThreadsToUse">4</paramValue>
     <paramValue name="maxGroupSize">500</paramValue>
     <depends name="copyPairsTables"/>
+    <depends name="insertSimilarSequencesGroup"/>
   </step>
 
 <!--

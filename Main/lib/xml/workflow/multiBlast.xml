@@ -3,7 +3,7 @@
     <param name="nickName"/>
     <param name="blastArgs"/>
     <param name="fastaDirTarFile"/>
-    <param name="referenceDatabaseFasta"/> <!-- used to set -z value -->
+    <param name="coreDatabaseFasta"/> <!-- used to set -z value -->
     <param name="idRegex"/>
     <param name="blastType"/>
     <param name="vendor"/>
@@ -22,7 +22,7 @@
       <paramValue name="idRegex">$$idRegex$$</paramValue>
       <paramValue name="blastType">$$blastType$$</paramValue>
       <paramValue name="vendor">$$vendor$$</paramValue>
-      <paramValue name="referenceDatabaseFasta">$$referenceDatabaseFasta$$</paramValue>
+      <paramValue name="coreDatabaseFasta">$$coreDatabaseFasta$$</paramValue>
       <paramValue name="makeSimSeqsFile">$$makeSimSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>

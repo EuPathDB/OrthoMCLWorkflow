@@ -13,8 +13,8 @@ sub run {
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
 
-  #original for ref plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
-  $self->testInputFile('groupsFile', "$workflowDataDir/refGroups/orthomclGroups.txt");
+  #original for core plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
+  $self->testInputFile('groupsFile', "$workflowDataDir/coreGroups/orthomclGroups.txt");
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
@@ -50,8 +50,8 @@ sub run {
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
-    # original for ref plu periph proteomes $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
-    $self->runCmd($test, "cp $workflowDataDir/refGroups/orthomclGroups.txt $groupsDownloadFileName");
+    # original for core plu periph proteomes $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $workflowDataDir/coreGroups/orthomclGroups.txt $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # pairs

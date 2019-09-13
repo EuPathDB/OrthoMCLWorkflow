@@ -52,7 +52,7 @@
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="loadSubjectSubset">false</paramValue>
     <paramValue name="filterByTaxon">false</paramValue>
-    <paramValue name="maxMemoryGigs">10</paramValue>
+    <paramValue name="maxMemoryGigs">20</paramValue>
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
 
@@ -112,7 +112,7 @@
 
   <!-- run MCL to make groups -->
   <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
-    <paramValue name="inflation">1.4</paramValue>
+    <paramValue name="inflation">6</paramValue>
     <paramValue name="inputFile">$$outputGroupsDir$$/mclInput</paramValue>
     <paramValue name="outputFile">$$outputGroupsDir$$/mcl.out</paramValue>
     <depends name="makePairsFiles"/>
