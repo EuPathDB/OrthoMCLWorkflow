@@ -9,10 +9,10 @@ sub testInput {
     my ($self, $workflowDataDir) = @_;
 
     my $fastaDirTarFile = $self->getParamValue("fastaDirTarFile");
-    my $referenceDatabaseFasta = $self->getParamValue("referenceDatabaseFasta");
+    my $coreDatabaseFasta = $self->getParamValue("coreDatabaseFasta");
 
     $self->testInputFile('fastaDirTarFile', "$workflowDataDir/$fastaDirTarFile");
-    $self->testInputFile('referenceDatabaseFasta', "$workflowDataDir/$referenceDatabaseFasta");
+    $self->testInputFile('coreDatabaseFasta', "$workflowDataDir/$coreDatabaseFasta");
 }
 
 sub getPathParamsString {
@@ -29,8 +29,8 @@ sub getTask {
 sub addExtraBlastArgs {
     my ($self, $worflowDataDir, $blastArgs) = @_;
 
-    my $referenceDatabaseFasta = $self->getParamValue("referenceDatabaseFasta");
-    open(F, "$worflowDataDir/$referenceDatabaseFasta") || die "can't open referenceDatabaseFasta '$worflowDataDir/$referenceDatabaseFasta'";
+    my $coreDatabaseFasta = $self->getParamValue("coreDatabaseFasta");
+    open(F, "$worflowDataDir/$coreDatabaseFasta") || die "can't open coreDatabaseFasta '$worflowDataDir/$coreDatabaseFasta'";
 
     my $count;
     while(<F>) {

@@ -31,4 +31,5 @@
       <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <depends name="mapPreviousSeqIDs"/>
     </step>
+
 </workflowGraph>
