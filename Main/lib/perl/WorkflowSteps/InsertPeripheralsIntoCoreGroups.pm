@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups;
+package OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -17,7 +17,7 @@ sub run {
 
     my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
 
-    $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthologousGroupsFromMcl", $args);
+    $self->testInputFile('inputGroupsFile', "$orthoFileFullPath");
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertMappedPeripheralsIntoCoreGroups", $args);
 
 }
