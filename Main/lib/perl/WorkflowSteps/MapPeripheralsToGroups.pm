@@ -8,24 +8,23 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $referenceGroupsFile = $self->getParamValue('inputReferenceGroupsFile');
   my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
-  my $outputResidualsFile = $self->getParamValue('outputResidualsFile');
+  my $inputFastaFile = $self->getParamValue('inputFastaFile');
+  my $residualFastaFile = $self->getParamValue('residualFastaFile');
   my $inputSimilarSequencesTable = $self->getParamValue('inputSimilarSequencesTable');
+  my $abbrev = $self->getParamValue('abbrev');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputGroupsFile") if -e "$workflowDataDir/$outputGroupsFile";
-    $self->runCmd(0, "rm $workflowDataDir/$outputResidualsFile") if -e "$workflowDataDir/$outputResidualsFile";
+    $self->runCmd(0, "rm $workflowDataDir/$residualFastaFile") if -e "$workflowDataDir/$residualFastaFile";
   } else {
-    $self->testInputFile('referenceGroupsFile', "$workflowDataDir/$referenceGroupsFile");
-
-    my $cmd = "augmentRepresentativeGroups $workflowDataDir/$referenceGroupsFile $workflowDataDir/$outputGroupsFile $workflowDataDir/$outputResidualsFile $inputSimilarSequencesTable";
+    my $cmd = "peripheralsToGroupsAndResiduals $workflowDataDir/$outputGroupsFile $workflowDataDir/$inputFastaFile $workflowDataDir/$residualFastaFile $inputSimilarSequencesTable $abbrev";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");
-      $self->runCmd(0, "touch $workflowDataDir/$outputResidualsFile");
+      $self->runCmd(0, "touch $workflowDataDir/$residualFastaFile");
     }
 
   }
