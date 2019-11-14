@@ -1,11 +1,11 @@
 <workflowGraph name="">
   <param name="getPeripheralProteinsDir"/>
+  <param name="residualFastaFilesDir"/>
   <param name="coreGoodProteinsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
   <constant name="proteomeDatasetsDir">$$getPeripheralProteinsDir$$/proteomeDatasets</constant>
-  <constant name="residualFastaFilesDir">$$getPeripheralProteinsDir$$/residualFastaFiles</constant>
   <constant name="ecMappingsDir">$$getPeripheralProteinsDir$$/ecMappings</constant>
 
   <step name="makeGetPeripheralProteinsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -30,8 +30,12 @@
   <datasetTemplate class="orthomclEuPathProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -65,8 +69,12 @@
   <datasetTemplate class="orthomclVectorbaseProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -100,8 +108,12 @@
   <datasetTemplate class="orthomclUniprotReferenceProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -135,8 +147,12 @@
   <datasetTemplate class="orthomclManualDeliveryProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
@@ -159,8 +175,12 @@
   <datasetTemplate class="orthomclUniprotProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>

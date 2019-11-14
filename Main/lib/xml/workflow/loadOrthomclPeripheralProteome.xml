@@ -1,11 +1,19 @@
 <workflowGraph name="">
     <param name="abbrev"/>
+    <param name="orthomclClade"/>
+    <param name="ncbiTaxonId"/>
     <param name="oldAbbrevsList"/>
     <param name="oldReleasesSequenceFilesDir"/>
     <param name="oldReleasesGroupFilesDir"/>
     <param name="residualFastaFilesDir"/>
     <param name="proteomeDatasetsDir"/>
     <param name="coreGoodProteinsFile"/>
+
+  <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxon.pm">
+    <paramValue name="abbrev">$$abbrev$$</paramValue>
+    <paramValue name="orthomclClade">$$orthomclClade$$</paramValue> 
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue> 
+  </step>
 
     <subgraph name="loadProteome" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
