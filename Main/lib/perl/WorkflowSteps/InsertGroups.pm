@@ -11,11 +11,13 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $corePeripheralResidual = $self->getParamValue('corePeripheralResidual');
+
     my $groupsFile = $self->getParamValue('inputGroupsFile');
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
+    my $args = " --orthoFile $orthoFileFullPath --corePeripheralResidual $corePeripheralResidual --extDbName OrthoMCL --extDbVersion dontcare";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
     $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthologousGroupsFromMcl", $args);
