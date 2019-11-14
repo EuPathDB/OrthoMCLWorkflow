@@ -2,17 +2,18 @@
   <param name="projectVersionForWebsiteFiles"/>
   <param name="groupIdPrefix"/>
   <param name="groupIdStart"/>
-<!--  projectName should be changed, was orthoMCL -->
+  <param name="residualGroupIdPrefix"/>
+  <param name="residualGroupIdStart"/>
+
+  <!--  projectName should be changed, was orthoMCL -->
+
   <constant name="projectName">OrthoMCL</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
-
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
-
-
   <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
   <constant name="coreGroupsDir">coreGroups</constant>
 
@@ -26,7 +27,6 @@
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
   </step>
 
-
   <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
@@ -36,7 +36,6 @@
     <paramValue name="configFile">orthomclPairs.config</paramValue>
     <paramValue name="suffix"></paramValue>
   </step>
-
 
   <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
@@ -136,17 +135,6 @@
     <depends name="mirrorCoreInterproDirToCluster"/>    
   </subgraph>
 
-<!-- ecMappings put into orthomclGetCoreProteins.xml
-
-  <subgraph name="ecMappings" xmlFile="generated/OrthoMCL/orthomclEcMappings.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <depends name="enzymeDB"/>
-    <depends name="getCoreProteomes"/>
-  </subgraph>
-
--->
-
-
   <subgraph name="makeCoreGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">coreGood.fasta</paramValue>
@@ -161,9 +149,9 @@
     <depends name="getCoreProteomes"/>
   </subgraph>
 
-
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="corePeripheralResidual">C</paramValue>
     <depends name="makeCoreGroups"/>
   </step>
 
@@ -202,7 +190,6 @@
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
-
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
     <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix"></paramValue>
@@ -213,11 +200,21 @@
 
   <subgraph name="postProcessGroups" xmlFile="orthomclPostProcessGroups.xml">
     <paramValue name="coreGoodFasta">coreGood.fasta</paramValue>
-    <paramValue name="periphGoodFasta">mapPeripherals/periphGoodProteins</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="loadBlast"/>
   </subgraph>
 
+  <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="insertGroups"/>
+  </subgraph>
 
 </workflowGraph>

@@ -1,6 +1,5 @@
 <workflowGraph name="">
   <param name="coreGoodFasta"/>
-  <param name="periphGoodFasta"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="projectVersionForWebsiteFiles"/>
 

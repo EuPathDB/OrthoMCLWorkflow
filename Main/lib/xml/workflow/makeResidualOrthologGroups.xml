@@ -1,7 +1,8 @@
-<workflowGraph name="makeOrthologGroups">
+<workflowGraph name="makeResidualOrthologGroups">
   <param name="parentDataDir"/>
   <param name="residualFastaFilesDir"/>
   <param name="inputTaxaDir"/>
+  <param name="makeResidualGroupsDir"/>
   <param name="outputGroupsDir"/>
   <param name="suffix"/>
   <param name="useExistingSimSeqs"/>
@@ -10,25 +11,22 @@
   <param name="groupIdPrefix"/>  
   <param name="groupIdStart"/>  
 
-  <constant name="localDataDir">$$parentDataDir$$/makeResidualGroups</constant>
-  <constant name="goodProteinFile">$$localDataDir$$/combinedResiduals.fasta</constant>
-
+  <constant name="goodProteinFile">$$makeResidualGroupsDir$$/combinedResiduals.fasta</constant>
 
   <!-- make a data dir  -->
-  <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$localDataDir$$</paramValue>
+  <step name="makeMakeResidualGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$makeResidualGroupsDir$$</paramValue>
   </step>
 
-
-<!-- create step combineResidualFastaFiles that combines residual fasta files that are located in residualFastaFilesDir into one file goodProteinFile
-
- <depends name="makeLocalDataDir"/>
--->
-
+  <step name="combineResidualFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineResidualFiles">
+    <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
+    <paramValue name="combinedResidualsFile">$$goodProteinFile$$</paramValue>
+    <depends name="makeMakeResidualGroupsDir"/>
+  </step>
 
   <!-- mirror our data dir to the cluster -->
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="fileOrDirToMirror">$$localDataDir$$</paramValue>
+    <paramValue name="fileOrDirToMirror">$$makeResidualGroupsDir$$</paramValue>
     <depends name="combineResidualFastaFiles"/>
   </step>
 
@@ -41,7 +39,7 @@
   </step>
 
   <subgraph name="blast" xmlFile="blast.xml" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$makeResidualGroupsDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
     <paramValue name="subjectFile">$$goodProteinFile$$</paramValue>
@@ -71,16 +69,16 @@
   <!-- create config file  -->
 
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
-    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
+    <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
-    <depends name="makeLocalDataDir"/>
+    <depends name="makeMakeResidualGroupsDir"/>
   </step>
 
   <!-- load BLAST results into SimilarSequences table -->
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$makeResidualGroupsDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
-    <paramValue name="dataDir">$$localDataDir$$</paramValue>
+    <paramValue name="dataDir">$$makeResidualGroupsDir$$</paramValue>
     <depends name="installSchema"/>
     <depends name="blast"/>
   </step>
@@ -96,7 +94,7 @@
 
   <!-- run the orthomclPairs program to compute pairwise relationships.  -->
   <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
-    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
+    <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="loadBlast"/>
     <depends name="importBlast"/>
@@ -104,7 +102,7 @@
 
   <!-- write pairs out to a file -->
   <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
-    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
+    <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <depends name="orthomclPairs"/>

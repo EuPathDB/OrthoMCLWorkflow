@@ -1,76 +1,52 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
-  <param name="referenceGoodProteinsFile"/>
-  <param name="referenceGroupsFile"/>
+  <param name="coreGoodProteinsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="residualGroupIdPrefix"/>
+  <param name="residualGroupIdStart"/>
 
   <constant name="projectName">OrthoMCL</constant>
-  <constant name="dataDir">$$parentDataDir$$/Peripheral</constant>
-  <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
-
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  <constant name="getPeripheralProteinsDir">$$parentDataDir$$/getPeripheralProteins</constant>
+  <constant name="residualFastaFilesDir">$$getPeripheralProteinsDir$$/residualFastaFiles</constant>
+  <constant name="makeResidualGroupsDir">$$parentDataDir$$/makeResidualGroups</constant>
+  <constant name="residualGroupsDir">$$parentDataDir$$/residualGroups</constant>
+  
+  <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables.pm">
+    <paramValue name="orthoGroupTable">apidb.OrthologGroup</paramValue>
+    <paramValue name="orthoGroupAaTable">apidb.OrthologGroupAaSequence</paramValue> 
   </step>
 
-  <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
-    <paramValue name="configFile">$$dataDir$$/orthomclPairs.config</paramValue>
-    <paramValue name="suffix">Peripheral</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-  <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
-  <step name="initUserGroupProject" 
-	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-  </step>
-
-  <step name="initClusterHomeDir"
-        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
-  </step>
-
-
-  <subgraph name="getPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
-    <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
-    <paramValue name="referenceGoodProteinsFile">$$referenceGoodProteinsFile$$</paramValue>
-    <paramValue name="referenceGroupsFile">$$referenceGroupsFile$$</paramValue>
+  <subgraph name="getAndMapPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
+    <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
+    <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
+    <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="initClusterHomeDir"/>
-    <depends name="makeDataDir"/>
-    <depends name="installSchema"/>
-    <depends name="initUserGroupProject"/>
-    <depends name="makeProteomeDatasetsDir"/>
+    <depends name="copyOrthogroupRowsForPeripheral"/>
   </subgraph>
 
-
-
-  <!-- NEEDS WORK -->
-  <subgraph name="makeGroupsFromResiduals" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="inputProteinFile">$$dataDir$$/finalResiduals.fasta</paramValue>
+  <subgraph name="makeResidualGroups" xmlFile="makeResidualOrthologGroups.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">$$dataDir$$/residualsGroups</paramValue>
+    <paramValue name="makeResidualGroupsDir">$$makeResidualGroupsDir$$</paramValue>
+    <paramValue name="outputGroupsDir">$$residualGroupsDir$$</paramValue>
     <paramValue name="suffix">Residuals</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
-    <paramValue name="includeSingletonGroups">false</paramValue>
-    <paramValue name="groupIdPrefix">PREFIX_</paramValue>
-    <paramValue name="groupIdStart">1</paramValue>
-    <depends name="addOrphansToResiduals"/>
+    <paramValue name="includeSingletonGroups">true</paramValue>
+    <paramValue name="groupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="groupIdStart">$$residualGroupIdStart$$</paramValue>
+    <depends name="getAndMapPeripheralProteomes"/>
   </subgraph>
-  
-  <step name="combineGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineGroupFiles">
-    <paramValue name="mappedGroupsFile">$$dataDir$$/reducedGroupsFile</paramValue>
-    <paramValue name="residualsGroupsFile">$$dataDir$$/residualsGroups/orthomclGroups.txt</paramValue>
-    <paramValue name="outputGroupsFile">$$outputGroupsFile$$</paramValue>
-    <depends name="makeGroupsFromResiduals"/>
-  </step>
 
+  <step name="insertResidualGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="inputGroupsFile">$$residualGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="corePeripheralResidual">R</paramValue>
+    <depends name="makeResidualGroups"/>
+  </step>
 
 </workflowGraph>
