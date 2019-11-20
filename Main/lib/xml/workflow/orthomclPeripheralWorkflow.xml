@@ -14,7 +14,7 @@
   <constant name="makeResidualGroupsDir">$$parentDataDir$$/makeResidualGroups</constant>
   <constant name="residualGroupsDir">$$parentDataDir$$/residualGroups</constant>
   
-  <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables.pm">
+  <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables">
     <paramValue name="orthoGroupTable">apidb.OrthologGroup</paramValue>
     <paramValue name="orthoGroupAaTable">apidb.OrthologGroupAaSequence</paramValue> 
   </step>
