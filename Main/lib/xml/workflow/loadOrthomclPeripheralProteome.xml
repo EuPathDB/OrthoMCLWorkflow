@@ -78,24 +78,24 @@
   <!-- load BLAST results into SimilarSequences table -->
   <!-- edit this to change fast sql loader that disables then re-enables indexes and set commit size -->
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr">
-    <paramValue name="inputFile">$$proteomeDatasets$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$abbrev$$</paramValue>
-    <paramValue name="dataDir">$$proteomeDatasets$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
     <depends name="blastAgainstCore"/>
     <depends name="createSimilarSequencesTable"/>
   </step>
 
   <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
     <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequences$$abbrev$$</paramValue>
-    <paramValue name="outputGroupsFile">$$proteomeDatasets$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
-    <paramValue name="inputFastaFile">$$proteomeDatasets$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="outputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
+    <paramValue name="inputFastaFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
     <paramValue name="residualFastaFile">$$residualFastaFilesDir$$/$$abbrev$$Residuals.fasta</paramValue>
     <paramValue name="abbrev">$$abbrev$$</paramValue>
     <depends name="loadBlast"/>
   </step>
 
   <step name="insertPeripheralsIntoCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups">
-    <paramValue name="inputGroupsFile">$$proteomeDatasets$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
+    <paramValue name="inputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
     <depends name="mapPeripheralsToGroups"/>
   </step>
 
