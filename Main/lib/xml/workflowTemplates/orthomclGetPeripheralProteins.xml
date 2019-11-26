@@ -12,14 +12,29 @@
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$</paramValue>
   </step>
 
+  <step name="mirrorGetPeripheralProteinsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$getPeripheralProteinsDir$$</paramValue>
+    <depends name="makeGetPeripheralProteinsDir"/>
+  </step>
+
   <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="makeGetPeripheralProteinsDir"/>
+    <depends name="mirrorGetPeripheralProteinsDirToCluster"/>
+  </step>
+
+  <step name="mirrorProteomeDatasetsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$</paramValue>
+    <depends name="makeProteomeDatasetsDir"/>
   </step>
 
   <step name="makeResidualFastaFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$residualFastaFilesDir$$</paramValue>
-    <depends name="makeGetPeripheralProteinsDir"/>
+    <depends name="mirrorProteomeDatasetsDirToCluster"/>
+  </step>
+
+  <step name="mirrorResidualFastaFilesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$residualFastaFilesDir$$</paramValue>
+    <depends name="makeResidualFastaFilesDir"/>
   </step>
 
   <step name="makeEcMappingsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -42,8 +57,7 @@
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="makeProteomeDatasetsDir"/>
-      <depends name="makeResidualFastaFilesDir"/>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
@@ -81,8 +95,7 @@
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="makeProteomeDatasetsDir"/>
-      <depends name="makeResidualFastaFilesDir"/>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
@@ -120,8 +133,7 @@
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="makeProteomeDatasetsDir"/>
-      <depends name="makeResidualFastaFilesDir"/>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
@@ -159,8 +171,7 @@
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="makeProteomeDatasetsDir"/>
-      <depends name="makeResidualFastaFilesDir"/>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
@@ -187,8 +198,7 @@
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="makeProteomeDatasetsDir"/>
-      <depends name="makeResidualFastaFilesDir"/>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
