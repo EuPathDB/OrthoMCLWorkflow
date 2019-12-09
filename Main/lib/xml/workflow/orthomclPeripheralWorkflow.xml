@@ -28,8 +28,6 @@
     <depends name="copyOrthogroupRowsForPeripheral"/>
   </subgraph>
 
-<!--
-
   <subgraph name="makeResidualGroups" xmlFile="makeResidualOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
@@ -50,8 +48,6 @@
     <paramValue name="corePeripheralResidual">R</paramValue>
     <depends name="makeResidualGroups"/>
   </step>
-
--->
 
 
 </workflowGraph>

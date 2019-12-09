@@ -84,20 +84,15 @@
     <depends name="mirrorFastaFileToCluster"/>
   </subgraph>
 
-
-<!--
-
   <step name="createSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateSimilarSequencesTable">
     <paramValue name="suffix">$$abbrev$$</paramValue>
     <depends name="blastAgainstCore"/>
   </step>
 
--->
 
   <!-- load BLAST results into SimilarSequences table -->
   <!-- edit this to change fast sql loader that disables then re-enables indexes and set commit size -->
 
-<!--
 
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr">
     <paramValue name="inputFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/blast/master/mainresult/blastSimilarity.out</paramValue>
@@ -122,19 +117,10 @@
     <depends name="mapPeripheralsToGroups"/>
   </step>
 
--->
-
-  <!-- create step to drop the similarsequences table -->
-
-<!--
-
   <step name="dropSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::DropSimilarSequencesTable">
     <paramValue name="suffix">$$abbrev$$</paramValue>
     <depends name="insertPeripheralsIntoCoreGroups"/>
   </step>
-
-
--->
 
 
 </workflowGraph>

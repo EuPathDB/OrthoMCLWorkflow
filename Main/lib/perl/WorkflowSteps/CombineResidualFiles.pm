@@ -16,12 +16,10 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$combinedResidualsFile") if -e "$workflowDataDir/$combinedResidualsFile";
   } else {
-    $self->testInputFile('combinedResidualsFile', "$workflowDataDir/$combinedResidualsFile");
-
     my $cmd = "orthomclCombineResidualFiles $workflowDataDir/$residualFastaFilesDir $workflowDataDir/$combinedResidualsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
-      $self->runCmd(0, "touch $workflowDataDir/$combinedResidualsFile");
+      $self->runCmd(0, "touch $workflowDataDir/$residualFastaFilesDir");
     }
 
   }
