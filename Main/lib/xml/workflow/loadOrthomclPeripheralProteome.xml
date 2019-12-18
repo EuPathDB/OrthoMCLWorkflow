@@ -47,6 +47,26 @@
     <depends name="loadProteome"/>
   </step>
 
+  <step name="makeInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
+    <depends name="makeGoodPeripheralProteins"/>
+  </step>
+
+  <step name="mirrorInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
+    <depends name="makeInterproDir"/>
+  </step>
+  
+  <subgraph name="InterproScan" xmlFile="interpro.xml">
+    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
+    <paramValue name="insertVersion">2</paramValue>
+    <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+    <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+    <depends name="mirrorInterproDirToCluster"/>    
+  </subgraph>
+
+
   <step name="mirrorFastaDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
     <depends name="makeGoodPeripheralProteins"/>
@@ -94,14 +114,14 @@
   <!-- edit this to change fast sql loader that disables then re-enables indexes and set commit size -->
 
 
-  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr">
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr" undoRoot="createSimilarSequencesTable">
     <paramValue name="inputFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$abbrev$$</paramValue>
     <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
     <depends name="createSimilarSequencesTable"/>
   </step>
 
-  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups">
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups" undoRoot="createSimilarSequencesTable">
     <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequences$$abbrev$$</paramValue>
     <paramValue name="outputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
     <paramValue name="inputFastaFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
@@ -112,7 +132,7 @@
     <depends name="loadBlast"/>
   </step>
 
-  <step name="insertPeripheralsIntoCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups">
+  <step name="insertPeripheralsIntoCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups" undoRoot="createSimilarSequencesTable">
     <paramValue name="inputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
     <depends name="mapPeripheralsToGroups"/>
   </step>

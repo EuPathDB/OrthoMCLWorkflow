@@ -13,7 +13,6 @@
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
 
-
   <!-- make a data dir  -->
   <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$localDataDir$$</paramValue>

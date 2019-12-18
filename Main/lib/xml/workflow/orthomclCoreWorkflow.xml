@@ -32,11 +32,6 @@
     <depends name="initUserGroupProject"/>
   </step>
 
-  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
-    <paramValue name="configFile">orthomclPairs.config</paramValue>
-    <paramValue name="suffix"></paramValue>
-  </step>
-
   <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -155,15 +150,29 @@
     <depends name="makeCoreGroups"/>
   </step>
 
+  <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="insertGroups"/>
+  </subgraph>
+
+<!--
+
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
+    <depends name="peripheralWorkflow"/>
   </step>
 
   <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta">
     <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
     <paramValue name="tarAndZip">true</paramValue>
     <paramValue name="peripheralsOnly">false</paramValue>
-    <depends name="insertGroups"/>
     <depends name="makeGroupsSelfBlastDir"/>
   </step>
 
@@ -190,9 +199,15 @@
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
+  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">orthomclPairs.config</paramValue>
+    <paramValue name="suffix">SelfBlast</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
     <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
-    <paramValue name="suffix"></paramValue>
+    <paramValue name="suffix">SelfBlast</paramValue>
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
     <depends name="groupsSelfBlast"/>
     <depends name="installSchema"/>
@@ -205,16 +220,7 @@
     <depends name="loadBlast"/>
   </subgraph>
 
-  <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
-    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
-    <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
-    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-    <depends name="insertGroups"/>
-  </subgraph>
+-->
+
 
 </workflowGraph>
