@@ -47,9 +47,19 @@
     <depends name="loadProteome"/>
   </step>
 
+  <step name="mirrorProteomeDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
+    <depends name="makeGoodPeripheralProteins"/>
+  </step>
+
+  <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <depends name="mirrorProteomeDirToCluster"/>
+  </step>
+
   <step name="makeInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
-    <depends name="makeGoodPeripheralProteins"/>
+    <depends name="mirrorFastaFileToCluster"/>
   </step>
 
   <step name="mirrorInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -65,18 +75,6 @@
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="mirrorInterproDirToCluster"/>    
   </subgraph>
-
-
-  <step name="mirrorFastaDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
-    <depends name="makeGoodPeripheralProteins"/>
-  </step>
-
-  <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
-    <depends name="mirrorFastaDirToCluster"/>
-  </step>
-
 
   <subgraph name="blastAgainstCore" xmlFile="blast.xml">
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
@@ -101,7 +99,7 @@
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
-    <depends name="mirrorFastaFileToCluster"/>
+    <depends name="InterproScan"/>
   </subgraph>
 
   <step name="createSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateSimilarSequencesTable">
