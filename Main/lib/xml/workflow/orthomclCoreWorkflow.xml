@@ -162,6 +162,17 @@
     <depends name="insertGroups"/>
   </subgraph>
 
+  <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
+    <paramValue name="orthomclVersion">6r1</paramValue>
+    <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
+    <paramValue name="peripheralMapFileName">peripheralsMapToCoreGroup</paramValue>
+    <paramValue name="coreMapFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="residualMapFile">residualGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+
 <!--
 
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
