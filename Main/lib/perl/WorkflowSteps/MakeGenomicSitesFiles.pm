@@ -9,6 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $orthomclVersion = $self->getParamValue('orthomclVersion');
+  $orthomclVersion =~ s/_//g;
   my $peripheralDir = $self->getParamValue('peripheralDir');
   my $peripheralMapFileName = $self->getParamValue('peripheralMapFileName');
   my $coreMapFile = $self->getParamValue('coreMapFile');

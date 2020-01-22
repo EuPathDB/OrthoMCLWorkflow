@@ -163,7 +163,7 @@
   </subgraph>
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
-    <paramValue name="orthomclVersion">6r1</paramValue>
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
     <paramValue name="peripheralMapFileName">peripheralsMapToCoreGroup</paramValue>
     <paramValue name="coreMapFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
@@ -172,18 +172,20 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-
-<!--
+  <step name="addNumMembersPeripheralGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddNumberMembers">
+    <paramValue name="groupTypesCPR">P</paramValue>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
 
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="addNumMembersPeripheralGroups"/>
   </step>
 
   <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta">
     <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
     <paramValue name="tarAndZip">true</paramValue>
-    <paramValue name="peripheralsOnly">false</paramValue>
+    <paramValue name="groupTypesCPR">P</paramValue>
     <depends name="makeGroupsSelfBlastDir"/>
   </step>
 
@@ -206,23 +208,44 @@
     <paramValue name="maxMemoryGigs">10</paramValue>
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
-    <depends name="extractGroupFastas"/>
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
-  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+  <step name="installSelfBlastSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">orthomclPairs.config</paramValue>
     <paramValue name="suffix">SelfBlast</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="groupsSelfBlast"/>
   </step>
 
-  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
+  <step name="loadSelfBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
     <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">SelfBlast</paramValue>
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="groupsSelfBlast"/>
-    <depends name="installSchema"/>
+    <depends name="installSelfBlastSchema"/>
   </step>
+
+  <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
+    <paramValue name="orthologTableSuffix">Core</paramValue>
+    <paramValue name="groupTypesCPR">C</paramValue>
+    <depends name="loadSelfBlast"/>
+  </step>
+
+  <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
+    <paramValue name="orthologTableSuffix">Core</paramValue>
+    <paramValue name="groupTypesCPR">P</paramValue>
+    <depends name="UpdateCoreGroupStatistics"/>
+  </step>
+
+  <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">Residuals</paramValue>
+    <paramValue name="orthologTableSuffix">Residuals</paramValue>
+    <paramValue name="groupTypesCPR">R</paramValue>
+    <depends name="UpdatePeripheralGroupStatistics"/>
+  </step>
+
+<!-- 
 
   <subgraph name="postProcessGroups" xmlFile="orthomclPostProcessGroups.xml">
     <paramValue name="coreGoodFasta">coreGood.fasta</paramValue>

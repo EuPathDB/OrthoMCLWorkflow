@@ -14,7 +14,7 @@ sub run {
 
     my $outputDir = $self->getParamValue('outputDir');
     my $tarAndZip = $self->getBooleanParamValue('tarAndZip');
-    my $peripheralsOnly = $self->getBooleanParamValue('peripheralsOnly');
+    my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
     my $tarSize = $self->getConfig('proteinsPerTarFile');
 
     if ($undo) {
@@ -25,8 +25,7 @@ sub run {
 	$self->runCmd(0, "mkdir $workflowDataDir/$outputDir") unless $tarAndZip;
 	$self->runCmd(0, "touch $workflowDataDir/$outputDir.tar.gz") if $tarAndZip;
       } else {
-	my $periphFlag = $peripheralsOnly? "--peripheralsOnly" : "";
-	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir $periphFlag --tarBall $tarSize"); #seqs per tarball, regardless of how many groups
+	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --groupTypesCPR $groupTypesCPR --tarBall $tarSize"); #seqs per tarball, regardless of how many groups
 	my($baseDir, $path, $suffix) = fileparse("$workflowDataDir/$outputDir");
 	chdir "$path" || die "can't chdir to '$path'\n";
 	$self->runCmd($test, "tar -zcf $baseDir.tar.gz $baseDir") if $tarAndZip;
