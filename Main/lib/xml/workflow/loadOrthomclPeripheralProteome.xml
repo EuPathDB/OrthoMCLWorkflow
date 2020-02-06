@@ -36,6 +36,7 @@
       <depends name="mapPreviousSeqIDs"/>
     </step>
 
+<!--
     <step name="makeGoodPeripheralProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodPeripheralProteins">
     <paramValue name="fastaDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
     <paramValue name="fastaFile">$$abbrev$$Proteome.fasta</paramValue>
@@ -46,14 +47,16 @@
     <paramValue name="abbrev">$$abbrev$$</paramValue>
     <depends name="loadProteome"/>
   </step>
+-->
+
 
   <step name="mirrorProteomeDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
-    <depends name="makeGoodPeripheralProteins"/>
+    <depends name="loadProteome"/>
   </step>
 
   <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$Proteome.fasta</paramValue>
     <depends name="mirrorProteomeDirToCluster"/>
   </step>
 
@@ -68,7 +71,7 @@
   </step>
   
   <subgraph name="InterproScan" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$Proteome.fasta</paramValue>
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
     <paramValue name="insertVersion">2</paramValue>
     <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
@@ -79,7 +82,7 @@
   <subgraph name="blastAgainstCore" xmlFile="blast.xml">
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="queryFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="queryFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$Proteome.fasta</paramValue>
     <paramValue name="subjectFile">$$coreGoodProteinsFile$$</paramValue>
     <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>
@@ -122,7 +125,7 @@
   <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups" undoRoot="createSimilarSequencesTable">
     <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequences$$abbrev$$</paramValue>
     <paramValue name="outputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
-    <paramValue name="inputFastaFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$ProteomeGood.fasta</paramValue>
+    <paramValue name="inputFastaFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/$$abbrev$$Proteome.fasta</paramValue>
     <paramValue name="residualFastaFile">$$residualFastaFilesDir$$/$$abbrev$$Residuals.fasta</paramValue>
     <paramValue name="abbrev">$$abbrev$$</paramValue>
     <paramValue name="pvalueExponentCutoff">-5</paramValue>
