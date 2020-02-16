@@ -12,8 +12,10 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $outputDir = $self->getParamValue('outputDir');
-    my $tarSize = $self->getParamValue('filesPerTarball');
+    my $tarSize = $self->getParamValue('proteinsPerTarFile');
     my $maxGroupSize = $self->getParamValue('maxGroupSize');
+    my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
+    my $samplingOfSeqs = $self->getParamValue('samplingOfSeqs');
 
     if ($undo) {
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
@@ -21,7 +23,7 @@ sub run {
       if ($test) {
 	$self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       } else {
-	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --tarBall $tarSize --maxGroupSize $maxGroupSize");
+	$self->runCmd($test, "extractGroupFastaFiles --outputDir $workflowDataDir/$outputDir --samplingOfSeqs $samplingOfSeqs --groupTypesCPR $groupTypesCPR --tarBall $tarSize --maxGroupSize $maxGroupSize");
       }
     }
 }

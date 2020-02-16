@@ -10,6 +10,7 @@ sub run {
 
   my $inputDir = $self->getParamValue('inputDir'); # should contain cluster results, eg, be master/mainresult
   my $dataDir = $self->getParamValue('dataDir');
+  my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -32,7 +33,7 @@ sub run {
     closedir(DIR);
   }
 
-  my $args = "--msaDir $tmpUnzipDir --fileRegex '(\\S+)\.msa'";
+  my $args = "--msaDir $tmpUnzipDir --fileRegex '(\\S+)\.msa' --groupTypesCPR $groupTypesCPR";
 
   $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthGroupWithMsa", $args);
 

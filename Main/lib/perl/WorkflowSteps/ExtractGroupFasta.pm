@@ -15,7 +15,7 @@ sub run {
     my $outputDir = $self->getParamValue('outputDir');
     my $tarAndZip = $self->getBooleanParamValue('tarAndZip');
     my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
-    my $tarSize = $self->getConfig('proteinsPerTarFile');
+    my $tarSize = $self->getParamValue('proteinsPerTarFile');
 
     if ($undo) {
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir") if -e "$workflowDataDir/$outputDir";
