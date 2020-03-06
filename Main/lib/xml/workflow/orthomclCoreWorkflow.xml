@@ -4,7 +4,7 @@
   <param name="groupIdStart"/>
   <param name="residualGroupIdPrefix"/>
   <param name="residualGroupIdStart"/>
-
+  <param name="proteomesFromBuild"/>
   <!--  projectName should be changed, was orthoMCL -->
 
   <constant name="projectName">OrthoMCL</constant>
@@ -189,6 +189,19 @@
     <depends name="insertGroups"/>
   </subgraph>
 
+  <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">Residuals</paramValue>
+    <paramValue name="orthologTableSuffix">Residuals</paramValue>
+    <paramValue name="groupTypesCPR">R</paramValue>
+    <paramValue name="overwriteExisting">Y</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="insertOrthomclResource" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthomclResource">
+    <paramValue name="proteomesFromBuild">$$proteomesFromBuild$$</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
@@ -227,13 +240,13 @@
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="fastaDirTarFile">$$groupsSelfBlastDir$$/groupFastas.tar.gz</paramValue>
     <paramValue name="coreDatabaseFasta">coreGood.fasta</paramValue>
-    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
+    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1</paramValue>
     <paramValue name="idRegex">(\\S+)</paramValue>
     <paramValue name="blastType">blastp</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="loadSubjectSubset">false</paramValue>
     <paramValue name="filterByTaxon">false</paramValue>
-    <paramValue name="maxMemoryGigs">10</paramValue>
+    <paramValue name="maxMemoryGigs">20</paramValue>
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
     <depends name="mirrorGroupFastasToCluster"/>
@@ -252,30 +265,32 @@
     <depends name="installSelfBlastSchema"/>
   </step>
 
+  <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
+    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue> 
+    <depends name="loadSelfBlast"/>
+  </step>
+
+  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
+    <paramValue name="numberOfThreadsToUse">4</paramValue>
+    <paramValue name="maxGroupSize">500</paramValue>
+    <depends name="fixZeroExponent"/>
+  </step>
+
   <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
     <paramValue name="orthologTableSuffix">Core</paramValue>
     <paramValue name="groupTypesCPR">C</paramValue>
-    <paramValue name="overwriteExisting">N</paramValue>
-    <depends name="loadSelfBlast"/>
+    <paramValue name="overwriteExisting">Y</paramValue>
+    <depends name="fixZeroExponent"/>
   </step>
 
   <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
-    <paramValue name="orthologTableSuffix">Core</paramValue>
+    <paramValue name="orthologTableSuffix">peripheral</paramValue>
     <paramValue name="groupTypesCPR">P</paramValue>
     <paramValue name="overwriteExisting">Y</paramValue>
     <depends name="UpdateCoreGroupStatistics"/>
   </step>
-
-  <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
-    <paramValue name="simSeqTableSuffix">Residuals</paramValue>
-    <paramValue name="orthologTableSuffix">Residuals</paramValue>
-    <paramValue name="groupTypesCPR">R</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
-    <depends name="UpdatePeripheralGroupStatistics"/>
-  </step>
-
 
   <step name="extractFastaFilesForMsaResidual" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDirResidual</paramValue>
@@ -304,48 +319,31 @@
     <depends name="muscleMsaResidual"/>
   </step>
 
+
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
-  <!-- this step is extremely slow, need to make faster 
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
--->
 
   <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
     <paramValue name="groupTypesCPR">CPR</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
 
-  <!-- load GroupTaxonMatrix (phyletic pattern) - are there enough columns for all organisms? -->
- <!-- Mark: need to add more columns to this table and then turn this step back on
+
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
-    <paramValue name="groupTypesCPR">CPR</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
- 
--->
 
 
-  <step name="insertSimilarSequencesGroupFromSelfBlast" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroup">
-    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
+
+<!-- I thought this step is required for the Cluster Layout, but it seems not.
+  <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroupWithSqlLdr">
+    <paramValue name="simSeqTableSuffix">SelfBlast,Residuals</paramValue>
     <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
+    <paramValue name="directory">SimilarSequencesGroup</paramValue>
     <depends name="loadSelfBlast"/>
-  </step>
-
-  <step name="insertSimilarSequencesGroupFromResiduals" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroup" undoRoot="insertSimilarSequencesGroupFromSelfBlast">
-    <paramValue name="simSeqTableSuffix">Residuals</paramValue>
-    <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
-    <depends name="insertSimilarSequencesGroupFromSelfBlast"/>
-  </step>
-
-
-
-  <!-- Mark: need to figure out which table this uses 
-  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
-    <paramValue name="numberOfThreadsToUse">4</paramValue>
-    <paramValue name="maxGroupSize">500</paramValue>
-    <depends name="insertSimilarSequencesGroupFromResiduals"/>
   </step>
 -->
 

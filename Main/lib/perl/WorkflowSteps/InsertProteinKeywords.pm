@@ -8,6 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertGroupKeywords", "");
+  my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
+
+  my $args = " --groupTypesCPR $groupTypesCPR";
+
+  $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertGroupKeywords", $args);
 
 }
