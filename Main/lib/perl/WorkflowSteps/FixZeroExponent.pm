@@ -9,10 +9,17 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $simSeqTableSuffix = $self->getParamValue('simSeqTableSuffix');
+    my $inputFile = $self->getParamValue('inputFile');
+    my $outputFile = $self->getParamValue('outputFile');
+    my $deleteInputFile = $self->getParamValue('deleteInputFile');
 
-    my $args = " --simSeqTableSuffix $simSeqTableSuffix";
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::orthomclFixZeroExponent", $args);
-
+    if (!$undo) {
+	my $cmd = "orthomclFixZeroExponent $workflowDataDir/$inputFile $workflowDataDir/$outputFile $deleteInputFile";
+	$self->runCmd($test,$cmd);
+	if ($test) {
+	    $self->runCmd(0, "touch $workflowDataDir/$inputFile");
+	}
+    }
 }

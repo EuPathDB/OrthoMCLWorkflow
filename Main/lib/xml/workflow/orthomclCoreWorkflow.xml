@@ -252,43 +252,55 @@
     <depends name="mirrorGroupFastasToCluster"/>
   </subgraph>
 
-  <step name="installSelfBlastSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
-    <paramValue name="configFile">orthomclPairs.config</paramValue>
-    <paramValue name="suffix">SelfBlast</paramValue>
+  <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue> 
+    <paramValue name="outputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue> 
+    <paramValue name="deleteInputFile">N</paramValue>
     <depends name="groupsSelfBlast"/>
   </step>
 
+  <step name="installSelfBlastSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">orthomclPairs.config</paramValue>
+    <paramValue name="suffix">SelfBlast</paramValue>
+    <depends name="fixZeroExponent"/>
+  </step>
+
+
   <step name="loadSelfBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
-    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue>
     <paramValue name="suffix">SelfBlast</paramValue>
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
     <depends name="installSelfBlastSchema"/>
   </step>
 
-  <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
-    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue> 
+
+  <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroupWithSqlLdr">
+    <paramValue name="simSeqTableSuffix">SelfBlast,peripheral,Residuals,residual</paramValue>
+    <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
+    <paramValue name="directory">SimilarSequencesGroup</paramValue>
     <depends name="loadSelfBlast"/>
   </step>
+
 
   <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
     <paramValue name="numberOfThreadsToUse">4</paramValue>
     <paramValue name="maxGroupSize">500</paramValue>
-    <depends name="fixZeroExponent"/>
+    <depends name="insertSimilarSequencesGroup"/>
   </step>
 
   <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
     <paramValue name="orthologTableSuffix">Core</paramValue>
     <paramValue name="groupTypesCPR">C</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
-    <depends name="fixZeroExponent"/>
+    <paramValue name="overwriteExisting">N</paramValue>
+    <depends name="loadSelfBlast"/>
   </step>
 
   <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
     <paramValue name="orthologTableSuffix">peripheral</paramValue>
     <paramValue name="groupTypesCPR">P</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
+    <paramValue name="overwriteExisting">N</paramValue>
     <depends name="UpdateCoreGroupStatistics"/>
   </step>
 
@@ -335,19 +347,6 @@
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="peripheralWorkflow"/>
   </step>
-
-
-
-<!-- I thought this step is required for the Cluster Layout, but it seems not.
-  <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroupWithSqlLdr">
-    <paramValue name="simSeqTableSuffix">SelfBlast,Residuals</paramValue>
-    <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
-    <paramValue name="directory">SimilarSequencesGroup</paramValue>
-    <depends name="loadSelfBlast"/>
-  </step>
--->
-
-
 
 
 
