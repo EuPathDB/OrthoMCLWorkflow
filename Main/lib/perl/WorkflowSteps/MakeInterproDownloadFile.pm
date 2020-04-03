@@ -54,7 +54,8 @@ sub run {
 EOF
 
   if ($undo) {
-    $self->runCmd($test, "rm $downloadFileName");
+      my $fileName = $downloadFileName."*";
+    $self->runCmd($test, "rm $fileName");
   } else {
     $self->runCmd($test, "makeFileWithSql --outFile $downloadFileName --sql \"$sql\"");
   }

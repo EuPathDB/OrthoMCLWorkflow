@@ -65,12 +65,11 @@ sub getSql {
 
   my $SS = $seq? ", x.sequence" : "";
 return "
-select ot.three_letter_abbrev || '|' || x.source_id || ' | ' ||
-                   CASE WHEN og.name is null THEN 'no_group' ELSE  og.name END || ' | '  || x.description$SS
-                   from dots.externalaasequence x, apidb.orthomcltaxon ot, apidb.orthologgroup og,
-                   apidb.orthologgroupaasequence oga
-                   where ot.taxon_id = x.taxon_id and x.aa_sequence_id = oga.aa_sequence_id(+)
-                   and oga.ortholog_group_id = og.ortholog_group_id(+)
+SELECT x.secondary_identifier || ' | ' ||
+       CASE WHEN og.name is null THEN 'no_group' ELSE og.name END || ' | '  || x.description$SS
+FROM dots.externalaasequence x, apidb.orthologgroup og, apidb.orthologgroupaasequence oga
+WHERE x.aa_sequence_id = oga.aa_sequence_id(+) and oga.ortholog_group_id = og.ortholog_group_id(+)
+      and og.core_peripheral_residual in ('P','R')
 ";
 }
 
@@ -78,19 +77,14 @@ sub getDomainsSql {
   my ($self, $extDbRlsId) = @_;
 
 return "
-SELECT name as Orthomcl_Group, primary_identifier as Pfam_Name, round(count(aa_sequence_id)/number_of_members,4) as Frequency from (
-SELECT distinct og.name, db.primary_identifier, ogs.aa_sequence_id, og.number_of_members
-FROM apidb.OrthologGroupAaSequence ogs,
-apidb.OrthologGroup og,
-dots.DomainFeature df,
-dots.DbRefAaFeature dbaf,
-sres.DbRef db
-WHERE og.ortholog_group_id != 0 
-AND ogs.ortholog_group_id = og.ortholog_group_id
-AND df.aa_sequence_id = ogs.aa_sequence_id
-AND dbaf.aa_feature_id = df.aa_feature_id
-AND db.db_ref_id = dbaf.db_ref_id
-and db.external_database_release_id = $extDbRlsId)
-group by name, number_of_members, primary_identifier
+SELECT name as Orthomcl_Group, primary_identifier as Pfam_Name, round(count(aa_sequence_id)/number_of_members,4) as Frequency
+FROM (SELECT distinct og.name, db.primary_identifier, ogs.aa_sequence_id, og.number_of_members
+      FROM apidb.OrthologGroupAaSequence ogs, apidb.OrthologGroup og, dots.DomainFeature df,
+            dots.DbRefAaFeature dbaf, sres.DbRef db
+      WHERE og.ortholog_group_id != 0 AND ogs.ortholog_group_id = og.ortholog_group_id
+            AND og.core_peripheral_residual in ('P','R') AND df.aa_sequence_id = ogs.aa_sequence_id
+            AND dbaf.aa_feature_id = df.aa_feature_id AND db.db_ref_id = dbaf.db_ref_id
+            AND db.external_database_release_id = $extDbRlsId)
+GROUP BY name, number_of_members, primary_identifier
 ORDER BY name, frequency desc";
 }

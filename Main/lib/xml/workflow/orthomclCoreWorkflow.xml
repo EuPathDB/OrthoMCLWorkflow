@@ -348,11 +348,9 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-
-
  <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="addNumMembersPeripheralGroups"/>
   </step>
 
   <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
@@ -372,7 +370,7 @@
 
   <step name="makeWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="makeDownloadSiteDir"/>
   </step>
 
   <step name="webServiceBlastFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeWebservicesBlastFile">
