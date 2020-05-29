@@ -22,7 +22,7 @@ sub run {
   if (!$undo && !$test) {
 
     # remove old tmp dir if exists
-    $self->runCmd($test, "rm -r $tmpUnzipDir")  if -x $tmpUnzipDir;  #delete previously made, if there
+    $self->runCmd($test, "rm -r $tmpUnzipDir")  if -e $tmpUnzipDir;  #delete previously made, if there
     $self->runCmd($test, "mkdir $tmpUnzipDir");
     chdir "$workflowDataDir/$inputDir";
     opendir(DIR, "$workflowDataDir/$inputDir") || die "Can't open directory '$workflowDataDir/$inputDir'";
@@ -38,6 +38,6 @@ sub run {
   $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateOrthGroupWithMsa", $args);
 
   #remove tmp dir
-  $self->runCmd("rm -r $tmpUnzipDir") if -x $tmpUnzipDir;  #delete previously made, if there
+  $self->runCmd("rm -r $tmpUnzipDir") if -e $tmpUnzipDir;  #delete previously made, if there
 
 }

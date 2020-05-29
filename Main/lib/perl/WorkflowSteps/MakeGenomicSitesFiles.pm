@@ -15,13 +15,13 @@ sub run {
   my $coreMapFile = $self->getParamValue('coreMapFile');
   my $residualMapFile = $self->getParamValue('residualMapFile');
   my $cladeFile = $self->getParamValue('cladeFile');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $genomicSitesDir = $workflowDataDir."/genomicSitesFiles_".$orthomclVersion;
 
   if ($undo) {
-    $self->runCmd(0, "rm -rf $workflowDataDir/$orthomclVersion") if -e "$workflowDataDir/$orthomclVersion";
+    $self->runCmd(0, "rm -rf $genomicSitesDir") if -e "$genomicSitesDir";
   } else {
-    my $cmd = "orthomclMakeGenomicSitesFiles $workflowDataDir/$orthomclVersion $workflowDataDir/$peripheralDir $peripheralMapFileName $workflowDataDir/$coreMapFile $workflowDataDir/$residualMapFile $workflowDataDir/$cladeFile";
+    my $cmd = "orthomclMakeGenomicSitesFiles $genomicSitesDir $workflowDataDir/$peripheralDir $peripheralMapFileName $workflowDataDir/$coreMapFile $workflowDataDir/$residualMapFile $workflowDataDir/$cladeFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$peripheralDir");
