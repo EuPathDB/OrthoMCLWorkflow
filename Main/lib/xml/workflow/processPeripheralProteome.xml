@@ -1,0 +1,119 @@
+<workflowGraph name="">
+    <param name="abbrev"/>
+    <param name="orthomclClade"/>
+    <param name="oldAbbrevsList"/>
+    <param name="oldReleasesSequenceFilesDir"/>
+    <param name="oldReleasesGroupFilesDir"/>
+    <param name="residualFastaFilesDir"/>
+    <param name="proteomeDatasetsDir"/>
+    <param name="coreGoodProteinsFile"/
+    <param name="datasetName"/>
+
+    <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
+      <paramValue name="abbrev">$$abbrev$$</paramValue>
+      <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
+      <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <depends name="loadProteome"/>
+    </step>
+
+    <step name="mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
+      <paramValue name="abbrev">$$abbrev$$</paramValue>
+      <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
+      <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <depends name="mapPreviousSeqIDs"/>
+    </step>
+
+  <step name="mirrorProteomeDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>
+    <depends name="loadProteome"/>
+  </step>
+
+  <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <depends name="mirrorProteomeDirToCluster"/>
+  </step>
+
+  <step name="makeInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$datasetName$$/Interpro</paramValue>
+    <depends name="mirrorFastaFileToCluster"/>
+  </step>
+
+  <step name="mirrorInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$/Interpro</paramValue>
+    <depends name="makeInterproDir"/>
+  </step>
+  
+  <subgraph name="InterproScan" xmlFile="interpro.xml">
+    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$datasetName$$/Interpro</paramValue>
+    <paramValue name="insertVersion">2</paramValue>
+    <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+    <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+    <depends name="mirrorInterproDirToCluster"/>    
+  </subgraph>
+
+  <subgraph name="blastAgainstCore" xmlFile="blast.xml">
+    <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>
+    <paramValue name="nickName">blast</paramValue>
+    <paramValue name="queryFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <paramValue name="subjectFile">$$coreGoodProteinsFile$$</paramValue>
+    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
+    <paramValue name="idRegex">(\\S+)</paramValue>
+    <paramValue name="blastType">blastp</paramValue>
+    <paramValue name="vendor">ncbi</paramValue>
+    <paramValue name="loadSubjectSubset">false</paramValue>
+    <paramValue name="filterByTaxon">false</paramValue>
+    <paramValue name="maxMemoryGigs">10</paramValue>
+    <paramValue name="loadSimilarities">false</paramValue>
+    <paramValue name="makeSimSeqsFile">true</paramValue>
+
+    <!-- parameters below are not relevant for us -->
+    <paramValue name="queryTable"></paramValue>
+    <paramValue name="queryExtDbName"></paramValue>
+    <paramValue name="subjectTable"></paramValue>
+    <paramValue name="subjectExtDbName"></paramValue>
+    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
+    <paramValue name="taxonHierarchyForFilter"></paramValue>
+    <paramValue name="loadOptions"></paramValue>
+    <depends name="InterproScan"/>
+  </subgraph>
+
+  <step name="createSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateSimilarSequencesTable">
+    <paramValue name="suffix">$$abbrev$$</paramValue>
+    <depends name="blastAgainstCore"/>
+  </step>
+
+
+  <!-- load BLAST results into SimilarSequences table -->
+  <!-- edit this to change fast sql loader that disables then re-enables indexes and set commit size -->
+
+
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr" undoRoot="createSimilarSequencesTable">
+    <paramValue name="inputFile">$$proteomeDatasetsDir$$/$$datasetName$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="suffix">$$abbrev$$</paramValue>
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>
+    <depends name="createSimilarSequencesTable"/>
+  </step>
+
+  <step name="mapPeripheralsToGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPeripheralsToGroups" undoRoot="createSimilarSequencesTable">
+    <paramValue name="inputSimilarSequencesTable">ApiDB.SimilarSequences$$abbrev$$</paramValue>
+    <paramValue name="outputGroupsFile">$$proteomeDatasetsDir$$/$$datasetName$$/peripheralsMapToCoreGroup</paramValue>
+    <paramValue name="inputFastaFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <paramValue name="residualFastaFile">$$residualFastaFilesDir$$/$$abbrev$$Residuals.fasta</paramValue>
+    <paramValue name="abbrev">$$abbrev$$</paramValue>
+    <paramValue name="pvalueExponentCutoff">-5</paramValue>
+    <paramValue name="percentMatch">50</paramValue>
+    <depends name="loadBlast"/>
+  </step>
+
+  <step name="insertPeripheralsIntoCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups" undoRoot="createSimilarSequencesTable">
+    <paramValue name="inputGroupsFile">$$proteomeDatasetsDir$$/$$datasetName$$/peripheralsMapToCoreGroup</paramValue>
+    <depends name="mapPeripheralsToGroups"/>
+  </step>
+
+  <step name="dropSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::DropSimilarSequencesTable">
+    <paramValue name="suffix">$$abbrev$$</paramValue>
+    <depends name="insertPeripheralsIntoCoreGroups"/>
+  </step>
+
+</workflowGraph>
