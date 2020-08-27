@@ -1,0 +1,15 @@
+<workflowGraph name="">
+  <param name="mainDataDir"/>
+
+  <datasetTemplate class="orthomclRetireCoreOrganism">
+    <prop name="abbrevList"/>
+    <prop name="buildNumber"/>
+
+    <step name="retireCoreOrganisms" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RetireCoreOrganisms">
+      <paramValue name="abbrevList">${abbrevList}</paramValue>
+      <paramValue name="mainDataDir">$$mainDataDir$$</paramValue>
+    </step>
+
+  </datasetTemplate>
+
+</workflowGraph>

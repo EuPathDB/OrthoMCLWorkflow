@@ -53,7 +53,8 @@
     <prop name="ncbiTaxonId"/>
 
     <constant name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</constant>
- 
+
+<!-- Mark: update this step with organism name and build) --> 
     <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxon">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
