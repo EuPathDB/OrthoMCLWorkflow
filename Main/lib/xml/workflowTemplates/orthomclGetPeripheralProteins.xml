@@ -51,14 +51,17 @@
     <prop name="oldAbbrevsList"/>
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="organismName"/>
 
     <constant name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</constant>
 
 <!-- Mark: update this step with organism name and build) --> 
-    <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxon">
+    <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="version">${ebiVersion}</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
       <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </step>
 

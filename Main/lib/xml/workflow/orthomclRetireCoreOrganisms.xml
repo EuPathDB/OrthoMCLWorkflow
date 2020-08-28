@@ -1,0 +1,8 @@
+<workflowGraph name="">
+  <param name="mainDataDir"/>
+
+  <subgraph name="retireCoreOrganisms" xmlFile="generated/OrthoMclRetireCore/orthomclRetireCoreTemplate.xml">
+    <paramValue name="mainDataDir">$$mainDataDir$$</paramValue>
+  </subgraph>
+
+</workflowGraph>
