@@ -352,11 +352,13 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-  <step name="orthomclWdkDump" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
+<!--  maybe do not need this for build 49 because we are using site search
+  <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
     <depends name="insertProteinKeywords"/>
     <depends name="insertDomainKeywords"/>
   </step>
-
+-->
+	
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="peripheralWorkflow"/>
   </step>
