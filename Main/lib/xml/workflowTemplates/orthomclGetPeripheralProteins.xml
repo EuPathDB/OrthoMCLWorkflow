@@ -53,7 +53,7 @@
     <prop name="ncbiTaxonId"/>
     <prop name="organismName"/>
 
-    <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+    <step name="insertPeripheralTaxonNameVersion" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
@@ -65,7 +65,7 @@
     <step name="validatePeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <depends name="insertPeripheralTaxon"/>
+      <depends name="insertPeripheralTaxonNameVersion"/>
     </step>
 
     <subgraph name="loadPeripheralDataset" xmlFile="loadDataset.xml">
