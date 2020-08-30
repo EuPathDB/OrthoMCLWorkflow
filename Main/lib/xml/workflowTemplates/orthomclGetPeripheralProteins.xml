@@ -78,7 +78,7 @@
     <step name="runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" >
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="ebiOrganismAbbrev">${ebiOrganismAbbrev}</paramValue>
+      <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
       <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="ebiVersion">${ebiVersion}</paramValue>
       <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
