@@ -6,7 +6,7 @@
     <param name="oldReleasesGroupFilesDir"/>
     <param name="residualFastaFilesDir"/>
     <param name="proteomeDatasetsDir"/>
-    <param name="coreGoodProteinsFile"/
+    <param name="coreGoodProteinsFile"/>
     <param name="datasetName"/>
 
     <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
