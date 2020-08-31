@@ -65,14 +65,14 @@
     <step name="${orthomclAbbrev}_validatePeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <depends name="insertPeripheralTaxonNameVersion"/>
+      <depends name="${orthomclAbbrev}_insertPeripheralTaxon"/>
     </step>
 
     <subgraph name="${orthomclAbbrev}_loadPeripheralDataset" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
-      <depends name="validatePeripheralTaxon"/>
+      <depends name="${orthomclAbbrev}_validatePeripheralTaxon"/>
     </subgraph>
 
     <step name="${orthomclAbbrev}_runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" >
@@ -84,7 +84,7 @@
       <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="ecFileName">ecFromEbi.tab</paramValue>
       <paramValue name="proteomeFileName">proteomeFromEbi.fasta</paramValue>
-      <depends name="loadPeripheralDataset"/>
+      <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
     </step>
 
     <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
@@ -94,7 +94,7 @@
       <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
       <paramValue name="maxStopCodonPercent">20</paramValue>
       <paramValue name="preferredSource">sp</paramValue>
-      <depends name="runOrthoEbiDumper"/>
+      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
     </step>
 
     <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
@@ -102,7 +102,7 @@
       <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/proteomeFromEbi.fasta</paramValue>
       <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
       <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
-      <depends name="findExemplarProteins"/>
+      <depends name="${orthomclAbbrev}_findExemplarProteins"/>
     </step>
 
     <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
@@ -115,7 +115,7 @@
       <paramValue name="regexDesc">product=(.*)</paramValue>
       <paramValue name="regexName">gene=(\S*)</paramValue>
       <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
-      <depends name="makeAliasFile"/>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
     </step>
 
     <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">
@@ -128,20 +128,20 @@
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
-      <depends name="insertPeripheralSequences"/>
+      <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
     </subgraph>
 
     <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
-      <depends name="processProteome"/>
+      <depends name="${orthomclAbbrev}_processProteome"/>
     </step>
 
     <step name="${orthomclAbbrev}_insertEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
       <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/ecFromEbi.tab</paramValue>
       <paramValue name="evidenceCode">EBI</paramValue>
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
-      <depends name="runOrthoEbiDumper"/>
+      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
     </step>
 
   </datasetTemplate>
