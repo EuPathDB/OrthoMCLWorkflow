@@ -34,6 +34,7 @@
 
   <step name="mirrorResidualFastaFilesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$residualFastaFilesDir$$</paramValue>
+
     <depends name="makeResidualFastaFilesDir"/>
   </step>
 
@@ -41,7 +42,6 @@
     <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
     <depends name="makeGetPeripheralProteinsDir"/>
   </step>
-
 
   <datasetTemplate class="orthomclPeripheralFromEbi">
     <prop name="projectName"/>

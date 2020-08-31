@@ -13,7 +13,6 @@
       <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
       <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <depends name="loadProteome"/>
     </step>
 
     <step name="mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
@@ -25,7 +24,6 @@
 
   <step name="mirrorProteomeDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>
-    <depends name="loadProteome"/>
   </step>
 
   <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
