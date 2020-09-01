@@ -9,7 +9,7 @@
     <param name="proteomeDatasetsDir"/>
     <param name="coreGoodProteinsFile"/>
 
-    <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+    <step name="insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxon">
       <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="orthomclClade">$$orthomclClade$$</paramValue> 
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue> 
