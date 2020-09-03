@@ -18,6 +18,7 @@ sub run {
   my $project_name = $self->getParamValue('projectName');
   my $ecFileName = $self->getParamValue('ecFileName');
   my $proteomeFileName = $self->getParamValue('proteomeFileName');
+  my $ebi2gus_tag = $self->getParamValue('ebi2gusTag');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   $outputDir = "$workflowDataDir/$outputDir";
@@ -25,7 +26,7 @@ sub run {
   my $initSqlDir = "$outputDir/sql";
   my $mysqlDir = "$outputDir/mysql_data";
 
-  my $cmd = "orthoEbiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --container_name $orthomclAbbrev --orthomclAbbrev $orthomclAbbrev --proteome_file_name $proteomeFileName --ec_file_name $ecFileName";
+  my $cmd = "orthoEbiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --container_name $orthomclAbbrev --orthomclAbbrev $orthomclAbbrev --proteome_file_name $proteomeFileName --ec_file_name $ecFileName --ebi2gus_tag $ebi2gus_tag";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $mysqlDir");

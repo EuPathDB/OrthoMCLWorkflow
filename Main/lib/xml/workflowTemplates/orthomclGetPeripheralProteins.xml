@@ -52,6 +52,7 @@
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
     <prop name="organismName"/>
+    <prop name="ebi2gusTag"/>
 
     <step name="${orthomclAbbrev}_insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
@@ -84,6 +85,7 @@
       <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="ecFileName">ecFromEbi.tab</paramValue>
       <paramValue name="proteomeFileName">proteomeFromEbi.fasta</paramValue>
+      <paramValue name="ebi2gusTag">${ebi2gusTag}</paramValue>
       <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
     </step>
 
