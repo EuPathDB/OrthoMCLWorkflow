@@ -11,7 +11,7 @@ sub run {
 
   my $edn = $self->getParamValue('externalDatabaseName');
   my $edv = $self->getParamValue('externalDatabaseVersion');
-  my $ncbi = $self->getParamValue('ncbiTaxId'); 
+  my $ncbi = $self->getParamValue('ncbiTaxonId'); 
   my $file = $self->getParamValue('sequenceFile');  
   my $name = $self->getParamValue('regexName');
   my $desc = $self->getParamValue('regexDesc');
