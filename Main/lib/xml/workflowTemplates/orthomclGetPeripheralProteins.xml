@@ -112,8 +112,8 @@
       <paramValue name="externalDatabaseVersion">${ebiVersion}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="sequenceFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
-      <paramValue name="regexSecondaryId">^>[^|]+\|(\S+)</paramValue>
-      <paramValue name="regexSourceId">^>(\S+)</paramValue>
+      <paramValue name="regexSourceId">^>[^|]+\|(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
       <paramValue name="regexDesc">product=(.*)</paramValue>
       <paramValue name="regexName">gene=(\S*)</paramValue>
       <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
