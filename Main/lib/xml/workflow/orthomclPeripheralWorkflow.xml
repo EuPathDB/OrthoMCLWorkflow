@@ -19,7 +19,7 @@
     <paramValue name="orthoGroupAaTable">apidb.OrthologGroupAaSequence</paramValue> 
   </step>
 
-  <subgraph name="getAndMapPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
+  <subgraph name="getAndMapPeripheralProteomes" xmlFile="generated/OrthoMclBenchmark/orthomclGetPeripheralProteins.xml">
     <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
     <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
     <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>

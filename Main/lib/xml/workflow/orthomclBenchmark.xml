@@ -1,0 +1,428 @@
+<workflowGraph name="">
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="groupIdPrefix"/>
+  <param name="groupIdStart"/>
+  <param name="residualGroupIdPrefix"/>
+  <param name="residualGroupIdStart"/>
+  <param name="proteomesFromBuild"/>
+  <!--  projectName should be changed, was orthoMCL -->
+
+  <constant name="projectName">OrthoMCL</constant>
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
+  <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
+  <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
+  <constant name="globalDataDir">global</constant>
+  <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
+  <constant name="coreGroupsDir">coreGroups</constant>
+
+  <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
+  <step name="initUserGroupProject" 
+	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </step>
+
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+  </step>
+
+  <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+<!--
+  <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">SO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+-->
+
+  <subgraph name="taxonomy" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">taxonomy_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+<!--
+  <subgraph name="interproscanData" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+-->
+  <!-- load the OrthomclTaxon table with our tree of life -->
+ 
+  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">OrthoMclBenchmark.xml</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="taxonomy"/>
+  </subgraph>
+
+<!--
+
+  <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
+    <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>  
+
+  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesGroupFiles">
+    <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>  
+
+-->
+
+  <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMclBenchmark/orthomclGetCoreProteins.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="outputGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <depends name="orthomclClades"/>
+    <depends name="initClusterHomeDir"/>
+<!--
+    <depends name="getOldReleaseSeqFiles"/>
+    <depends name="getOldReleaseGroupFiles"/>
+    <depends name="SequenceOntology"/>
+    <depends name="geneOntology"/>
+    <depends name="geneOntologyEvidenceCodes"/>
+    <depends name="enzymeDB"/>
+-->
+  </subgraph>
+
+<!--
+  <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">coreInterpro</paramValue>
+  </step>
+
+  <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">coreInterpro</paramValue>
+    <depends name="makeCoreInterproDir"/>
+  </step>
+  
+  <subgraph name="coreInterproScan" xmlFile="interpro.xml">
+    <paramValue name="proteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="parentDataDir">coreInterpro</paramValue>
+    <paramValue name="insertVersion">2</paramValue>
+    <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+    <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+    <depends name="interproscanData"/>
+    <depends name="getCoreProteomes"/>    
+    <depends name="mirrorCoreInterproDirToCluster"/>    
+  </subgraph>
+
+-->
+
+  <subgraph name="makeCoreGroups" xmlFile="makeOrthologGroups.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="inputProteinFile">coreGood.fasta</paramValue>
+    <paramValue name="inputTaxaDir">dontcare</paramValue>
+    <paramValue name="outputGroupsDir">$$coreGroupsDir$$</paramValue>
+    <paramValue name="suffix">Core</paramValue>
+    <paramValue name="useExistingSimSeqs">false</paramValue>
+    <paramValue name="collapseClades">false</paramValue>
+    <paramValue name="includeSingletonGroups">true</paramValue>
+    <paramValue name="groupIdPrefix">$$groupIdPrefix$$</paramValue>
+    <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
+    <depends name="getCoreProteomes"/>
+  </subgraph>
+
+  <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
+    <paramValue name="inputGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="corePeripheralResidual">C</paramValue>
+    <depends name="makeCoreGroups"/>
+  </step>
+
+<!--
+  <step name="extractFastaFilesForMsaCore" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
+    <paramValue name="outputDir">tarredGroupFastaFilesDirCore</paramValue>
+    <paramValue name="groupTypesCPR">C</paramValue>
+    <paramValue name="proteinsPerTarFile">500</paramValue>
+    <paramValue name="maxGroupSize">100</paramValue>
+    <paramValue name="samplingOfSeqs">Y</paramValue>
+    <depends name="insertGroups"/>
+  </step>
+
+  <step name="mirrorGroupFastaFilesToClusterCore" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDirCore</paramValue>
+    <depends name="extractFastaFilesForMsaCore"/>
+  </step>
+
+  <subgraph name="muscleMsaCore" xmlFile="muscleMSA.xml">
+    <paramValue name="fastaFilesDir">tarredGroupFastaFilesDirCore</paramValue>
+    <paramValue name="dataDir">muscleMSAcore</paramValue>
+    <depends name="mirrorGroupFastaFilesToClusterCore"/>
+  </subgraph>
+  
+  <step name="insertMsaCore" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupMsa" stepLoadTypes="plugin">
+    <paramValue name="inputDir">muscleMSAcore/master/mainresult</paramValue>
+    <paramValue name="dataDir">muscleMSAcore</paramValue>
+    <paramValue name="groupTypesCPR">C</paramValue>
+    <depends name="muscleMsaCore"/>
+  </step>
+-->
+
+<!--
+  <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
+    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="insertGroups"/>
+  </subgraph>
+-->
+
+<!--
+  <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">Residuals</paramValue>
+    <paramValue name="orthologTableSuffix">Residuals</paramValue>
+    <paramValue name="groupTypesCPR">R</paramValue>
+    <paramValue name="overwriteExisting">Y</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="insertOrthomclResource" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthomclResource">
+    <paramValue name="proteomesFromBuild">$$proteomesFromBuild$$</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
+    <paramValue name="peripheralMapFileName">peripheralsMapToCoreGroup</paramValue>
+    <paramValue name="coreMapFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="residualMapFile">residualGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="makeGalaxyFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="galaxyDir">galaxyFiles</paramValue>
+    <paramValue name="coreGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="residualGroupsFile">residualGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="coreSequencesFile">coreGood.fasta</paramValue>
+    <paramValue name="residualSequencesFiles">getPeripheralProteins/residualFastaFiles/*.fasta</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="addNumMembersPeripheralGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddNumberMembers">
+    <paramValue name="groupTypesCPR">P</paramValue>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
+
+  <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
+    <depends name="addNumMembersPeripheralGroups"/>
+  </step>
+
+  <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta">
+    <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
+    <paramValue name="tarAndZip">true</paramValue>
+    <paramValue name="groupTypesCPR">P</paramValue>
+    <paramValue name="proteinsPerTarFile">500</paramValue>
+    <depends name="makeGroupsSelfBlastDir"/>
+  </step>
+
+  <step name="mirrorGroupFastasToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$groupsSelfBlastDir$$</paramValue>
+    <depends name="extractGroupFastas"/>
+  </step>
+
+  <subgraph name="groupsSelfBlast" xmlFile="multiBlast.xml">
+    <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue>
+    <paramValue name="nickName">blast</paramValue>
+    <paramValue name="fastaDirTarFile">$$groupsSelfBlastDir$$/groupFastas.tar.gz</paramValue>
+    <paramValue name="coreDatabaseFasta">coreGood.fasta</paramValue>
+    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
+    <paramValue name="idRegex">(\\S+)</paramValue>
+    <paramValue name="blastType">blastp</paramValue>
+    <paramValue name="vendor">ncbi</paramValue>
+    <paramValue name="loadSubjectSubset">false</paramValue>
+    <paramValue name="filterByTaxon">false</paramValue>
+    <paramValue name="maxMemoryGigs">20</paramValue>
+    <paramValue name="loadSimilarities">false</paramValue>
+    <paramValue name="makeSimSeqsFile">true</paramValue>
+    <depends name="mirrorGroupFastasToCluster"/>
+  </subgraph>
+
+  <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue> 
+    <paramValue name="outputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue> 
+    <paramValue name="deleteInputFile">N</paramValue>
+    <depends name="groupsSelfBlast"/>
+  </step>
+
+  <step name="installSelfBlastSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">orthomclPairs.config</paramValue>
+    <paramValue name="suffix">SelfBlast</paramValue>
+    <depends name="fixZeroExponent"/>
+  </step>
+
+
+  <step name="loadSelfBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue>
+    <paramValue name="suffix">SelfBlast</paramValue>
+    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
+    <depends name="installSelfBlastSchema"/>
+  </step>
+
+
+  <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroupWithSqlLdr">
+    <paramValue name="simSeqTableSuffix">SelfBlast,peripheral,Residuals,residual</paramValue>
+    <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
+    <paramValue name="directory">SimilarSequencesGroup</paramValue>
+    <depends name="loadSelfBlast"/>
+  </step>
+
+
+  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
+    <paramValue name="numberOfThreadsToUse">4</paramValue>
+    <paramValue name="maxGroupSize">500</paramValue>
+    <depends name="insertSimilarSequencesGroup"/>
+  </step>
+
+  <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
+    <paramValue name="orthologTableSuffix">Core</paramValue>
+    <paramValue name="groupTypesCPR">C</paramValue>
+    <paramValue name="overwriteExisting">Y</paramValue>
+    <depends name="loadSelfBlast"/>
+  </step>
+
+  <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
+    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
+    <paramValue name="orthologTableSuffix">peripheral</paramValue>
+    <paramValue name="groupTypesCPR">P</paramValue>
+    <paramValue name="overwriteExisting">Y</paramValue>
+    <depends name="UpdateCoreGroupStatistics"/>
+  </step>
+
+  <step name="extractFastaFilesForMsaResidual" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
+    <paramValue name="outputDir">tarredGroupFastaFilesDirResidual</paramValue>
+    <paramValue name="groupTypesCPR">R</paramValue>
+    <paramValue name="proteinsPerTarFile">500</paramValue>
+    <paramValue name="maxGroupSize">100</paramValue>
+    <paramValue name="samplingOfSeqs">Y</paramValue>
+    <depends name="addNumMembersPeripheralGroups"/>
+  </step>
+
+  <step name="mirrorGroupFastaFilesToClusterResidual" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDirResidual</paramValue>
+    <depends name="extractFastaFilesForMsaResidual"/>
+  </step>
+
+  <subgraph name="muscleMsaResidual" xmlFile="muscleMSA.xml">
+    <paramValue name="fastaFilesDir">tarredGroupFastaFilesDirResidual</paramValue>
+    <paramValue name="dataDir">muscleMSAresidual</paramValue>
+    <depends name="mirrorGroupFastaFilesToClusterResidual"/>
+  </subgraph>
+  
+  <step name="insertMsaResidual" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupMsa" stepLoadTypes="plugin">
+    <paramValue name="inputDir">muscleMSAresidual/master/mainresult</paramValue>
+    <paramValue name="dataDir">muscleMSAresidual</paramValue>
+    <paramValue name="groupTypesCPR">R</paramValue>
+    <depends name="muscleMsaResidual"/>
+  </step>
+
+-->
+
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+
+<!--
+  <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
+    <paramValue name="groupTypesCPR">PR</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
+    <paramValue name="groupTypesCPR">CPR</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+-->
+
+<!--  maybe do not need this for build 49 because we are using site search
+  <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
+    <depends name="insertProteinKeywords"/>
+    <depends name="insertDomainKeywords"/>
+  </step>
+-->
+
+<!--	
+  <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+ <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <depends name="addNumMembersPeripheralGroups"/>
+  </step>
+
+  <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="corePairsDir">coreGroups/pairs</paramValue>
+    <paramValue name="residualPairsDir">residualGroups/pairs</paramValue>
+    <depends name="makeDownloadSiteDir"/>
+  </step>
+
+  <step name="makeInterproDownloadFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile">
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
+    <depends name="makeDownloadSiteDir"/>
+  </step>
+
+  <step name="makeWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeDownloadSiteDir"/>
+  </step>
+
+  <step name="webServiceBlastFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeWebservicesBlastFile">
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="makeWebServicesDir"/>
+    <depends name="makeDownloadFiles"/>
+  </step>
+
+-->
+
+</workflowGraph>
