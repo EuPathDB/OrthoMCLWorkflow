@@ -184,6 +184,9 @@
       <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
       <paramValue name="ecFileName">ecFromVeupath.tab</paramValue>
       <paramValue name="proteomeFileName">proteomeFromVeupath.fasta</paramValue>
+      <paramValue name="downloadFileName">downloadFromVeupath.txt</paramValue>
+      <paramValue name="logFileName">wget.log</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
       <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
     </step>
 
