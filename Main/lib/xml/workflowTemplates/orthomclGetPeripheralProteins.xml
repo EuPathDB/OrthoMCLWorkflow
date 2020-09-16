@@ -155,12 +155,13 @@
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
     <prop name="organismName"/>
+    <prop name="version"/>
 
     <step name="${orthomclAbbrev}_insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="version">TODAY</paramValue>
+      <paramValue name="version">${version}</paramValue>
       <paramValue name="organismName">${organismName}</paramValue>
       <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </step>
@@ -210,7 +211,7 @@
 
     <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
       <paramValue name="externalDatabaseName">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
-      <paramValue name="externalDatabaseVersion">TODAY</paramValue>
+      <paramValue name="externalDatabaseVersion">${version}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="sequenceFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
       <paramValue name="regexSourceId">^>[^|]+\|(\S+)</paramValue>
