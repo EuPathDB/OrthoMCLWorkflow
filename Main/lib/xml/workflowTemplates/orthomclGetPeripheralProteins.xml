@@ -197,7 +197,7 @@
       <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
       <paramValue name="maxStopCodonPercent">20</paramValue>
       <paramValue name="preferredSource">sp</paramValue>
-      <depends name="${orthomclAbbrev}__getProteinsEcFromVeupath"/>
+      <depends name="${orthomclAbbrev}_getProteinsEcFromVeupath"/>
     </step>
 
     <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
@@ -244,7 +244,7 @@
       <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/ecFromVeupath.tab</paramValue>
       <paramValue name="evidenceCode">VEuPathDB</paramValue>
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
-      <depends name="${orthomclAbbrev}__getProteinsEcFromVeupath"/>
+      <depends name="${orthomclAbbrev}_getProteinsEcFromVeupath"/>
     </step>
 
   </datasetTemplate>
