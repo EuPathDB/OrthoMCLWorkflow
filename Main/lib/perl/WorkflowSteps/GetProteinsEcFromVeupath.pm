@@ -25,7 +25,7 @@ sub run {
   $downloadFileName = "$outputDir/$downloadFileName";
   $logFileName = "$outputDir/$logFileName";
 
-  my $cmd = "orthoGetProteinsEcFromVeupath.pl --orthomclAbbrev $orthomclAbbrev --proteomeFileName $proteomeFileName --ecFileName $ecFileName --downloadFileName $downloadFileName --projectName $projectName --organismName $organismName";
+  my $cmd = "orthoGetProteinsEcFromVeupath.pl --orthomclAbbrev $orthomclAbbrev --proteomeFileName $proteomeFileName --ecFileName $ecFileName --downloadFileName $downloadFileName --projectName $projectName --organismName '$organismName' -logFileName $logFileName";
 
   if ($undo) {
     $self->runCmd(0, "rm $proteomeFileName");
