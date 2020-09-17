@@ -91,7 +91,7 @@
 
     <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
       <paramValue name="fastaFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/proteomeFromEbi.fasta</paramValue>
-      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
       <paramValue name="geneIdRegex">gene=(\S+)</paramValue>
       <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
       <paramValue name="maxStopCodonPercent">20</paramValue>
@@ -102,9 +102,17 @@
     <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/proteomeFromEbi.fasta</paramValue>
-      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
       <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
       <depends name="${orthomclAbbrev}_findExemplarProteins"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_orgAbbrevSourceId" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrgAbbrevSourceId" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="geneRegex">gene=(\S+)</paramValue>
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
     </step>
 
     <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
@@ -117,7 +125,7 @@
       <paramValue name="regexDesc">product=(.*)</paramValue>
       <paramValue name="regexName">gene=(\S*)</paramValue>
       <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
-      <depends name="${orthomclAbbrev}_makeAliasFile"/>
+      <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
     </step>
 
     <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">
@@ -193,7 +201,7 @@
 
     <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
       <paramValue name="fastaFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/proteomeFromVeupath.fasta</paramValue>
-      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
       <paramValue name="geneIdRegex">gene=(\S+)</paramValue>
       <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
       <paramValue name="maxStopCodonPercent">20</paramValue>
@@ -204,9 +212,17 @@
     <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/proteomeFromVeupath.fasta</paramValue>
-      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
       <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/aliases.tab</paramValue>
       <depends name="${orthomclAbbrev}_findExemplarProteins"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_orgAbbrevSourceId" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrgAbbrevSourceId" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="geneRegex">gene=(\S+)</paramValue>
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
     </step>
 
     <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
@@ -219,7 +235,7 @@
       <paramValue name="regexDesc">product=(.*)</paramValue>
       <paramValue name="regexName">gene=(\S*)</paramValue>
       <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
-      <depends name="${orthomclAbbrev}_makeAliasFile"/>
+      <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
     </step>
 
     <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">

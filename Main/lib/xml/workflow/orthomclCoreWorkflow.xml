@@ -197,10 +197,11 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-  <step name="insertOrthomclResource" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthomclResource">
-    <paramValue name="proteomesFromBuild">$$proteomesFromBuild$$</paramValue>
+<!--  Mark: update this step, get organism/strain names, urls, project name from veupath sites; version for EDR table
+  <step name="UpdateSpeciesResources" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources">
     <depends name="peripheralWorkflow"/>
   </step>
+-->
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
