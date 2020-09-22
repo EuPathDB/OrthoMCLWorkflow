@@ -14,6 +14,9 @@ sub run {
   my $project = $self->getParamValue('project');
   my $corePairsDir = $self->getParamValue('corePairsDir');
   my $residualPairsDir = $self->getParamValue('residualPairsDir');
+  my $orthomclVersion = getParamValue('orthomclVersion');
+  $orthomclVersion =~ s/_//g;
+  my $groupFile = "$workflowDataDir/genomicSitesFiles_$orthomclVersion/orthomclGroups.txt";
 
   #original for core plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
   $self->testInputFile('groupsFile', "$workflowDataDir/coreGroups/orthomclGroups.txt");
@@ -58,7 +61,7 @@ sub run {
 
     # groups
     # original for core plu periph proteomes $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
-    $self->runCmd($test, "cp $workflowDataDir/coreGroups/orthomclGroups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $groupFile $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
     # genome summary

@@ -375,7 +375,9 @@
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="corePairsDir">coreGroups/pairs</paramValue>
     <paramValue name="residualPairsDir">residualGroups/pairs</paramValue>
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <depends name="makeDownloadSiteDir"/>
+    <depends name="makeGenomicSitesFiles"/>
   </step>
 
   <step name="makeInterproDownloadFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile">
