@@ -15,7 +15,7 @@ sub run {
   my $abbrev = $self->getParamValue('abbrev');
 
   if ($undo) {
-    $self->runCmd($test, "rm $workDir/$outputFile");
+    $self->runCmd($test, "rm $workDir/$out");
   } else {
       $self->testInputFile('inputFile', "$workDir/$in");
       my $cmd = "orgAbbrevSourceId --inputFile $workDir/$in --abbrev $abbrev --geneRegex '$regex' --outputFile $workDir/$out";
