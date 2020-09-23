@@ -197,11 +197,20 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-<!--  Mark: update this step, get organism/strain names, urls, project name from veupath sites; version for EDR table
-  <step name="UpdateSpeciesResources" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources">
+  <step name="makeResourcesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
--->
+
+  <step name="getOrganismNameFromVeupath" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::getOrganismNameFromVeupath">
+    <paramValue name="dataDir">OrganismNameResources</paramValue>
+    <depends name="makeResourcesDir"/>
+  </step>
+
+  <step name="UpdateSpeciesResources" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources">
+    <paramValue name="dataDir">OrganismNameResources</paramValue>
+    <depends name="getOrganismNameFromVeupath"/>
+  </step>
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
@@ -352,6 +361,7 @@
     <paramValue name="groupTypesCPR">CPR</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
+
 
 <!--  maybe do not need this for build 49 because we are using site search
   <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
