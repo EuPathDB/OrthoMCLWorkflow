@@ -23,20 +23,21 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $galaxyDir") if -e "$galaxyDir";
   } else {
-    my $cmd = "mkdir $galaxyDir";
-    $self->runCmd($test, $cmd);
-    $cmd = "cat $coreGroupsFile $residualGroupsFile > $galaxyGroupsFile";
-    $self->runCmd($test, $cmd);
-    $cmd = "cat $coreSequencesFile > $galaxySequencesFile";
-    $self->runCmd($test, $cmd);
-    $cmd = "cat $residualSequencesFiles >> $galaxySequencesFile";
-    $self->runCmd($test, $cmd);
-    if ($test) {
-      $self->runCmd(0, "touch $coreGroupsFile");
-      $self->runCmd(0, "touch $residualGroupsFile");
-      $self->runCmd(0, "touch $coreSequencesFile");
-      $self->runCmd(0, "touch $residualSequencesFiles");
-    }
+      if ($test) {
+	  $self->runCmd(0, "touch $coreGroupsFile");
+	  $self->runCmd(0, "touch $residualGroupsFile");
+	  $self->runCmd(0, "touch $coreSequencesFile");
+	  $self->runCmd(0, "touch $residualSequencesFiles");
+      } else {
+	  my $cmd = "mkdir $galaxyDir";
+	  $self->runCmd($test, $cmd);
+	  $cmd = "cat $coreGroupsFile $residualGroupsFile > $galaxyGroupsFile";
+	  $self->runCmd($test, $cmd);
+	  $cmd = "cat $coreSequencesFile > $galaxySequencesFile";
+	  $self->runCmd($test, $cmd);
+	  $cmd = "cat $residualSequencesFiles >> $galaxySequencesFile";
+	  $self->runCmd($test, $cmd);
+      }
   }
 }
 
