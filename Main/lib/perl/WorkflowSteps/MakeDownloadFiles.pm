@@ -36,7 +36,7 @@ sub run {
     $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
     $self->runCmd($test, "rm $groupsDownloadFileName.gz");
     $self->runCmd($test, "rm $domainsDownloadFileName.gz");
-    $self->runCmd($test, "rm $genomeSummaryDownloadFileName.gz");
+    $self->runCmd($test, "rm $genomeSummaryFileName.gz");
     $self->runCmd($test, "rm -r $corePairsDownloadDir");
     $self->runCmd($test, "rm -r $residualPairsDownloadDir");
 
@@ -66,8 +66,8 @@ sub run {
 
     # genome summary
     $sql = $self->getGenomeSummarySql();
-    $self->runCmd($test, "makeFileWithSql --outFile $genomeSummaryDownloadFileName --sql \"$sql\" --includeHeader --outDelimiter \"\\t\"");
-    $self->runCmd($test, "gzip $genomeSummaryDownloadFileName");
+    $self->runCmd($test, "makeFileWithSql --outFile $genomeSummaryFileName --sql \"$sql\" --includeHeader --outDelimiter \"\\t\"");
+    $self->runCmd($test, "gzip $genomeSummaryFileName");
 
     # pairs
     $self->runCmd($test, "mkdir -p $corePairsDownloadDir");
