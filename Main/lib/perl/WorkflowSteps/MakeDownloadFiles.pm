@@ -14,7 +14,7 @@ sub run {
   my $project = $self->getParamValue('project');
   my $corePairsDir = $self->getParamValue('corePairsDir');
   my $residualPairsDir = $self->getParamValue('residualPairsDir');
-  my $orthomclVersion = getParamValue('orthomclVersion');
+  my $orthomclVersion = $self->getParamValue('orthomclVersion');
   $orthomclVersion =~ s/_//g;
   my $groupFile = "$workflowDataDir/genomicSitesFiles_$orthomclVersion/orthomclGroups.txt";
 
