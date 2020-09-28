@@ -202,15 +202,17 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-  <step name="getOrganismNameFromVeupath" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::getOrganismNameFromVeupath">
+<!-- Mark working on this
+  <step name="getDataFromVeupathAndUniprot" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="makeResourcesDir"/>
   </step>
 
   <step name="UpdateSpeciesResources" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
-    <depends name="getOrganismNameFromVeupath"/>
+    <depends name="getDataFromVeupathAndUniprot"/>
   </step>
+-->
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
@@ -234,7 +236,7 @@
 
   <step name="addNumMembersPeripheralGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddNumberMembers">
     <paramValue name="groupTypesCPR">P</paramValue>
-    <depends name="makeGenomicSitesFiles"/>
+    <depends name="peripheralWorkflow"/>
   </step>
 
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -363,12 +365,11 @@
   </step>
 
 
-<!--  maybe do not need this for build 49 because we are using site search
+<!--  we need for b49, but  do not need this for build 50 because we are using site search -->
   <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
     <depends name="insertProteinKeywords"/>
     <depends name="insertDomainKeywords"/>
   </step>
--->
 	
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="peripheralWorkflow"/>
