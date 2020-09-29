@@ -108,7 +108,7 @@ GROUP BY name, number_of_members, primary_identifier
 ORDER BY name, frequency desc";
 }
 
-sub getGenomeSummary {
+sub getGenomeSummarySql {
     my ($self) = @_;
 
     return "
