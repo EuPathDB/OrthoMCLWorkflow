@@ -71,10 +71,10 @@ sub run {
 
     # pairs
     $self->runCmd($test, "mkdir -p $corePairsDownloadDir");
-    $self->runCmd($test, "cp -r $workflowDataDir/$corePairsDir $corePairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$corePairsDir/* $corePairsDownloadDir");
     $self->runCmd($test, "gzip $corePairsDownloadDir/*");
     $self->runCmd($test, "mkdir -p $residualPairsDownloadDir");
-    $self->runCmd($test, "cp -r $workflowDataDir/$residualPairsDir $residualPairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$residualPairsDir/* $residualPairsDownloadDir");
     $self->runCmd($test, "gzip $residualPairsDownloadDir/*");
   }
 }
