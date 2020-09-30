@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources;
+package OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -15,6 +15,6 @@ sub run {
 
     my $args = " --dataDir $dataDir";
 
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateSpeciesResources", $args);
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::UpdateSpeciesResourcesEc", $args);
 
 }

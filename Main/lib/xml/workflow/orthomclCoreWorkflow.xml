@@ -208,10 +208,18 @@
     <depends name="makeResourcesDir"/>
   </step>
 
-  <step name="UpdateSpeciesResources" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResources">
+  <step name="updateSpeciesResourcesEc" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="getDataFromVeupathAndUniprot"/>
   </step>
+
+  <step name="updateEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
+      <paramValue name="inputFile">OrganismNameResources/ecFromVeupath.txt</paramValue>
+      <paramValue name="evidenceCode">VEuPathDB</paramValue>
+      <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
+      <depends name="updateSpeciesResourcesEc"/>
+   </step>
+
 -->
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">

@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::getOrganismNameFromVeupath;
+package OrthoMCLWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -13,7 +13,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   $dataDir = "$workflowDataDir/$dataDir";
 
-  my $cmd = "orthoGetOrganismNameFromVeupath.pl --dataDir $dataDir";
+  my $cmd = "orthoGetDataFromVeupathAndUniprot.pl --dataDir $dataDir";
 
   if ($undo) {
     $self->runCmd(0, "rm $dataDir/*");
