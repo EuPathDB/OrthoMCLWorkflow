@@ -6,7 +6,7 @@ In summary, this repository supports the OrthoMCL workflow. The repository conta
 
    + yarn / npm / ant
    + WEBAPP_PROP_FILE file (file with one property for the webapp target directory)
-      webappTargetDir=BLAH
+      webappTargetDir=BLAH ?????
 
 ** Installation instructions.
 
