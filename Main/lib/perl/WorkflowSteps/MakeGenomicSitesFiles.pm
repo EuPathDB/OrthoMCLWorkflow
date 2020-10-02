@@ -23,6 +23,13 @@ sub run {
   } else {
     my $cmd = "orthomclMakeGenomicSitesFiles $genomicSitesDir $workflowDataDir/$peripheralDir $peripheralMapFileName $workflowDataDir/$coreMapFile $workflowDataDir/$residualMapFile $workflowDataDir/$cladeFile";
     $self->runCmd($test, $cmd);
+
+    #these are the temporary commands for changing 'rhiz' to 'rirr'
+    $cmd = "sed -i 's/rhiz/rirr/g' $genomicSitesDir/orthomclTaxons.txt";
+    $self->runCmd($test, $cmd);
+    $cmd = "sed -i 's/rhiz|/rirr|/g' $genomicSitesDir/orthomclGroups.txt";
+    $self->runCmd($test, $cmd);
+
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$peripheralDir");
       $self->runCmd(0, "touch $workflowDataDir/$coreMapFile");

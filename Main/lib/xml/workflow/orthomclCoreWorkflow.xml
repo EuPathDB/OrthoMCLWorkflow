@@ -219,6 +219,7 @@
       <depends name="updateSpeciesResourcesEc"/>
    </step>
 
+<!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
