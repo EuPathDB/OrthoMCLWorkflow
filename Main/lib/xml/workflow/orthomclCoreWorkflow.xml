@@ -202,7 +202,6 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-<!-- Mark working on this
   <step name="getDataFromVeupathAndUniprot" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="makeResourcesDir"/>
@@ -219,8 +218,6 @@
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
       <depends name="updateSpeciesResourcesEc"/>
    </step>
-
--->
 
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
@@ -373,11 +370,12 @@
   </step>
 
 
-<!--  we need for b49, but  do not need this for build 50 because we are using site search -->
+<!--  I am taking out of workflow for b49 because does not work in this environment. I will run outside workflow.
   <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
     <depends name="insertProteinKeywords"/>
     <depends name="insertDomainKeywords"/>
   </step>
+-->
 	
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="peripheralWorkflow"/>
