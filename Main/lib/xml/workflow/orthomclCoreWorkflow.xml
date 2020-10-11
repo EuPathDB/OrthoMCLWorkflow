@@ -193,7 +193,7 @@
     <paramValue name="simSeqTableSuffix">Residuals</paramValue>
     <paramValue name="orthologTableSuffix">Residuals</paramValue>
     <paramValue name="groupTypesCPR">R</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
+    <paramValue name="overwriteExisting">N</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
 
@@ -320,7 +320,7 @@
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
     <paramValue name="orthologTableSuffix">Core</paramValue>
     <paramValue name="groupTypesCPR">C</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
+    <paramValue name="overwriteExisting">N</paramValue>
     <depends name="loadSelfBlast"/>
   </step>
 
@@ -328,7 +328,7 @@
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
     <paramValue name="orthologTableSuffix">peripheral</paramValue>
     <paramValue name="groupTypesCPR">P</paramValue>
-    <paramValue name="overwriteExisting">Y</paramValue>
+    <paramValue name="overwriteExisting">N</paramValue>
     <depends name="UpdateCoreGroupStatistics"/>
   </step>
 
