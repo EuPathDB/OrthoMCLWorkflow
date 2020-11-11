@@ -227,7 +227,8 @@
     <paramValue name="coreMapFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="residualMapFile">residualGroups/orthomclGroups.txt</paramValue>
     <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <paramValue name="ecFile">OrganismNameResources/ec_organism.txt</paramValue>
+    <depends name="updateSpeciesResourcesEc"/>
   </step>
 
   <step name="makeGalaxyFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
@@ -369,14 +370,6 @@
     <paramValue name="groupTypesCPR">CPR</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
-
-
-<!--  I am taking out of workflow for b49 because does not work in this environment. I will run outside workflow.
-  <step name="orthomclWdk" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthomclWdkDump">
-    <depends name="insertProteinKeywords"/>
-    <depends name="insertDomainKeywords"/>
-  </step>
--->
 	
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="peripheralWorkflow"/>

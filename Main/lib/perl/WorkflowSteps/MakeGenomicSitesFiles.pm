@@ -15,13 +15,14 @@ sub run {
   my $coreMapFile = $self->getParamValue('coreMapFile');
   my $residualMapFile = $self->getParamValue('residualMapFile');
   my $cladeFile = $self->getParamValue('cladeFile');
+  my $ecFile = $self->getParamValue('ecFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $genomicSitesDir = $workflowDataDir."/genomicSitesFiles_".$orthomclVersion;
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $genomicSitesDir") if -e "$genomicSitesDir";
   } else {
-    my $cmd = "orthomclMakeGenomicSitesFiles $genomicSitesDir $workflowDataDir/$peripheralDir $peripheralMapFileName $workflowDataDir/$coreMapFile $workflowDataDir/$residualMapFile $workflowDataDir/$cladeFile";
+    my $cmd = "orthomclMakeGenomicSitesFiles $genomicSitesDir $workflowDataDir/$peripheralDir $peripheralMapFileName $workflowDataDir/$coreMapFile $workflowDataDir/$residualMapFile $workflowDataDir/$cladeFile $workflowDataDir/$ecFile";
     $self->runCmd($test, $cmd);
 
     #these are the temporary commands for changing 'rhiz' to 'rirr'
