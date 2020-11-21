@@ -364,16 +364,16 @@
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="addNumMembersPeripheralGroups"/>
   </step>
 
   <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
-    <paramValue name="groupTypesCPR">CPR</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <paramValue name="groupTypesCPR">PR</paramValue>
+    <depends name="addNumMembersPeripheralGroups"/>
   </step>
 	
   <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
-    <depends name="peripheralWorkflow"/>
+    <depends name="addNumMembersPeripheralGroups"/>
   </step>
 
  <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
