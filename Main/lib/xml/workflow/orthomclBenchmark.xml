@@ -157,13 +157,14 @@
     <depends name="getCoreProteomes"/>
   </subgraph>
 
+
+<!--
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="corePeripheralResidual">C</paramValue>
     <depends name="makeCoreGroups"/>
   </step>
 
-<!--
   <step name="extractFastaFilesForMsaCore" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractFilesForMsa">
     <paramValue name="outputDir">tarredGroupFastaFilesDirCore</paramValue>
     <paramValue name="groupTypesCPR">C</paramValue>
