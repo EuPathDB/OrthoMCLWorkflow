@@ -6,7 +6,7 @@
     <prop name="buildNumber"/>
     <prop name="skipIfAlreadyDone"/>
 
-    <step name="retireCoreOrganisms" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RetireCoreOrganisms">
+    <step name="retireCoreOrganisms_build${buildNumber}" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RetireCoreOrganisms">
       <paramValue name="abbrevList">${abbrevList}</paramValue>
       <paramValue name="mainDataDir">$$mainDataDir$$</paramValue>
       <paramValue name="skipIfAlreadyDone">${skipIfAlreadyDone}</paramValue>
