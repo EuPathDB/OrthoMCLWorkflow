@@ -15,7 +15,7 @@ sub run {
     my $version = $self->getParamValue('version');
     my $organismName = $self->getParamValue('organismName');
 
-    my $args = " --abbrev $abbrev --orthomclClade $orthomclClade --ncbiTaxonId $ncbiTaxonId --version $version --organismName $organismName";
+    my $args = " --abbrev '$abbrev' --orthomclClade $orthomclClade --ncbiTaxonId $ncbiTaxonId --version $version --organismName '$organismName'";
 
     $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertSinglePeripheralTaxonNameVersion", $args);
 
