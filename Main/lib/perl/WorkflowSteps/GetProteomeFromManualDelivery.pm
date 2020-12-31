@@ -23,7 +23,7 @@ sub run {
     $self->runCmd(0, "if [-e $outputFile]; then rm $outputFile; fi");
   } else {
     $self->runCmd($test,"cp $manualDeliveryFile $outputDir");
-    $self->runCmd($test,"if [-e $zipped]; then gunzip -d $zipped; fi";
+    $self->runCmd($test,"if [-e $zipped]; then gunzip -d $zipped; fi");
   }
 }
 
