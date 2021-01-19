@@ -38,7 +38,7 @@ sub run {
     $self->runCmd($test, "mkdir -p $mysqlDir");
     $self->runCmd($test, "mkdir -p $unpackDir");
     $self->runCmd($test, "mkdir -p $initSqlDir");
-    $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}*.gz");
+    $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.gz");
     $self->runCmd($test,"gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
 
     $self->runCmd($test,$cmd);
