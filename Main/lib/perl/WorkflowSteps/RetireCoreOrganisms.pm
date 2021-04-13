@@ -14,7 +14,7 @@ sub run {
   my $clusterUser = $self->getSharedConfig("$cluster.clusterLogin");
   my $clusterDir = $self->getSharedConfig("$cluster.clusterBaseDir");
   if ($mainDataDir =~ /(workflows.+data)/) {
-      $clusterDir += "/$1/";
+      $clusterDir .= "/$1/";
   } else {
       die "Cannot obtain workflow data directory from '$mainDataDir'\n";
   }
