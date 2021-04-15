@@ -2,6 +2,7 @@
   <param name="projectVersionForWebsiteFiles"/>
   <param name="groupIdPrefix"/>
   <param name="groupIdStart"/>
+  <param name="genomicSiteVersion"/>
   <param name="residualGroupIdPrefix"/>
   <param name="residualGroupIdStart"/>
   <param name="proteomesFromBuild"/>
@@ -285,7 +286,7 @@
 <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
   <step name="predictEcNumbers" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::PredictEcNumbers">
       <paramValue name="outputDir">@@manualDeliveryDir@@/PROJECT/common/function/OrthoMCLDerived_ECAssociations/VERSION/final</paramValue>
-      <paramValue name="version">$$residualGroupIdPrefix$$</paramValue>
+      <paramValue name="version">$$genomicSiteVersion$$</paramValue>
       <paramValue name="organismDir">OrganismNameResources</paramValue>
       <depends name="updateEcNumbers"/>
       <depends name="insertSimilarSequencesGroup"/>
