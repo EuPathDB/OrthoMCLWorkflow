@@ -9,14 +9,13 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $version = $self->getParamValue('version');
   my $ouputDir = $self->getParamValue('outputDir');
   my $organismDir = $workflowDataDir."/".$organismDir;
 
   if ($undo) {
 
   } else {
-    my $cmd = "orthomclEcPrediction $outputDir $organismDir $version";
+    my $cmd = "orthomclEcPrediction $outputDir $organismDir";
     $self->runCmd($test, $cmd);
 
     if ($test) {
