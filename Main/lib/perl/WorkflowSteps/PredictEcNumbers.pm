@@ -13,14 +13,13 @@ sub run {
   my $organismDir = $workflowDataDir."/".$organismDir;
 
   if ($undo) {
-
+      my $files = $outputDir."/*";
+      $files =~ s/PROJECT/*/;
+      my $cmd = "rm -rf $files";
+      $self->runCmd($test, $cmd);      
   } else {
     my $cmd = "orthomclEcPrediction $outputDir $organismDir";
     $self->runCmd($test, $cmd);
-
-    if ($test) {
-      $self->runCmd(0, "touch $organismDir);
-    }
   }
 }
 

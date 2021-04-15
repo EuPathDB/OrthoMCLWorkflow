@@ -19,7 +19,6 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
    my $release = $self->getParamValue('release');
    my $project = $self->getParamValue('project');
 
-
    my $ncbiBlastPath = $self->getConfig('ncbiBlastPath');
 
    my $workflowDataDir = $self->getWorkflowDataDir();
