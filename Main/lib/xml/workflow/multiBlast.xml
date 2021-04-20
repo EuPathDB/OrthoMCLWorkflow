@@ -11,8 +11,13 @@
     <param name="makeSimSeqsFile"/>
     <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
+    <step name="mirrorGroupFastasToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+    </step>
+
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="mirrorGroupFastasToCluster"/>
     </step>
 
     <step name="makeClusterTaskInputDir" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeMultiBlastTaskInputDir">

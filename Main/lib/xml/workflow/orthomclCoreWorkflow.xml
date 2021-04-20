@@ -234,11 +234,6 @@
     <depends name="makeGroupsSelfBlastDir"/>
   </step>
 
-  <step name="mirrorGroupFastasToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="extractGroupFastas"/>
-  </step>
-
   <subgraph name="groupsSelfBlast" xmlFile="multiBlast.xml">
     <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
@@ -253,7 +248,7 @@
     <paramValue name="maxMemoryGigs">20</paramValue>
     <paramValue name="loadSimilarities">false</paramValue>
     <paramValue name="makeSimSeqsFile">true</paramValue>
-    <depends name="mirrorGroupFastasToCluster"/>
+    <depends name="extractGroupFastas"/>
   </subgraph>
 
   <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
