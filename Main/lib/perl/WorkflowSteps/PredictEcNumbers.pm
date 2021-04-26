@@ -9,8 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $ouputDir = $self->getParamValue('outputDir');
-  my $organismDir = $workflowDataDir."/".$organismDir;
+  my $outputDir = $self->getParamValue('outputDir');
+  my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
 
   if ($undo) {
       my $files = $outputDir."/*";
