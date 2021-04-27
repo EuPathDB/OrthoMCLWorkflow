@@ -289,7 +289,7 @@
   <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
     <paramValue name="numberOfThreadsToUse">4</paramValue>
     <paramValue name="maxGroupSize">500</paramValue>
-    <depends name="insertSimilarSequencesGroup"/>
+    <depends name="predictEcNumbers"/>
   </step>
 
   <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
@@ -297,7 +297,7 @@
     <paramValue name="orthologTableSuffix">Core</paramValue>
     <paramValue name="groupTypesCPR">C</paramValue>
     <paramValue name="overwriteExisting">N</paramValue>
-    <depends name="loadSelfBlast"/>
+    <depends name="createLayoutGraphs"/>
   </step>
 
   <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
