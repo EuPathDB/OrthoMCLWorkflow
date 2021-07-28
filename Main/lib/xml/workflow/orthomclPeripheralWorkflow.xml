@@ -13,11 +13,13 @@
   <constant name="residualFastaFilesDir">$$getPeripheralProteinsDir$$/residualFastaFiles</constant>
   <constant name="makeResidualGroupsDir">$$parentDataDir$$/makeResidualGroups</constant>
   <constant name="residualGroupsDir">$$parentDataDir$$/residualGroups</constant>
-  
+
+<!--  
   <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables">
     <paramValue name="orthoGroupTable">apidb.OrthologGroup</paramValue>
     <paramValue name="orthoGroupAaTable">apidb.OrthologGroupAaSequence</paramValue> 
   </step>
+-->
 
   <subgraph name="getAndMapPeripheralProteomes" xmlFile="generated/OrthoMclBenchmark/orthomclGetPeripheralProteins.xml">
     <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
@@ -25,7 +27,7 @@
     <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="copyOrthogroupRowsForPeripheral"/>
+<!--    <depends name="copyOrthogroupRowsForPeripheral"/>  -->
   </subgraph>
 
   <subgraph name="makeResidualGroups" xmlFile="makeResidualOrthologGroups.xml">
@@ -43,12 +45,13 @@
     <depends name="getAndMapPeripheralProteomes"/>
   </subgraph>
 
+<!--
   <step name="insertResidualGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">$$residualGroupsDir$$/orthomclGroups.txt</paramValue>
     <paramValue name="corePeripheralResidual">R</paramValue>
     <depends name="makeResidualGroups"/>
   </step>
-
+-->
 
 
 </workflowGraph>

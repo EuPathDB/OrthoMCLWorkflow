@@ -15,6 +15,7 @@ sub run {
   my $abbrev = $self->getParamValue('abbrev');
   my $pvalueExponentCutoff = $self->getParamValue('pvalueExponentCutoff');
   my $percentMatch = $self->getParamValue('percentMatch');
+  my $coreGroupsFile = $self->getParamValue('coreGroupsFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -22,7 +23,7 @@ sub run {
     $self->runCmd(0, "rm $workflowDataDir/$outputGroupsFile") if -e "$workflowDataDir/$outputGroupsFile";
     $self->runCmd(0, "rm $workflowDataDir/$residualFastaFile") if -e "$workflowDataDir/$residualFastaFile";
   } else {
-    my $cmd = "peripheralsToGroupsAndResiduals $workflowDataDir/$outputGroupsFile $workflowDataDir/$inputFastaFile $workflowDataDir/$residualFastaFile $inputSimilarSequencesTable $abbrev $pvalueExponentCutoff $percentMatch";
+    my $cmd = "peripheralsToGroupsAndResiduals $workflowDataDir/$outputGroupsFile $workflowDataDir/$inputFastaFile $workflowDataDir/$residualFastaFile $inputSimilarSequencesTable $abbrev $pvalueExponentCutoff $percentMatch $coreGroupsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");

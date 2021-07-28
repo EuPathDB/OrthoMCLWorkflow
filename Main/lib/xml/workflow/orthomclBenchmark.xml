@@ -79,13 +79,16 @@
 
 -->
   <!-- load the OrthomclTaxon table with our tree of life -->
- 
+
+
+<!-- DON'T WANT CORE 
   <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMclBenchmark.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="taxonomy"/>
   </subgraph>
+-->
 
 <!--
 
@@ -103,6 +106,7 @@
 
 -->
 
+<!-- DON'T WANT CORE
   <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMclBenchmark/orthomclGetCoreProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">coreGood.fasta</paramValue>
@@ -110,15 +114,14 @@
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="orthomclClades"/>
     <depends name="initClusterHomeDir"/>
-<!--
     <depends name="getOldReleaseSeqFiles"/>
     <depends name="getOldReleaseGroupFiles"/>
     <depends name="SequenceOntology"/>
     <depends name="geneOntology"/>
     <depends name="geneOntologyEvidenceCodes"/>
     <depends name="enzymeDB"/>
--->
   </subgraph>
+-->
 
 <!--
   <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -143,6 +146,7 @@
 
 -->
 
+<!-- DON'T WANT CORE
   <subgraph name="makeCoreGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">coreGood.fasta</paramValue>
@@ -156,7 +160,7 @@
     <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
     <depends name="getCoreProteomes"/>
   </subgraph>
-
+-->
 
 <!--
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
@@ -193,7 +197,7 @@
   </step>
 -->
 
-<!--
+<!--  RUNNING ONLY PERIPHERALS  -->
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
@@ -203,9 +207,9 @@
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-    <depends name="insertGroups"/>
+    <depends name="taxonomy"/>
   </subgraph>
--->
+
 
 <!--
   <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">

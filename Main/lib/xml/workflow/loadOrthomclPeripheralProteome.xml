@@ -22,6 +22,7 @@
       <depends name="insertPeripheralTaxon"/>
     </subgraph>
 
+<!--
     <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
       <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
@@ -35,6 +36,7 @@
       <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <depends name="mapPreviousSeqIDs"/>
     </step>
+-->
 
 <!--
     <step name="makeGoodPeripheralProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodPeripheralProteins">
@@ -60,6 +62,7 @@
     <depends name="mirrorProteomeDirToCluster"/>
   </step>
 
+<!--
   <step name="makeInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/Interpro</paramValue>
     <depends name="mirrorFastaFileToCluster"/>
@@ -78,6 +81,7 @@
     <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
     <depends name="mirrorInterproDirToCluster"/>    
   </subgraph>
+-->
 
   <subgraph name="blastAgainstCore" xmlFile="blast.xml">
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
@@ -102,7 +106,7 @@
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
     <paramValue name="taxonHierarchyForFilter"></paramValue>
     <paramValue name="loadOptions"></paramValue>
-    <depends name="InterproScan"/>
+    <depends name="mirrorFastaFileToCluster"/>
   </subgraph>
 
   <step name="createSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateSimilarSequencesTable">
@@ -130,17 +134,20 @@
     <paramValue name="abbrev">$$abbrev$$</paramValue>
     <paramValue name="pvalueExponentCutoff">-5</paramValue>
     <paramValue name="percentMatch">50</paramValue>
+    <paramValue name="coreGroupsFile">orthomclGroups.txt</paramValue>
     <depends name="loadBlast"/>
   </step>
 
+<!--
   <step name="insertPeripheralsIntoCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups" undoRoot="createSimilarSequencesTable">
     <paramValue name="inputGroupsFile">$$proteomeDatasetsDir$$/$$abbrev$$_orthomclPeripheralProteome_RSRC/peripheralsMapToCoreGroup</paramValue>
     <depends name="mapPeripheralsToGroups"/>
   </step>
+-->
 
   <step name="dropSimilarSequencesTable" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::DropSimilarSequencesTable">
     <paramValue name="suffix">$$abbrev$$</paramValue>
-    <depends name="insertPeripheralsIntoCoreGroups"/>
+    <depends name="mapPeripheralsToGroups"/>
   </step>
 
 

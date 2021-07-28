@@ -6,7 +6,9 @@
   <param name="oldReleasesGroupFilesDir"/>
 
   <constant name="proteomeDatasetsDir">$$getPeripheralProteinsDir$$/proteomeDatasets</constant>
+<!--
   <constant name="ecMappingsDir">$$getPeripheralProteinsDir$$/ecMappings</constant>
+-->
 
   <step name="makeGetPeripheralProteinsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$</paramValue>
@@ -34,14 +36,15 @@
 
   <step name="mirrorResidualFastaFilesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$residualFastaFilesDir$$</paramValue>
-
     <depends name="makeResidualFastaFilesDir"/>
   </step>
 
+<!--
   <step name="makeEcMappingsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
     <depends name="makeGetPeripheralProteinsDir"/>
   </step>
+-->
 
   <datasetTemplate class="orthomclPeripheralFromEbi">
     <prop name="projectName"/>
@@ -367,6 +370,7 @@
     <prop name="oldAbbrevsList"/>
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="species"/>
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue>
@@ -381,11 +385,15 @@
     </subgraph>
 
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
+
+<!--
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
+-->
+
   </datasetTemplate>
 
 
