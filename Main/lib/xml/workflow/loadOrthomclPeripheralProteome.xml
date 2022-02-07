@@ -17,7 +17,7 @@
 
     <subgraph name="loadProteome" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$abbrev$$_orthomclPeripheralProteome_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMclBenchmark.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <depends name="insertPeripheralTaxon"/>
     </subgraph>

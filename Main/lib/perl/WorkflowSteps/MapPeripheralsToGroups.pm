@@ -23,7 +23,7 @@ sub run {
     $self->runCmd(0, "rm $workflowDataDir/$outputGroupsFile") if -e "$workflowDataDir/$outputGroupsFile";
     $self->runCmd(0, "rm $workflowDataDir/$residualFastaFile") if -e "$workflowDataDir/$residualFastaFile";
   } else {
-    my $cmd = "peripheralsToGroupsAndResiduals $workflowDataDir/$outputGroupsFile $workflowDataDir/$inputFastaFile $workflowDataDir/$residualFastaFile $inputSimilarSequencesTable $abbrev $pvalueExponentCutoff $percentMatch $coreGroupsFile";
+    my $cmd = "peripheralsToGroupsAndResiduals $workflowDataDir/$outputGroupsFile $workflowDataDir/$inputFastaFile $workflowDataDir/$residualFastaFile $inputSimilarSequencesTable $abbrev $pvalueExponentCutoff $percentMatch $workflowDataDir/$coreGroupsFile";
     $self->runCmd($test, $cmd);
     if ($test) {
       $self->runCmd(0, "touch $workflowDataDir/$outputGroupsFile");
