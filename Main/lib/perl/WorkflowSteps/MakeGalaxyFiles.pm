@@ -17,7 +17,7 @@ sub run {
   my $coreSequencesFile = $workflowDataDir."/".$self->getParamValue('coreSequencesFile');
   my $residualSequencesFiles = $workflowDataDir."/".$self->getParamValue('residualSequencesFiles');
 
-  my $galaxyGroupsFile = "$galaxyDir/$orthomclVersion"."groups.txt";
+  my $galaxyGroupsFile = "$galaxyDir/$orthomclVersion"."Groups.txt";
   my $galaxySequencesFile = "$galaxyDir/$orthomclVersion"."sequences.fasta";
 
   if ($undo) {
