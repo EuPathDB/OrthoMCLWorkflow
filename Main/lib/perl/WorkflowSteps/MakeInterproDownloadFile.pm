@@ -58,6 +58,7 @@ EOF
     $self->runCmd($test, "rm $fileName");
   } else {
     $self->runCmd($test, "makeFileWithSql --outFile $downloadFileName --sql \"$sql\"");
+    $self->runCmd($test, "gzip $downloadFileName");
   }
 }
 

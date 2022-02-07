@@ -12,6 +12,11 @@ sub run {
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
+  my $corePairsDir = $self->getParamValue('corePairsDir');
+  my $residualPairsDir = $self->getParamValue('residualPairsDir');
+  my $orthomclVersion = $self->getParamValue('orthomclVersion');
+  $orthomclVersion =~ s/_//g;
+  my $groupFile = "$workflowDataDir/genomicSitesFiles_$orthomclVersion/orthomclGroups.txt";
 
   #original for core plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
   $self->testInputFile('groupsFile', "$workflowDataDir/coreGroups/orthomclGroups.txt");
@@ -22,14 +27,19 @@ sub run {
   my $deflinesDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/deflines_$project-$release.txt";
   my $groupsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/groups_$project-$release.txt";
   my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
-#  my $pairsDownloadDirName = "$websiteFilesDir/$relativeDownloadSiteDir/pairs_$project-$release";
+  my $genomeSummaryFileName = "$websiteFilesDir/$relativeDownloadSiteDir/genomeSummary_$project-$release.txt";
+  my $corePairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/corePairs_$project-$release";
+  my $residualPairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/residualPairs_$project-$release";
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
     $self->runCmd($test, "rm $deflinesDownloadFileName.gz");
     $self->runCmd($test, "rm $groupsDownloadFileName.gz");
     $self->runCmd($test, "rm $domainsDownloadFileName.gz");
-#    $self->runCmd($test, "rm -r $pairsDownloadDirName.tar.gz");
+    $self->runCmd($test, "rm $genomeSummaryFileName.gz");
+    $self->runCmd($test, "rm -r $corePairsDownloadDir");
+    $self->runCmd($test, "rm -r $residualPairsDownloadDir");
+
   } else {
 
     # fasta
@@ -51,12 +61,21 @@ sub run {
 
     # groups
     # original for core plu periph proteomes $self->runCmd($test, "cp $workflowDataDir/finalGroups.txt $groupsDownloadFileName");
-    $self->runCmd($test, "cp $workflowDataDir/coreGroups/orthomclGroups.txt $groupsDownloadFileName");
+    $self->runCmd($test, "cp $groupFile $groupsDownloadFileName");
     $self->runCmd($test, "gzip $groupsDownloadFileName");
 
+    # genome summary
+    $sql = $self->getGenomeSummarySql();
+    $self->runCmd($test, "makeFileWithSql --outFile $genomeSummaryFileName --sql \"$sql\" --includeHeader --outDelimiter \"\\t\"");
+    $self->runCmd($test, "gzip $genomeSummaryFileName");
+
     # pairs
- #   $self->runCmd($test, "cp -r $workflowDataDir/pairs $pairsDownloadDirName");
-  #  $self->runCmd($test, "tar -czf $pairsDownloadDirName.tar.gz $pairsDownloadDirName");
+    $self->runCmd($test, "mkdir -p $corePairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$corePairsDir/* $corePairsDownloadDir");
+    $self->runCmd($test, "gzip $corePairsDownloadDir/*");
+    $self->runCmd($test, "mkdir -p $residualPairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$residualPairsDir/* $residualPairsDownloadDir");
+    $self->runCmd($test, "gzip $residualPairsDownloadDir/*");
   }
 }
 
@@ -87,4 +106,16 @@ FROM (SELECT distinct og.name, db.primary_identifier, ogs.aa_sequence_id, og.num
             AND db.external_database_release_id = $extDbRlsId)
 GROUP BY name, number_of_members, primary_identifier
 ORDER BY name, frequency desc";
+}
+
+sub getGenomeSummarySql {
+    my ($self) = @_;
+
+    return "
+SELECT ot.name, ot.three_letter_abbrev,
+       case ot.core_peripheral when 'C' then 'Core' when 'P' then 'Peripheral' else '' end as core_peripheral,
+       od.resource_name, od.resource_url
+FROM apidb.OrthomclTaxon ot, apidb.OrthomclResource od
+WHERE od.orthomcl_taxon_id(+) = ot.orthomcl_taxon_id
+       AND ot.is_species != 0                                                                                                       ORDER BY ot.name";
 }

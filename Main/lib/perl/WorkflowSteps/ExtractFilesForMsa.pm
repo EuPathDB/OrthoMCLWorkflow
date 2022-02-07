@@ -18,6 +18,7 @@ sub run {
     my $samplingOfSeqs = $self->getParamValue('samplingOfSeqs');
 
     if ($undo) {
+	$self->runCmd($test, "rm $workflowDataDir/$outputDir/*");
 	$self->runCmd($test, "rm -r $workflowDataDir/$outputDir");
     } else{
       if ($test) {

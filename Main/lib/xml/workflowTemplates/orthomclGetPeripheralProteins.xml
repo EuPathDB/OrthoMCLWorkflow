@@ -34,6 +34,7 @@
 
   <step name="mirrorResidualFastaFilesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$residualFastaFilesDir$$</paramValue>
+
     <depends name="makeResidualFastaFilesDir"/>
   </step>
 
@@ -41,6 +42,231 @@
     <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
     <depends name="makeGetPeripheralProteinsDir"/>
   </step>
+
+  <datasetTemplate class="orthomclPeripheralFromEbi">
+    <prop name="projectName"/>
+    <prop name="ebiOrganismName"/>
+    <prop name="ebiVersion"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="organismName"/>
+    <prop name="ebi2gusTag"/>
+
+    <step name="${orthomclAbbrev}_insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="version">${ebiVersion}</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_validatePeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralTaxon"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_loadPeripheralDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
+      <depends name="${orthomclAbbrev}_validatePeripheralTaxon"/>
+    </subgraph>
+
+    <step name="${orthomclAbbrev}_runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" >
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="ebiVersion">${ebiVersion}</paramValue>
+      <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
+      <paramValue name="ecFileName">ecFromEbi.tab</paramValue>
+      <paramValue name="proteomeFileName">proteomeFromEbi.fasta</paramValue>
+      <paramValue name="ebi2gusTag">${ebi2gusTag}</paramValue>
+      <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
+      <paramValue name="fastaFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/proteomeFromEbi.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="geneIdRegex">gene=(\S+)</paramValue>
+      <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
+      <paramValue name="maxStopCodonPercent">20</paramValue>
+      <paramValue name="preferredSource">sp</paramValue>
+      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/proteomeFromEbi.fasta</paramValue>
+      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_findExemplarProteins"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_orgAbbrevSourceId" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrgAbbrevSourceId" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="geneRegex">gene=(\S+)</paramValue>
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
+      <paramValue name="externalDatabaseName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
+      <paramValue name="externalDatabaseVersion">${ebiVersion}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="sequenceFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="regexSourceId">^>[^|]+\|(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
+      <paramValue name="regexDesc">product=(.*)</paramValue>
+      <paramValue name="regexName">gene=(\S*)</paramValue>
+      <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
+      <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
+      <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
+      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
+    </subgraph>
+
+    <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_processProteome"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_insertEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/ecFromEbi.tab</paramValue>
+      <paramValue name="evidenceCode">EBI</paramValue>
+      <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
+      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
+    </step>
+
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclPeripheralFromVEuPathDB">
+    <prop name="projectName"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="oldAbbrevsList"/>
+    <prop name="orthomclClade"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="organismName"/>
+    <prop name="version"/>
+
+    <step name="${orthomclAbbrev}_insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_validatePeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralTaxon"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_loadPeripheralDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
+      <depends name="${orthomclAbbrev}_validatePeripheralTaxon"/>
+    </subgraph>
+
+    <step name="${orthomclAbbrev}_getProteinsEcFromVeupath" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetProteinsEcFromVeupath" >
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
+      <paramValue name="ecFileName">ecFromVeupath.tab</paramValue>
+      <paramValue name="proteomeFileName">proteomeFromVeupath.fasta</paramValue>
+      <paramValue name="downloadFileName">downloadFromVeupath.txt</paramValue>
+      <paramValue name="logFileName">wget.log</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
+      <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
+      <paramValue name="fastaFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/proteomeFromVeupath.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="geneIdRegex">gene=(\S+)</paramValue>
+      <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
+      <paramValue name="maxStopCodonPercent">20</paramValue>
+      <paramValue name="preferredSource">sp</paramValue>
+      <depends name="${orthomclAbbrev}_getProteinsEcFromVeupath"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/proteomeFromVeupath.fasta</paramValue>
+      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_findExemplarProteins"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_orgAbbrevSourceId" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrgAbbrevSourceId" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="geneRegex">gene=(\S+)</paramValue>
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
+      <paramValue name="externalDatabaseName">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
+      <paramValue name="externalDatabaseVersion">${version}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="sequenceFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="regexSourceId">^>[^|]+\|(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
+      <paramValue name="regexDesc">product=(.*)</paramValue>
+      <paramValue name="regexName">gene=(\S*)</paramValue>
+      <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
+      <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+      <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
+      <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
+      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
+    </subgraph>
+
+    <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_processProteome"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_insertEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC/ecFromVeupath.tab</paramValue>
+      <paramValue name="evidenceCode">VEuPathDB</paramValue>
+      <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
+      <depends name="${orthomclAbbrev}_getProteinsEcFromVeupath"/>
+    </step>
+
+  </datasetTemplate>
+
+
 
   <datasetTemplate class="orthomclEuPathProteomeForPeripheral">
     <prop name="abbrev"/>
@@ -156,30 +382,101 @@
   </datasetTemplate>
 
 
-  <datasetTemplate class="orthomclManualDeliveryProteomeForPeripheral">
-    <prop name="abbrev"/>
+  <datasetTemplate class="orthomclPeripheralFromManualDelivery">
+    <prop name="orthomclAbbrev"/>
     <prop name="oldAbbrevsList"/>
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
+    <prop name="organismName"/>
+    <prop name="version"/>
+
+    <step name="${orthomclAbbrev}_insertPeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="organismName">${organismName}</paramValue>
+      <depends name="mirrorResidualFastaFilesDirToCluster"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_validatePeripheralTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralTaxon"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_loadPeripheralDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
+      <depends name="${orthomclAbbrev}_validatePeripheralTaxon"/>
+    </subgraph>
+
+    <step name="${orthomclAbbrev}_getProteomeFromManualDelivery" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetProteomeFromManualDelivery" >
+      <paramValue name="manualDeliveryFile">@@manualDeliveryDir@@/OrthoMCL/proteomes/${organismName}/${version}/final/proteins.fasta.gz</paramValue>
+      <paramValue name="outputDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
+      <paramValue name="outputFile">proteins.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_loadPeripheralDataset"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_findExemplarProteins" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FindExemplarProteins" >
+      <paramValue name="fastaFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/proteins.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="geneIdRegex">gene=(\S+)</paramValue>
+      <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
+      <paramValue name="maxStopCodonPercent">20</paramValue>
+      <paramValue name="preferredSource">sp</paramValue>
+      <depends name="${orthomclAbbrev}_getProteomeFromManualDelivery"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="firstFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/proteins.fasta</paramValue>
+      <paramValue name="secondFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_findExemplarProteins"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_orgAbbrevSourceId" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrgAbbrevSourceId" >
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="geneRegex">gene=(\S+)</paramValue>
+      <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/exemplars.fasta</paramValue>
+      <paramValue name="outputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <depends name="${orthomclAbbrev}_makeAliasFile"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_insertPeripheralSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
+      <paramValue name="externalDatabaseName">${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
+      <paramValue name="externalDatabaseVersion">${version}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="sequenceFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/${orthomclAbbrev}Proteome.fasta</paramValue>
+      <paramValue name="regexSourceId">^>[^|]+\|(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
+      <paramValue name="regexDesc">product=(.*)</paramValue>
+      <paramValue name="regexName">gene=(\S*)</paramValue>
+      <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
+      <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
+    </step>
+
+    <subgraph name="${orthomclAbbrev}_processProteome" xmlFile="processPeripheralProteome.xml">
+      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
       <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
       <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="mirrorResidualFastaFilesDirToCluster"/>
+      <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
+      <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
     </subgraph>
 
-    <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
-    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
-      <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
-      <depends name="${abbrev}_proteome"/>
+    <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC/aliases.tab</paramValue>
+      <depends name="${orthomclAbbrev}_processProteome"/>
     </step>
+
   </datasetTemplate>
 
 
