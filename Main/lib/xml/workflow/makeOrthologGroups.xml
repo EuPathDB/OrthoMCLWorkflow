@@ -40,7 +40,7 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <subgraph name="blast" xmlFile="blast.xml" excludeIf="$$useExistingSimSeqs$$">
+  <subgraph name="blast" xmlFile="orthomclBlast.xml" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$goodProteinFile$$</paramValue>

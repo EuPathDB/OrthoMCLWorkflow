@@ -41,7 +41,7 @@
   </step>
 
   <!-- run BLAST to match up UniProt and OrthoMCL protein sequences -->
-  <subgraph name="blast" xmlFile="blast.xml">
+  <subgraph name="blast" xmlFile="orthomclBlast.xml">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$uniprotFastaFile$$</paramValue>

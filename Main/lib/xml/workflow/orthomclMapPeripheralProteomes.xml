@@ -18,7 +18,7 @@
     <depends name="makeDataDir"/>
   </step>
 
-  <subgraph name="blast" xmlFile="blast.xml">
+  <subgraph name="blast" xmlFile="orthomclBlast.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$peripheralGoodProteinsFile$$</paramValue>

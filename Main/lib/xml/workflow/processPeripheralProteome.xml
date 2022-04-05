@@ -50,7 +50,7 @@
     <depends name="mirrorInterproDirToCluster"/>    
   </subgraph>
 
-  <subgraph name="blastAgainstCore" xmlFile="blast.xml">
+  <subgraph name="blastAgainstCore" xmlFile="orthomclBlast.xml">
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
