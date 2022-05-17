@@ -1,5 +1,4 @@
-<project name="OrthoMCLWorkflow" default="OrthoMCLWorkflow-Installation"
-         basedir=".">
+<project name="OrthoMCLWorkflow" basedir=".">
 
   <import file="${projectsDir}/ApiCommonWorkflow/build.xml" optional="true" />
   <import file="${projectsDir}/OrthoMCLData/build.xml" optional="true" />
@@ -9,54 +8,20 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="OrthoMCLWorkflow-Installation" depends="ApiCommonWorkflow-Installation,
-                                                    OrthoMCLData-Installation,
-                                                    OrthoMCLWorkflow/Main-Installation">
-    <ant target="defaultProjectInstall" />
+                                                        OrthoMCLData-Installation,
+                                                        OrthoMCLWorkflow/Main-Installation">
+    <ant target="defaultProjectInstall">
+      <property name="project" value="OrthoMCLWorkflow" />
+    </ant>
   </target>
-
-  <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
-
-  <target name="OrthoMCLWorkflow-Installation-postprocess">
-    <echo message="Postprocessing the OrthoMCLWorkflow installation" />
-
-    <replace dir="${targetDir}/bin"
-             propertyFile="${targetDir}/config/replacements.prop">
-      <include name="**/*" />
-      <replacefilter token="@perl@" property="perl" />
-    </replace>
-  </target>
-
 
   <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
 
-  <target name="OrthoMCLWorkflow/Main-Installation" depends="ProjectTree">
+  <target name="OrthoMCLWorkflow/Main-Installation">
     <ant target="defaultComponentInstall">
       <property name="project" value="OrthoMCLWorkflow" />
       <property name="component" value="Main" />
     </ant>
   </target>
 
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="OrthoMCLWorkflow-Distributable" depends="ProjectTree">
-
-    <copy todir="${targetDir}">
-      <fileset dir="${projectsDir}">
-        <exclude name="**/.svn/*" />
-      </fileset>
-    </copy>
-  </target>
-
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  ProjectTree  ooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="ProjectTree" if="${checkout}">
-    <ant target="projectCheckOut" />
-  </target>
-
 </project>
-
-
