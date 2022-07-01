@@ -25,17 +25,20 @@ sub run {
   my $unpackDir = "$outputDir/unpack";
   my $initSqlDir = "$outputDir/sql";
   my $mysqlDir = "$outputDir/mysql_data";
+  my $socketDir = "$outputDir/mysqld";
 
-  my $cmd = "orthoEbiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --container_name $orthomclAbbrev --orthomclAbbrev $orthomclAbbrev --proteome_file_name $proteomeFileName --ec_file_name $ecFileName --ebi2gus_tag $ebi2gus_tag";
+  my $cmd = "orthoEbiDumper.pl --init_directory $initSqlDir --socket_directory $socketDir --mysql_directory $mysqlDir --output_directory $outputDir --container_name $orthomclAbbrev --orthomclAbbrev $orthomclAbbrev --proteome_file_name $proteomeFileName --ec_file_name $ecFileName --ebi2gus_tag $ebi2gus_tag";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $mysqlDir");
+    $self->runCmd(0, "rm -rf $socketDir");
     $self->runCmd(0, "rm -rf $initSqlDir");
     $self->runCmd(0, "rm -rf $unpackDir");
     $self->runCmd(0, "rm $outputDir/$proteomeFileName");
     $self->runCmd(0, "rm $outputDir/$ecFileName");
   } else {
     $self->runCmd($test, "mkdir -p $mysqlDir");
+    $self->runCmd($test, "mkdir -p $socketDir");
     $self->runCmd($test, "mkdir -p $unpackDir");
     $self->runCmd($test, "mkdir -p $initSqlDir");
     $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz");
