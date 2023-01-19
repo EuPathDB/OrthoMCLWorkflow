@@ -20,12 +20,14 @@
     <depends name="copyPairsTables"/>
   </step>
 
+<!-- comment out as requested by John Brestelli
   <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
     <paramValue name="numberOfThreadsToUse">4</paramValue>
     <paramValue name="maxGroupSize">500</paramValue>
     <depends name="copyPairsTables"/>
     <depends name="insertSimilarSequencesGroup"/>
   </step>
+-->
 
 <!--
   <step name="concatGoodProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
