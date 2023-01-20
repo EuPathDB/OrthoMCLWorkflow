@@ -307,7 +307,7 @@
     <paramValue name="orthologTableSuffix">peripheral</paramValue>
     <paramValue name="groupTypesCPR">P</paramValue>
     <paramValue name="overwriteExisting">N</paramValue>
-    <depends name="UpdateCoreGroupStatistics"/>
+    <depends name="predictEcNumbers"/>
   </step>
 
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
