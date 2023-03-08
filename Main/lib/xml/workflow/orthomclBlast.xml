@@ -29,11 +29,20 @@
       <paramValue name="clusterResultDir">$$dataDir$$/mainresult/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
-      <paramValue name="tarFile">$$fastaDirTarFile$$</paramValue>
+      <paramValue name="seqFile">$$queryFile$$</paramValue>
       <paramValue name="blastProgram">$$blastType$$</paramValue>
       <paramValue name="dataFile">blastSimilarity.out</paramValue>
       <paramValue name="logFile">blastSimilarity.log</paramValue>
+      <paramValue name="preConfiguredDatabase">false</paramValue>
+      <paramValue name="database"></paramValue>
+      <paramValue name="databaseFasta">$$subjectFile$$</paramValue>
+      <paramValue name="pValCutoff">1e-5</paramValue>
+      <paramValue name="lengthCutoff">10</paramValue>
+      <paramValue name="percentCutoff">20</paramValue>
       <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
+      <paramValue name="outputType">both</paramValue>
+      <paramValue name="adjustMatchLength">false</paramValue>
+      <paramValue name="fastaSubsetSize">10</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
