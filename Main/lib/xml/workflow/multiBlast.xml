@@ -20,38 +20,38 @@
       <depends name="mirrorGroupFastasToCluster"/>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeMultiBlastTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="fastaDirTarFile">$$fastaDirTarFile$$</paramValue>
-      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
-      <paramValue name="idRegex">$$idRegex$$</paramValue>
-      <paramValue name="blastType">$$blastType$$</paramValue>
-      <paramValue name="vendor">$$vendor$$</paramValue>
-      <paramValue name="coreDatabaseFasta">$$coreDatabaseFasta$$</paramValue>
-      <paramValue name="makeSimSeqsFile">$$makeSimSeqsFile$$</paramValue>
+    <step name="makeMultiBlastNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeMultiSelfBlastSimilarityNextflowConfig">
+      <paramValue name="clusterResultDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="tarFile">$$fastaDirTarFile$$</paramValue>
+      <paramValue name="blastProgram">$$blastType$$</paramValue>
+      <paramValue name="dataFile">blastSimilarity.out</paramValue>
+      <paramValue name="logFile">blastSimilarity.log</paramValue>
+      <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeClusterTaskInputDir"/>
+      <depends name="makeMultiBlastNextflowConfig"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">100</paramValue>
-      <paramValue name="maxMemoryGigs">$$maxMemoryGigs$$</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
+    <step name="runMultiSelfBlastClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/MultiSelfBlastSimilarity</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/mainresult</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">false</paramValue>
-      <depends name="runClusterTask"/>
+      <depends name="runMultiSelfBlastClusterTask"/>
     </step>
-
 
 </workflowGraph>
