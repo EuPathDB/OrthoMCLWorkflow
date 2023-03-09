@@ -59,6 +59,7 @@ params {
 process {
   executor = \'$executor\'
   queue = \'$queue\'
+  container = \'rdemko2332/diamondsimilarity\'
 }
 
 singularity {
