@@ -41,7 +41,7 @@
       <paramValue name="workingDir">$$dataDir$$</paramValue>
       <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/MultiSelfBlastSimilarity</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/multiSelfBlastSimilarity</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
