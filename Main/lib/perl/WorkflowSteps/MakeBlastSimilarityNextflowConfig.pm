@@ -26,6 +26,7 @@ sub run {
   my $outputType = $self->getParamValue("outputType");
   my $adjustMatchLength = $self->getParamValue("adjustMatchLength");
   my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
+  my $blastArgs = $self->getParamValue("blastArgs");
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -43,14 +44,14 @@ params {
   dataFile = \"$dataFile\"
   logFile = \"$logFile\"
   outputDir = \"$clusterResultsDir\"
-  blastArgs = \"\"
+  blastArgs = \"$blastArgs\"
   pValCutoff = \"$pValCutoff\"
   lengthCutoff = \"$lengthCutoff\"
   percentCutoff = \"percentCutoff\"
   adjustMatchLength = $adjustMatchLength
   outputType = \"$outputType\"
   printSimSeqs = \"$printSimSeqs\"
-  fastaSubsetSize = \"$fastaSubsetSize\"
+  fastaSubsetSize = $fastaSubsetSize
   preConfiguredDatabase = $preConfiguredDatabase
   database = \"$database\"
   databaseFasta = \"$databaseFasta\"

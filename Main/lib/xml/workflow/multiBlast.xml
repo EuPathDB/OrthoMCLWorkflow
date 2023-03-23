@@ -29,6 +29,7 @@
       <paramValue name="dataFile">blastSimilarity.out</paramValue>
       <paramValue name="logFile">blastSimilarity.log</paramValue>
       <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
+      <paramValue name="blastArgs">--dbsize 824802617</paramValue>      
       <depends name="makeDataDir"/>
     </step>
 

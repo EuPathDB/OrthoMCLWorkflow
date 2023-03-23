@@ -42,7 +42,8 @@
       <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
       <paramValue name="outputType">both</paramValue>
       <paramValue name="adjustMatchLength">false</paramValue>
-      <paramValue name="fastaSubsetSize">10</paramValue>
+      <paramValue name="fastaSubsetSize">2000000</paramValue>
+      <paramValue name="blastArgs">--dbsize 824802617</paramValue>
       <depends name="makeDataDir"/>
     </step>
 

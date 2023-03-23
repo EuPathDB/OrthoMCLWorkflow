@@ -17,6 +17,7 @@ sub run {
   my $dataFile = $self->getParamValue("dataFile");
   my $logFile = $self->getParamValue("logFile");
   my $printSimSeqs = $self->getParamValue("printSimSeqs");
+  my $blastArgs = $self->getParamValue("blastArgs");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
   my $executor = $self->getClusterExecutor();
@@ -35,7 +36,7 @@ params {
   dataFile = \"$dataFile\"
   logFile = \"$logFile\"
   outputDir = \"$clusterResultsDir\"
-  blastArgs = \"\"
+  blastArgs = \"$blastArgs\"
   pValCutoff = 1e-5
   lengthCutoff = 10
   percentCutoff = 20
