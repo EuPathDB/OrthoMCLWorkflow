@@ -26,7 +26,7 @@
     </step>
 
     <step name="makeDiamondSimilarityNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig">
-      <paramValue name="clusterResultDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="seqFile">$$queryFile$$</paramValue>
@@ -54,7 +54,7 @@
 
     <step name="runBlastSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/diamondSimilarity</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
@@ -62,7 +62,7 @@
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
