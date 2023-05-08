@@ -25,7 +25,7 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeDiamondSimilarityNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig">
+    <step name="makeDiamondSimilarityNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig">
       <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
@@ -52,7 +52,7 @@
       <depends name="makeDiamondSimilarityNextflowConfig"/>
     </step>
 
-    <step name="runBlastSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <step name="runDiamondSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
       <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
@@ -66,7 +66,7 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runBlastSimilarityClusterTask"/>
+      <depends name="runDiamondSimilarityClusterTask"/>
     </step>
 
     <!-- CAUTION: this step class has been hacked, to correct an old bug that clobbers the input file.  

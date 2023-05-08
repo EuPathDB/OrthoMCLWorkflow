@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -27,6 +27,7 @@ sub run {
   my $adjustMatchLength = $self->getParamValue("adjustMatchLength");
   my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
   my $blastArgs = $self->getParamValue("blastArgs");
+  my $databaseFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("databaseFasta"));
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -43,7 +44,7 @@ params {
   seqFile = \"$seqFile\"
   dataFile = \"$dataFile\"
   logFile = \"$logFile\"
-  outputDir = \"$clusterResultsDir\"
+  outputDir = \"$clusterResultDir\"
   blastArgs = \"$blastArgs\"
   pValCutoff = \"$pValCutoff\"
   lengthCutoff = \"$lengthCutoff\"

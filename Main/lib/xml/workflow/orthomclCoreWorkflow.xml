@@ -96,6 +96,17 @@
     <depends name="initUserGroupProject"/>
   </step>  
 
+  <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">coreInterpro</paramValue>
+    <depends name="initUserGroupProject"/>
+    <depends name="makeGlobalDataDir"/>
+  </step>
+
+  <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">coreInterpro</paramValue>
+    <depends name="makeCoreInterproDir"/>
+  </step>
+
   <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="outputGoodProteinsFile">coreGood.fasta</paramValue>
@@ -109,26 +120,7 @@
     <depends name="geneOntologyEvidenceCodes"/>
     <depends name="initClusterHomeDir"/>
     <depends name="enzymeDB"/>
-  </subgraph>
-
-  <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">coreInterpro</paramValue>
-  </step>
-
-  <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">coreInterpro</paramValue>
-    <depends name="makeCoreInterproDir"/>
-  </step>
-  
-  <subgraph name="coreInterproScan" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">coreGood.fasta</paramValue>
-    <paramValue name="parentDataDir">coreInterpro</paramValue>
-    <paramValue name="insertVersion">2</paramValue>
-    <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
-    <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
-    <depends name="interproscanData"/>
-    <depends name="getCoreProteomes"/>    
-    <depends name="mirrorCoreInterproDirToCluster"/>    
+    <depends name="mirrorCoreInterproDirToCluster"/>
   </subgraph>
 
   <subgraph name="makeCoreGroups" xmlFile="makeOrthologGroups.xml">
@@ -285,22 +277,6 @@
       <depends name="updateEcNumbers"/>
       <depends name="insertSimilarSequencesGroup"/>
   </step>
-
-<!-- comment out as requested by John Brestelli
-  <step name="createLayoutGraphs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CreateAndInsertClusterLayoutGraphs">
-    <paramValue name="numberOfThreadsToUse">4</paramValue>
-    <paramValue name="maxGroupSize">500</paramValue>
-    <depends name="predictEcNumbers"/>
-  </step>
-
-  <step name="UpdateCoreGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
-    <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
-    <paramValue name="orthologTableSuffix">Core</paramValue>
-    <paramValue name="groupTypesCPR">C</paramValue>
-    <paramValue name="overwriteExisting">N</paramValue>
-    <depends name="createLayoutGraphs"/>
-  </step>
--->
 
   <step name="UpdatePeripheralGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">SelfBlast</paramValue>
