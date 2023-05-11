@@ -20,6 +20,11 @@
       <depends name="mirrorGroupFastasToCluster"/>
     </step>
 
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/master/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="makeMultiBlastNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeMultiSelfBlastSimilarityNextflowConfig">
       <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
@@ -30,7 +35,7 @@
       <paramValue name="logFile">blastSimilarity.log</paramValue>
       <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
       <paramValue name="blastArgs">--dbsize 824802617</paramValue>      
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -48,7 +53,7 @@
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">false</paramValue>

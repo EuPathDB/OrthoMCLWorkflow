@@ -19,10 +19,16 @@
     <param name="maxMemoryGigs"/>
     <param name="loadSimilarities"/>
     <param name="makeSimSeqsFile"/>
+
     <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/master/</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="makeDiamondSimilarityNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig">
@@ -44,7 +50,7 @@
       <paramValue name="adjustMatchLength">false</paramValue>
       <paramValue name="fastaSubsetSize">2000000</paramValue>
       <paramValue name="blastArgs">--dbsize 824802617</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
