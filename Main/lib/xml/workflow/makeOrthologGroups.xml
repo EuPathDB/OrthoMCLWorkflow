@@ -67,6 +67,12 @@
     <depends name="makeNrdbBlastDbOnCluster"/>
   </subgraph>
 
+  <subgraph name="orthoFinder" xmlFile="orthomclOrthoFinder.xml">
+    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
+    <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
+    <depends name="makeNrdbBlastDbOnCluster"/>
+  </subgraph>
+
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
   <!-- create config file  -->
 

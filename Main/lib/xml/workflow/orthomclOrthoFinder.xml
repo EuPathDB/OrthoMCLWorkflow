@@ -1,0 +1,46 @@
+<workflowGraph name="OrthoFinder">
+    <param name="parentDataDir"/>
+    <param name="inputFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/orthoFinder</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/master/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeOrthoFinderNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderNextflowConfig">
+      <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="inputFile">$$inputFile$$</paramValue>
+      <depends name="makeResultDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeOrthoFinderNextflowConfig"/>
+    </step>
+
+    <step name="runOrthoFinderClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/orthoFinder</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles"></paramValue>
+      <paramValue name="deleteAfterCopy">false</paramValue>
+      <depends name="runOrthoFinderClusterTask"/>
+    </step>
+
+</workflowGraph>
