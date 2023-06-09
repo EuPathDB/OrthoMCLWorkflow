@@ -18,6 +18,10 @@
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="inputFile">$$inputFile$$</paramValue>
+      <paramValue name="pValCutoff">1e-5</paramValue>
+      <paramValue name="lengthCutoff">1</paramValue>
+      <paramValue name="percentCutoff">1</paramValue>
+      <paramValue name="adjustMatchLength">true</paramValue>
       <depends name="makeResultDir"/>
     </step>
 

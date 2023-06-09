@@ -138,7 +138,7 @@
   </subgraph>
 
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="inputGroupsFile">makeGroups/orthoFinder/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="corePeripheralResidual">C</paramValue>
     <depends name="makeCoreGroups"/>
   </step>
@@ -191,7 +191,7 @@
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
     <paramValue name="peripheralMapFileName">peripheralsMapToCoreGroup</paramValue>
-    <paramValue name="coreMapFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="coreMapFile">makeGroups/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="residualMapFile">residualGroups/orthomclGroups.txt</paramValue>
     <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
     <paramValue name="ecFile">OrganismNameResources/ec_organism.txt</paramValue>
@@ -201,7 +201,7 @@
   <step name="makeGalaxyFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="galaxyDir">galaxyFiles</paramValue>
-    <paramValue name="coreGroupsFile">$$coreGroupsDir$$/orthomclGroups.txt</paramValue>
+    <paramValue name="coreGroupsFile">makeGroups/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="residualGroupsFile">residualGroups/orthomclGroups.txt</paramValue>
     <paramValue name="coreSequencesFile">coreGood.fasta</paramValue>
     <paramValue name="residualSequencesFiles">getPeripheralProteins/residualFastaFiles/*.fasta</paramValue>

@@ -12,6 +12,11 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $inputFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFile"));
   my $analysisDir = $self->getParamValue("analysisDir");
+  my $pValCutoff  = $self->getParamValue("pValCutoff");
+  my $lengthCutoff  = $self->getParamValue("lengthCutoff");
+  my $percentCutoff  = $self->getParamValue("percentCutoff");
+  my $adjustMatchLength   = $self->getParamValue("adjustMatchLength");
+
   my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
@@ -28,6 +33,10 @@ sub run {
 params {
   inputFile = \"$inputFile\"
   outputDir = \"$clusterResultDir\"
+  pValCutoff  = $pValCutoff
+  lengthCutoff  = $lengthCutoff
+  percentCutoff  = $percentCutoff
+  adjustMatchLength   = $adjustMatchLength
 }
 
 process {

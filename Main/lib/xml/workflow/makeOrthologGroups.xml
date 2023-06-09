@@ -40,34 +40,7 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <subgraph name="blast" xmlFile="orthomclBlast.xml" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
-    <paramValue name="nickName">blast</paramValue>
-    <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="subjectFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
-    <paramValue name="idRegex">(\\S+)</paramValue>
-    <paramValue name="blastType">blastp</paramValue>
-    <paramValue name="vendor">ncbi</paramValue>
-    <paramValue name="loadSubjectSubset">false</paramValue>
-    <paramValue name="filterByTaxon">false</paramValue>
-    <paramValue name="maxMemoryGigs">20</paramValue>
-    <paramValue name="loadSimilarities">false</paramValue>
-    <paramValue name="makeSimSeqsFile">true</paramValue>
-
-    <!-- parameters below are not relevant for us -->
-    <paramValue name="queryTable"></paramValue>
-    <paramValue name="queryExtDbName"></paramValue>
-    <paramValue name="subjectTable"></paramValue>
-    <paramValue name="subjectExtDbName"></paramValue>
-    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
-    <paramValue name="taxonHierarchyForFilter"></paramValue>
-    <paramValue name="loadOptions"></paramValue>
-
-    <depends name="makeNrdbBlastDbOnCluster"/>
-  </subgraph>
-
-  <subgraph name="orthoFinder" xmlFile="orthomclOrthoFinder.xml">
+  <subgraph name="orthoFinder" xmlFile="orthoFinder.xml" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <depends name="makeNrdbBlastDbOnCluster"/>
@@ -84,11 +57,11 @@
 
   <!-- load BLAST results into SimilarSequences table -->
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$localDataDir$$/orthoFinder/master/mainresult/diamondSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="dataDir">$$localDataDir$$</paramValue>
     <depends name="installSchema"/>
-    <depends name="blast"/>
+    <depends name="orthoFinder"/>
   </step>
 
   <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
@@ -113,25 +86,6 @@
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <depends name="orthomclPairs"/>
-  </step>
-
-  <!-- run MCL to make groups -->
-  <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
-    <paramValue name="inflation">1.5</paramValue>
-    <paramValue name="inputFile">$$outputGroupsDir$$/mclInput</paramValue>
-    <paramValue name="outputFile">$$outputGroupsDir$$/mcl.out</paramValue>
-    <depends name="makePairsFiles"/>
-  </step>
-
-  <!-- write groups out to file -->
-  <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
-    <paramValue name="orthomclIdPrefix">$$groupIdPrefix$$</paramValue>
-    <paramValue name="inputFile">$$outputGroupsDir$$/mcl.out</paramValue>
-    <paramValue name="proteinFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="outputFile">$$outputGroupsDir$$/orthomclGroups.txt</paramValue>
-    <paramValue name="startingOrthologGroupNumber">$$groupIdStart$$</paramValue>
-    <paramValue name="includeSingletons">$$includeSingletonGroups$$</paramValue>
-    <depends name="runMcl"/>
   </step>
 
 </workflowGraph>
