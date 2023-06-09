@@ -201,7 +201,7 @@
   <step name="makeGalaxyFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="galaxyDir">galaxyFiles</paramValue>
-    <paramValue name="coreGroupsFile">makeGroups/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="residualGroupsFile">residualGroups/orthomclGroups.txt</paramValue>
     <paramValue name="coreSequencesFile">coreGood.fasta</paramValue>
     <paramValue name="residualSequencesFiles">getPeripheralProteins/residualFastaFiles/*.fasta</paramValue>
@@ -301,10 +301,19 @@
     <depends name="addNumMembersPeripheralGroups"/>
   </step>
 
- <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+  <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <depends name="addNumMembersPeripheralGroups"/>
   </step>
+
+ 
+  <step name="moveOrthoGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MoveFile">
+    <paramValue name="inputFile">makeGroups/orthoFinder/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="outputFile">coreGroups/orthomclGroups.txt</paramValue>
+    <depends name="makeDownloadSiteDir"/>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
+
 
   <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -313,8 +322,7 @@
     <paramValue name="corePairsDir">coreGroups/pairs</paramValue>
     <paramValue name="residualPairsDir">residualGroups/pairs</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <depends name="makeDownloadSiteDir"/>
-    <depends name="makeGenomicSitesFiles"/>
+    <depends name="moveOrthoGroupsFile"/>
   </step>
 
   <step name="makeInterproDownloadFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile">
