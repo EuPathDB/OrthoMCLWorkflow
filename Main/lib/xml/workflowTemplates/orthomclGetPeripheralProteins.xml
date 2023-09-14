@@ -1,7 +1,6 @@
 <workflowGraph name="">
   <param name="getPeripheralProteinsDir"/>
   <param name="residualFastaFilesDir"/>
-  <param name="coreGoodProteinsFile"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
@@ -136,7 +135,6 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
     </subgraph>
@@ -246,7 +244,6 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromVEuPathDB_RSRC</paramValue>
       <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
     </subgraph>
@@ -266,89 +263,12 @@
 
   </datasetTemplate>
 
-
-
-  <datasetTemplate class="orthomclEuPathProteomeForPeripheral">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <prop name="orthomclClade"/>
-    <prop name="ncbiTaxonId"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
-      <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="mirrorResidualFastaFilesDirToCluster"/>
-    </subgraph>
-
-    <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
-    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
-      <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
-      <depends name="${abbrev}_proteome"/>
-    </step>
-  </datasetTemplate>
-
-  <datasetTemplate class="orthomclEuPathEcForPeripheral">
-    <prop name="abbrev"/>
-    <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${abbrev}_Eupath_ECAssociations_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$ecMappingsDir$$</paramValue>
-      <depends name="makeEcMappingsDir"/>
-      <depends name="${abbrev}_insertAliases"/>
-    </subgraph>
-  </datasetTemplate>
-
-
-  <datasetTemplate class="orthomclVectorbaseProteomeForPeripheral">
-    <prop name="abbrev"/>
-    <prop name="oldAbbrevsList"/>
-    <prop name="orthomclClade"/>
-    <prop name="ncbiTaxonId"/>
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="orthomclClade">${orthomclClade}</paramValue>
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
-      <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
-      <depends name="mirrorResidualFastaFilesDirToCluster"/>
-    </subgraph>
-
-    <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
-    <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
-      <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
-      <depends name="${abbrev}_proteome"/>
-    </step>
-  </datasetTemplate>
-
-  <datasetTemplate class="orthomclVectorbaseEcForPeripheral">
-    <prop name="abbrev"/>
-    <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${abbrev}_Vectorbase_ECAssociations_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$ecMappingsDir$$</paramValue>
-      <depends name="makeEcMappingsDir"/>
-      <depends name="${abbrev}_insertAliases"/>
-    </subgraph>
-  </datasetTemplate>
-
-
   <datasetTemplate class="orthomclUniprotReferenceProteomeForPeripheral">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
+
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue>
@@ -358,7 +278,6 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
@@ -466,7 +385,6 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <paramValue name="datasetName">${orthomclAbbrev}_PeripheralFromManualDelivery_RSRC</paramValue>
       <depends name="${orthomclAbbrev}_insertPeripheralSequences"/>
     </subgraph>
@@ -494,7 +412,6 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="proteomeDatasetsDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-      <paramValue name="coreGoodProteinsFile">$$coreGoodProteinsFile$$</paramValue>
       <depends name="mirrorResidualFastaFilesDirToCluster"/>
     </subgraph>
 
@@ -506,5 +423,18 @@
     </step>
   </datasetTemplate>
 
+  <step name="mergeProteinFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeProteinFiles">
+    <paramValue name="proteomesDir">$$proteomeDatasetsDir$$</paramValue>
+    <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/peripheralGood.fasta</paramValue>
+    <paramValue name="outputBadProteinsFile">$$getPeripheralProteinsDir$$/bad.fasta</paramValue>
+    <paramValue name="minLength">10</paramValue>
+    <paramValue name="maxStopPercent">20</paramValue>
+    <dependsPattern name="*_insertAliases"/>
+  </step>
+
+  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/peripheralGood.fasta</paramValue>
+    <depends name="mergeProteinFiles"/>
+  </step>
 
 </workflowGraph>

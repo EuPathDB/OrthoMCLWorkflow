@@ -1,6 +1,7 @@
 <workflowGraph name="OrthoFinder">
     <param name="parentDataDir"/>
     <param name="inputFile"/>
+    <param name="entry"/>
 
     <constant name="dataDir">$$parentDataDir$$/orthoFinder</constant>
 
@@ -30,12 +31,13 @@
       <depends name="makeOrthoFinderNextflowConfig"/>
     </step>
 
-    <step name="runOrthoFinderClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <step name="runOrthoFinderCoreClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
       <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/orthoFinder</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
+      <paramValue name="entry">$$entry$$</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
@@ -44,7 +46,7 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles"></paramValue>
       <paramValue name="deleteAfterCopy">false</paramValue>
-      <depends name="runOrthoFinderClusterTask"/>
+      <depends name="runOrthoFinderCoreClusterTask"/>
     </step>
 
 </workflowGraph>

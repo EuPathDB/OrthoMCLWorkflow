@@ -1,6 +1,6 @@
 <workflowGraph name="makeResidualOrthologGroups">
   <param name="parentDataDir"/>
-  <param name="residualFastaFilesDir"/>
+  <param name="residualFastaFile"/>
   <param name="inputTaxaDir"/>
   <param name="makeResidualGroupsDir"/>
   <param name="outputGroupsDir"/>
@@ -11,120 +11,77 @@
   <param name="groupIdPrefix"/>  
   <param name="groupIdStart"/>  
 
-  <constant name="goodProteinFile">$$makeResidualGroupsDir$$/combinedResiduals.fasta</constant>
-
   <!-- make a data dir  -->
-  <step name="makeMakeResidualGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeResidualGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$makeResidualGroupsDir$$</paramValue>
   </step>
 
-  <step name="combineResidualFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CombineResidualFiles">
-    <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-    <paramValue name="combinedResidualsFile">$$goodProteinFile$$</paramValue>
-    <depends name="makeMakeResidualGroupsDir"/>
+  <step name="makeResidualResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$makeResidualGroupsDir$$/master/</paramValue>
+    <depends name="makeResidualGroupsDir"/>
   </step>
 
-  <!-- mirror our data dir to the cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="$$useExistingSimSeqs$$">
+  <step name="makeOrthoFinderResidualNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderResidualNextflowConfig">
+    <paramValue name="clusterResultDir">$$makeResidualGroupsDir$$/master/mainresult/</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="analysisDir">$$makeResidualGroupsDir$$</paramValue>
+    <paramValue name="inputFile">$$residualFastaFile$$</paramValue>
+    <paramValue name="pValCutoff">1e-5</paramValue>
+    <paramValue name="lengthCutoff">1</paramValue>
+    <paramValue name="percentCutoff">1</paramValue>
+    <paramValue name="adjustMatchLength">true</paramValue>
+    <paramValue name="blastArgs">--dbsize 824802617</paramValue>
+    <depends name="makeResidualResultsDir"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$makeResidualGroupsDir$$</paramValue>
-    <depends name="combineResidualFastaFiles"/>
+    <depends name="makeOrthoFinderResidualNextflowConfig"/>
   </step>
 
-  <!-- format the blast database on the cluster -->
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="vendor">ncbi</paramValue>
-    <paramValue name="seqType">p</paramValue>
+  <step name="runOrthoFinderResidualClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
+    <paramValue name="workingDir">$$makeResidualGroupsDir$$</paramValue>
+    <paramValue name="resultsDir">$$makeResidualGroupsDir$$/master/mainresult</paramValue>
+    <paramValue name="nextflowConfigFile">$$makeResidualGroupsDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="entry">residual</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
-  <subgraph name="blast" xmlFile="orthomclBlast.xml" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="parentDataDir">$$makeResidualGroupsDir$$</paramValue>
-    <paramValue name="nickName">blast</paramValue>
-    <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="subjectFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
-    <paramValue name="idRegex">(\\S+)</paramValue>
-    <paramValue name="blastType">blastp</paramValue>
-    <paramValue name="vendor">ncbi</paramValue>
-    <paramValue name="loadSubjectSubset">false</paramValue>
-    <paramValue name="filterByTaxon">false</paramValue>
-    <paramValue name="maxMemoryGigs">20</paramValue>
-    <paramValue name="loadSimilarities">false</paramValue>
-    <paramValue name="makeSimSeqsFile">true</paramValue>
-
-    <!-- parameters below are not relevant for us -->
-    <paramValue name="queryTable"></paramValue>
-    <paramValue name="queryExtDbName"></paramValue>
-    <paramValue name="subjectTable"></paramValue>
-    <paramValue name="subjectExtDbName"></paramValue>
-    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
-    <paramValue name="taxonHierarchyForFilter"></paramValue>
-    <paramValue name="loadOptions"></paramValue>
-
-    <depends name="makeNrdbBlastDbOnCluster"/>
-  </subgraph>
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$makeResidualGroupsDir$$/master/mainresult</paramValue>
+    <paramValue name="outputDir">$$makeResidualGroupsDir$$/master/mainresult</paramValue>
+    <paramValue name="outputFiles"></paramValue>
+    <paramValue name="deleteAfterCopy">false</paramValue>
+    <depends name="runOrthoFinderResidualClusterTask"/>
+  </step>
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
   <!-- create config file  -->
-
+<!--
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
-    <depends name="makeMakeResidualGroupsDir"/>
+    <depends name="mirrorFromCluster"/>
   </step>
-
+-->
   <!-- load BLAST results into SimilarSequences table -->
+<!--
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="inputFile">$$makeResidualGroupsDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$makeResidualGroupsDir$$/master/mainresult/diamondSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="dataDir">$$makeResidualGroupsDir$$</paramValue>
     <depends name="installSchema"/>
-    <depends name="blast"/>
   </step>
-
+-->
+<!--
   <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
-    <paramValue name="taxaDir">$$inputTaxaDir$$</paramValue>
-    <paramValue name="suffix">$$suffix$$</paramValue>
-    <paramValue name="collapseClades">$$collapseClades$$</paramValue>
-    <paramValue name="inputProteinFile">$$goodProteinFile$$</paramValue>
-    <depends name="installSchema"/>
-    <depends name="combineResidualFastaFiles"/>
+     <paramValue name="taxaDir">$$inputTaxaDir$$</paramValue>
+     <paramValue name="suffix">$$suffix$$</paramValue>
+     <paramValue name="collapseClades">$$collapseClades$$</paramValue>
+     <paramValue name="inputProteinFile">$$makeResidualGroupsDir$$/proteomeDatasets/peripheralGood.fasta</paramValue>
+     <depends name="loadBlast"/>
   </step>
-
-  <!-- run the orthomclPairs program to compute pairwise relationships.  -->
-  <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
-    <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
-    <paramValue name="suffix">$$suffix$$</paramValue>
-    <depends name="loadBlast"/>
-    <depends name="importBlast"/>
-  </step>
-
-  <!-- write pairs out to a file -->
-  <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
-    <paramValue name="configFile">$$makeResidualGroupsDir$$/orthomclPairs.config</paramValue>
-    <paramValue name="suffix">$$suffix$$</paramValue>
-    <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
-    <depends name="orthomclPairs"/>
-  </step>
-
-  <!-- run MCL to make groups -->
-  <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
-    <paramValue name="inflation">1.5</paramValue>
-    <paramValue name="inputFile">$$outputGroupsDir$$/mclInput</paramValue>
-    <paramValue name="outputFile">$$outputGroupsDir$$/mcl.out</paramValue>
-    <depends name="makePairsFiles"/>
-  </step>
-
-  <!-- write groups out to file -->
-  <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
-    <paramValue name="orthomclIdPrefix">$$groupIdPrefix$$</paramValue>
-    <paramValue name="inputFile">$$outputGroupsDir$$/mcl.out</paramValue>
-    <paramValue name="proteinFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="outputFile">$$outputGroupsDir$$/orthomclGroups.txt</paramValue>
-    <paramValue name="startingOrthologGroupNumber">$$groupIdStart$$</paramValue>
-    <paramValue name="includeSingletons">$$includeSingletonGroups$$</paramValue>
-    <depends name="runMcl"/>
-  </step>
-
+-->
 </workflowGraph>

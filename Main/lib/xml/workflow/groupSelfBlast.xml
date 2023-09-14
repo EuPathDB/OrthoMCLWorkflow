@@ -1,0 +1,52 @@
+<workflowGraph name="groupSelfBlast">
+    <param name="parentDataDir"/>
+    <param name="coreProteome"/>
+    <param name="peripheralProteome"/>
+    <param name="coreGroupsFile"/>
+    <param name="peripheralGroupsFile"/>
+    <param name="blastArgs"/>
+
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$parentDataDir$$/master/</paramValue>
+    </step>
+
+    <step name="makeGroupSelfBlastNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGroupSelfBlastNextflowConfig">
+      <paramValue name="clusterResultDir">$$parentDataDir$$/master/mainresult/</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
+      <paramValue name="coreProteome">$$coreProteome$$</paramValue>
+      <paramValue name="peripheralProteome">$$peripheralProteome$$</paramValue>
+      <paramValue name="coreGroupsFile">$$coreGroupsFile$$</paramValue>
+      <paramValue name="peripheralGroupsFile">$$peripheralGroupsFile$$</paramValue>
+      <paramValue name="pValCutoff">1e-5</paramValue>
+      <paramValue name="lengthCutoff">1</paramValue>
+      <paramValue name="percentCutoff">1</paramValue>
+      <paramValue name="adjustMatchLength">true</paramValue>
+      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
+      <depends name="makeResultDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+      <depends name="makeGroupSelfBlastNextflowConfig"/>
+    </step>
+
+    <step name="runGroupSelfBlastClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
+      <paramValue name="workingDir">$$parentDataDir$$</paramValue>
+      <paramValue name="resultsDir">$$parentDataDir$$/master/mainresult/</paramValue>
+      <paramValue name="nextflowConfigFile">$$parentDataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
+      <paramValue name="entry">group</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$parentDataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$parentDataDir$$/master/mainresult/</paramValue>
+      <paramValue name="outputFiles"></paramValue>
+      <paramValue name="deleteAfterCopy">false</paramValue>
+      <depends name="runGroupSelfBlastClusterTask"/>
+    </step>
+
+</workflowGraph>

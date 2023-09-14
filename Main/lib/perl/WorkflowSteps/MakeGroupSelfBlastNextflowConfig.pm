@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderNextflowConfig;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeGroupSelfBlastNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -6,18 +6,23 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
+
 sub run {
   my ($self, $test, $undo) = @_;
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  my $previousBlasts = $self->getConfig('previousBlasts');
+  my $groupSelfCache = $self->getConfig('groupSelfCache');
   my $outdated = $self->getConfig('outdated');
-  my $inputFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFile"));
+  my $coreProteome = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreProteome"));
+  my $peripheralProteome = join("/", $clusterWorkflowDataDir, $self->getParamValue("peripheralProteome"));
+  my $coreGroupsFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreGroupsFile"));
+  my $peripheralGroupsFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("peripheralGroupsFile"));
   my $analysisDir = $self->getParamValue("analysisDir");
   my $pValCutoff  = $self->getParamValue("pValCutoff");
   my $lengthCutoff  = $self->getParamValue("lengthCutoff");
   my $percentCutoff  = $self->getParamValue("percentCutoff");
   my $adjustMatchLength   = $self->getParamValue("adjustMatchLength");
+  my $blastArgs = $self->getParamValue("blastArgs");
 
   my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
@@ -33,13 +38,17 @@ sub run {
     print F
 "
 params {
-  inputFile = \"$inputFile\"
+  coreProteome = \"$coreProteome\"
+  peripheralProteome = \"$peripheralProteome\"
+  coreGroupsFile = \"$coreGroupsFile\"
+  peripheralGroupsFile = \"$peripheralGroupsFile\"
+  updateList = \"$outdated\"
   outputDir = \"$clusterResultDir\"
   pValCutoff  = $pValCutoff
   lengthCutoff  = $lengthCutoff
   percentCutoff  = $percentCutoff
   adjustMatchLength   = $adjustMatchLength
-  outdated = \"$outdated\"
+  blastArgs = \"$blastArgs\"
 }
 
 process {
@@ -50,7 +59,7 @@ process {
 singularity {
   enabled = true
   autoMounts = true
-  runOptions = \"--bind $previousBlasts:/previousBlasts\"
+  runOptions = \"--bind $groupSelfCache:/cache\"
 }
 ";
   close(F);

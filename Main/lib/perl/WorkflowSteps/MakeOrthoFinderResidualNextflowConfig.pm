@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderNextflowConfig;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderResidualNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,14 +10,13 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  my $previousBlasts = $self->getConfig('previousBlasts');
-  my $outdated = $self->getConfig('outdated');
   my $inputFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFile"));
   my $analysisDir = $self->getParamValue("analysisDir");
   my $pValCutoff  = $self->getParamValue("pValCutoff");
   my $lengthCutoff  = $self->getParamValue("lengthCutoff");
   my $percentCutoff  = $self->getParamValue("percentCutoff");
   my $adjustMatchLength   = $self->getParamValue("adjustMatchLength");
+  my $blastArgs   = $self->getParamValue("blastArgs");
 
   my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
@@ -39,7 +38,7 @@ params {
   lengthCutoff  = $lengthCutoff
   percentCutoff  = $percentCutoff
   adjustMatchLength   = $adjustMatchLength
-  outdated = \"$outdated\"
+  blastArgs = \"$blastArgs\"
 }
 
 process {
@@ -50,7 +49,6 @@ process {
 singularity {
   enabled = true
   autoMounts = true
-  runOptions = \"--bind $previousBlasts:/previousBlasts\"
 }
 ";
   close(F);

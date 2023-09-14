@@ -31,31 +31,33 @@
     <paramValue name="fileOrDirToMirror">$$localDataDir$$</paramValue>
     <depends name="copyProteinFile"/>
   </step>
-
-  <!-- format the blast database on the cluster -->
+<!--
   <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="seqType">p</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
+-->
 
   <subgraph name="orthoFinder" xmlFile="orthoFinder.xml" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
-    <depends name="makeNrdbBlastDbOnCluster"/>
+    <paramValue name="entry">core</paramValue>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
   <!-- create config file  -->
-
+<!--  
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="makeLocalDataDir"/>
   </step>
-
+-->
   <!-- load BLAST results into SimilarSequences table -->
+<!--
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$localDataDir$$/orthoFinder/master/mainresult/diamondSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
@@ -63,7 +65,8 @@
     <depends name="installSchema"/>
     <depends name="orthoFinder"/>
   </step>
-
+-->
+<!--
   <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
     <paramValue name="taxaDir">$$inputTaxaDir$$</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
@@ -71,21 +74,23 @@
     <paramValue name="inputProteinFile">$$inputProteinFile$$</paramValue>
     <depends name="installSchema"/>
   </step>
-
+-->
   <!-- run the orthomclPairs program to compute pairwise relationships.  -->
+<!--
   <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="loadBlast"/>
     <depends name="importBlast"/>
   </step>
-
+-->
   <!-- write pairs out to a file -->
+<!--
   <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
     <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <depends name="orthomclPairs"/>
   </step>
-
+-->
 </workflowGraph>

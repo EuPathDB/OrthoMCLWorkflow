@@ -55,7 +55,7 @@
     <prop name="organismName"/>
     <prop name="ebi2gusTag"/>
 
-    <step name="${orthomclAbbrev}_insertTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralTaxonNameVersion">
+    <step name="${orthomclAbbrev}_insertTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertCoreTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
@@ -266,7 +266,7 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="orthomclUniprotReferenceProteomeForCore">
+  <datasetTemplate class="orthomclCoreFromUniprot">
     <prop name="abbrev"/>
     <prop name="oldAbbrevsList"/>
 
@@ -321,7 +321,7 @@
 
   </datasetTemplate>
 
-  <datasetTemplate class="orthomclUniprotEcForCore">
+  <datasetTemplate class="orthomclCoreFromUniprotEC">
     <prop name="abbrev"/>
     <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${abbrev}_Uniprot_ECAssociations_RSRC</paramValue>

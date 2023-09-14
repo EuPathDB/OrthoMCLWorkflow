@@ -76,7 +76,7 @@
   </subgraph>
 
   <!-- load the OrthomclTaxon table with our tree of life -->
- 
+
   <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
@@ -136,25 +136,25 @@
     <paramValue name="groupIdStart">$$groupIdStart$$</paramValue>
     <depends name="getCoreProteomes"/>
   </subgraph>
-
+<!--
   <step name="insertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsFile">makeGroups/orthoFinder/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="inputGroupsFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="corePeripheralResidual">C</paramValue>
     <depends name="makeCoreGroups"/>
   </step>
-
+-->
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="coreGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="bestRepresentativesFile">makeGroups/orthoFinder/master/mainresult/bestReps.fasta</paramValue>
     <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-    <depends name="insertGroups"/>
+    <depends name="makeCoreGroups"/>
   </subgraph>
-
+<!--
   <step name="UpdateResidualGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateGroupStatistics">
     <paramValue name="simSeqTableSuffix">Residuals</paramValue>
     <paramValue name="orthologTableSuffix">Residuals</paramValue>
@@ -162,7 +162,8 @@
     <paramValue name="overwriteExisting">N</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
-
+-->
+<!--
   <step name="makeResourcesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="peripheralWorkflow"/>
@@ -172,8 +173,9 @@
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="makeResourcesDir"/>
   </step>
-
+-->
 <!-- for this step, two lines in the script change abbrev 'rirr' to 'rhiz' for abbrev on orthomcl, remove when undo 'rhiz' -->
+<!--
   <step name="updateSpeciesResourcesEc" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
     <paramValue name="dataDir">OrganismNameResources</paramValue>
     <depends name="getDataFromVeupathAndUniprot"/>
@@ -185,14 +187,15 @@
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
       <depends name="updateSpeciesResourcesEc"/>
    </step>
-
+-->
 <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+<!--
   <step name="makeGenomicSitesFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
     <paramValue name="peripheralMapFileName">peripheralsMapToCoreGroup</paramValue>
-    <paramValue name="coreMapFile">makeGroups/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
-    <paramValue name="residualMapFile">residualGroups/orthomclGroups.txt</paramValue>
+    <paramValue name="coreMapFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="residualMapFile">residualGroups/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
     <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
     <paramValue name="ecFile">OrganismNameResources/ec_organism.txt</paramValue>
     <depends name="updateSpeciesResourcesEc"/>
@@ -202,9 +205,9 @@
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="galaxyDir">galaxyFiles</paramValue>
     <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Orthogroups/Orthogroups.txt</paramValue>
-    <paramValue name="residualGroupsFile">residualGroups/orthomclGroups.txt</paramValue>
-    <paramValue name="coreSequencesFile">coreGood.fasta</paramValue>
-    <paramValue name="residualSequencesFiles">getPeripheralProteins/residualFastaFiles/*.fasta</paramValue>
+    <paramValue name="residualGroupsFile">residualGroups/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="coreSequencesFile">makeGroups/orthoFinder/master/mainresult/bestReps.fasta</paramValue>
+    <paramValue name="residualSequencesFiles">residualGroups/master/mainresult/bestReps.fasta</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
 
@@ -212,39 +215,24 @@
     <paramValue name="groupTypesCPR">P</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
-
+-->
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="addNumMembersPeripheralGroups"/>
+    <depends name="peripheralWorkflow"/>
   </step>
 
-  <step name="extractGroupFastas" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ExtractGroupFasta">
-    <paramValue name="outputDir">$$groupsSelfBlastDir$$/groupFastas</paramValue>
-    <paramValue name="tarAndZip">true</paramValue>
-    <paramValue name="groupTypesCPR">P</paramValue>
-    <paramValue name="proteinsPerTarFile">500</paramValue>
-    <depends name="makeGroupsSelfBlastDir"/>
-  </step>
-
-  <subgraph name="groupsSelfBlast" xmlFile="multiBlast.xml">
+  <subgraph name="groupsSelfBlast" xmlFile="groupSelfBlast.xml">
     <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue>
-    <paramValue name="nickName">blast</paramValue>
-    <paramValue name="fastaDirTarFile">$$groupsSelfBlastDir$$/groupFastas.tar.gz</paramValue>
-    <paramValue name="coreDatabaseFasta">coreGood.fasta</paramValue>
-    <paramValue name="blastArgs">-F 'm S' -v 100000 -b 100000 -Y 1300000 -e 1e-5</paramValue>
-    <paramValue name="idRegex">(\\S+)</paramValue>
-    <paramValue name="blastType">blastp</paramValue>
-    <paramValue name="vendor">ncbi</paramValue>
-    <paramValue name="loadSubjectSubset">false</paramValue>
-    <paramValue name="filterByTaxon">false</paramValue>
-    <paramValue name="maxMemoryGigs">20</paramValue>
-    <paramValue name="loadSimilarities">false</paramValue>
-    <paramValue name="makeSimSeqsFile">true</paramValue>
-    <depends name="extractGroupFastas"/>
+    <paramValue name="coreProteome">coreGood.fasta</paramValue>
+    <paramValue name="peripheralProteome">peripheralToCore/master/mainresult/peripherals.fasta</paramValue>
+    <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.tsv</paramValue>
+    <paramValue name="peripheralGroupsFile">peripheralToCore/master/mainresult/groups.txt</paramValue>
+    <paramValue name="blastArgs">--dbsize 824802617</paramValue>
+    <depends name="makeGroupsSelfBlastDir"/>
   </subgraph>
-
+<!--
   <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
-    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarity.out</paramValue> 
+    <paramValue name="inputFile">$$groupsSelfBlastDir$$/master/mainresult/blastSimilarity.out</paramValue> 
     <paramValue name="outputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue> 
     <paramValue name="deleteInputFile">N</paramValue>
     <depends name="groupsSelfBlast"/>
@@ -269,8 +257,9 @@
     <paramValue name="directory">SimilarSequencesGroup</paramValue>
     <depends name="loadSelfBlast"/>
   </step>
-
+-->
 <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+<!--
   <step name="predictEcNumbers" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::PredictEcNumbers">
       <paramValue name="outputDir">@@manualDeliveryDir@@/PROJECT/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final</paramValue>
       <paramValue name="organismDir">OrganismNameResources</paramValue>
@@ -285,8 +274,9 @@
     <paramValue name="overwriteExisting">N</paramValue>
     <depends name="predictEcNumbers"/>
   </step>
-
+-->
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+<!--
   <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
     <depends name="addNumMembersPeripheralGroups"/>
@@ -346,6 +336,6 @@
     <depends name="makeWebServicesDir"/>
     <depends name="makeDownloadFiles"/>
   </step>
-
+-->
 
 </workflowGraph>

@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderNextflowConfig;
+package OrthoMCLWorkflow::Main::WorkflowSteps::MakePeripheralToCoreNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,14 +10,10 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  my $previousBlasts = $self->getConfig('previousBlasts');
-  my $outdated = $self->getConfig('outdated');
-  my $inputFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFile"));
+  my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("seqFile"));
   my $analysisDir = $self->getParamValue("analysisDir");
-  my $pValCutoff  = $self->getParamValue("pValCutoff");
-  my $lengthCutoff  = $self->getParamValue("lengthCutoff");
-  my $percentCutoff  = $self->getParamValue("percentCutoff");
-  my $adjustMatchLength   = $self->getParamValue("adjustMatchLength");
+  my $databaseFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("databaseFasta"));
+  my $diamondArgs   = $self->getParamValue("diamondArgs");
 
   my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
@@ -33,13 +29,11 @@ sub run {
     print F
 "
 params {
-  inputFile = \"$inputFile\"
+  fastaSubsetSize = 10000
+  seqFile = \"$seqFile\"
   outputDir = \"$clusterResultDir\"
-  pValCutoff  = $pValCutoff
-  lengthCutoff  = $lengthCutoff
-  percentCutoff  = $percentCutoff
-  adjustMatchLength   = $adjustMatchLength
-  outdated = \"$outdated\"
+  databaseFasta = \"$databaseFasta\"
+  diamondArgs = \"$diamondArgs\"
 }
 
 process {
@@ -50,7 +44,6 @@ process {
 singularity {
   enabled = true
   autoMounts = true
-  runOptions = \"--bind $previousBlasts:/previousBlasts\"
 }
 ";
   close(F);
