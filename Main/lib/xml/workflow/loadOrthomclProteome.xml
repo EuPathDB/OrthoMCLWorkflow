@@ -12,12 +12,12 @@
     </subgraph>
 
     <step name="copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-      <paramValue name="fromFile">$$parentDataDir$$/$$abbrev$$_orthomclProteome_RSRC/$$abbrev$$Proteome.fasta</paramValue>
+      <paramValue name="fromFile">$$parentDataDir$$/$$abbrev$$_orthomclProteome_RSRC/$$abbrev$$.fasta</paramValue>
       <paramValue name="toFile">$$proteomesDir$$/$$abbrev$$.fasta</paramValue>
 <!--      <paramValue name="useSymLink">true</paramValue> -->
       <depends name="loadProteome"/>
     </step>
-
+<!--
     <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
       <paramValue name="abbrev">$$abbrev$$</paramValue>
       <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
@@ -31,5 +31,5 @@
       <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <depends name="mapPreviousSeqIDs"/>
     </step>
-
+-->
 </workflowGraph>

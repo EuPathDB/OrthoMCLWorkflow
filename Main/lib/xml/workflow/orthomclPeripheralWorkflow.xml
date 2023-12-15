@@ -1,19 +1,20 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
-  <param name="bestRepresentativesFile"/>
+  <param name="residualGroupIdPrefix"/>
+  <param name="residualGroupIdStart"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="projectVersionForWebsiteFiles"/>
-  <param name="residualGroupIdPrefix"/>
-  <param name="residualGroupIdStart"/>
+  <param name="coreProteome"/>
+  <param name="coreResultsDir"/>
 
   <constant name="projectName">OrthoMCL</constant>
   <constant name="getPeripheralProteinsDir">$$parentDataDir$$/getPeripheralProteins</constant>
   <constant name="residualFastaFilesDir">$$getPeripheralProteinsDir$$/residualFastaFiles</constant>
   <constant name="makeResidualGroupsDir">$$parentDataDir$$/makeResidualGroups</constant>
   <constant name="residualGroupsDir">$$parentDataDir$$/residualGroups</constant>
-  <constant name="peripheralToCoreDir">$$parentDataDir$$/peripheralToCore</constant>
+  <constant name="peripheralDir">$$parentDataDir$$/peripheral</constant>
   
   <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables">
     <paramValue name="orthoGroupTable">apidb.OrthologGroup</paramValue>
@@ -21,6 +22,7 @@
   </step>
 
   <subgraph name="getPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
     <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
@@ -28,62 +30,66 @@
     <depends name="copyOrthogroupRowsForPeripheral"/>
   </subgraph>
 
-  <step name="makePeripheralToCoreDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$peripheralToCoreDir$$</paramValue>
+  <step name="makePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$peripheralDir$$</paramValue>
       <depends name="getPeripheralProteomes"/>
   </step>
 
-  <step name="makePeripheralToCoreResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$peripheralToCoreDir$$/master/</paramValue>
-    <depends name="makePeripheralToCoreDir"/>
+  <step name="makePeripheralResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$peripheralDir$$/master/</paramValue>
+    <depends name="makePeripheralDir"/>
    </step>
 
-  <step name="makePeripheralToCoreNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakePeripheralToCoreNextflowConfig">
-    <paramValue name="clusterResultDir">$$peripheralToCoreDir$$/master/mainresult/</paramValue>
+  <step name="CopyAndUncompressPeripheralCacheDir" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
+    <paramValue name="outputDir">$$peripheralDir$$</paramValue>
+    <depends name="makePeripheralResultsDir"/>
+  </step>
+
+  <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
+    <paramValue name="clusterResultDir">$$peripheralDir$$/master/mainresult/</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="analysisDir">$$peripheralToCoreDir$$</paramValue>
-    <paramValue name="seqFile">$$getPeripheralProteinsDir$$/proteomeDatasets/peripheralGood.fasta</paramValue>
-    <paramValue name="databaseFasta">$$bestRepresentativesFile$$</paramValue>
-    <paramValue name="diamondArgs"></paramValue>
-    <depends name="makePeripheralToCoreResultsDir"/>
+    <paramValue name="analysisDir">$$peripheralDir$$</paramValue>
+    <paramValue name="peripheralProteomes">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="coreProteome">$$coreProteome$$</paramValue>
+    <paramValue name="coreBestReps">$$coreResultsDir$$/bestReps.fasta</paramValue>
+    <paramValue name="coreGroupsFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
+    <paramValue name="coreSimilarityToBestReps">$$coreResultsDir$$/coreSimilarityToBestReps</paramValue>
+    <paramValue name="coreBestRepsSelfBlast">$$coreResultsDir$$/core_best_reps_self_blast.txt</paramValue>
+    <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir.tar.gz</paramValue>
+    <paramValue name="outdated">$$coreResultsDir$$/../../outdated.txt</paramValue>
+    <depends name="CopyAndUncompressPeripheralCacheDir"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$peripheralToCoreDir$$</paramValue>
-    <depends name="makePeripheralToCoreNextflowConfig"/>
+    <paramValue name="fileOrDirToMirror">$$peripheralDir$$</paramValue>
+    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
   </step>
 
-  <step name="runPeripheralToCoreClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
-    <paramValue name="workingDir">$$peripheralToCoreDir$$</paramValue>
-    <paramValue name="resultsDir">$$peripheralToCoreDir$$/master/mainresult</paramValue>
-    <paramValue name="nextflowConfigFile">$$peripheralToCoreDir$$/nextflow.config</paramValue>
-    <paramValue name="nextflowWorkflow">VEuPathDB/orthofinderPeripheralToCore</paramValue>
+  <step name="runOrthoFinderPeripheralClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
+    <paramValue name="workingDir">$$peripheralDir$$</paramValue>
+    <paramValue name="resultsDir">$$peripheralDir$$/master/mainresult</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="entry">peripheralEntry</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$peripheralToCoreDir$$/master/mainresult</paramValue>
-    <paramValue name="outputDir">$$peripheralToCoreDir$$/master/mainresult</paramValue>
+    <paramValue name="fileOrDirToMirror">$$peripheralDir$$/master/mainresult</paramValue>
+    <paramValue name="outputDir">$$peripheralDir$$/master/mainresult</paramValue>
     <paramValue name="outputFiles"></paramValue>
     <paramValue name="deleteAfterCopy">false</paramValue>
-    <depends name="runPeripheralToCoreClusterTask"/>
+    <depends name="runOrthoFinderPeripheralClusterTask"/>
   </step>     
- 
-  <subgraph name="makeResidualGroups" xmlFile="makeResidualOrthologGroups.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="residualFastaFile">$$peripheralToCoreDir$$/master/mainresult/residuals.fasta</paramValue>
-    <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="makeResidualGroupsDir">$$makeResidualGroupsDir$$</paramValue>
-    <paramValue name="outputGroupsDir">$$residualGroupsDir$$</paramValue>
-    <paramValue name="suffix">Residuals</paramValue>
-    <paramValue name="useExistingSimSeqs">false</paramValue>
-    <paramValue name="collapseClades">false</paramValue>
-    <paramValue name="includeSingletonGroups">true</paramValue>
-    <paramValue name="groupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
-    <paramValue name="groupIdStart">$$residualGroupIdStart$$</paramValue>
-    <depends name="mirrorFromCluster"/>
-  </subgraph>
+<!--
+  <step name="loadGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups">
+      <paramValue name="corePeripheralResidual">P</paramValue>
+      <paramValue name="peripheralGroupsFile">$$peripheralToCoreDir$$/master/mainresult/groups.txt</paramValue>
+      <depends name="mirrorFromCluster"/>
+  </step>
+ -->
+
 <!--
   <step name="insertResidualGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
     <paramValue name="inputGroupsFile">$$residualGroupsDir$$/master/mainresult/Results_*/Orthogroups/Orthogroups.txt</paramValue>

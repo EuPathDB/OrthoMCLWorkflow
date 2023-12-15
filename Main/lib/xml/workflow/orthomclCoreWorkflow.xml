@@ -16,6 +16,7 @@
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
   <constant name="groupsSelfBlastDir">groupsSelfBlast</constant>
+  <constant name="coreProteinsDir">coreProteins</constant>
   <constant name="coreGroupsDir">coreGroups</constant>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
@@ -32,73 +33,79 @@
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>
-
+<!--
   <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
+<!--
   <subgraph name="taxonomy" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
+<!--
   <subgraph name="interproscanData" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
+<!--
   <subgraph name="geneOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
+<!--
   <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
+<!--
   <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
-
+-->
   <!-- load the OrthomclTaxon table with our tree of life -->
-
+<!--
   <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="taxonomy"/>
   </subgraph>
-
+-->
+<!--
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
     <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>  
-
+-->
+<!--
   <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesGroupFiles">
     <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
     <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>  
-
+-->
   <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">coreInterpro</paramValue>
-    <depends name="initUserGroupProject"/>
     <depends name="makeGlobalDataDir"/>
   </step>
 
@@ -107,27 +114,29 @@
     <depends name="makeCoreInterproDir"/>
   </step>
 
+  <step name="makePeripheralInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">peripheralInterpro</paramValue>
+    <depends name="mirrorCoreInterproDirToCluster"/>
+  </step>
+
+  <step name="mirrorPeripheralInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">peripheralInterpro</paramValue>
+    <depends name="makePeripheralInterproDir"/>
+  </step>
+
   <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="outputGoodProteinsFile">coreGood.fasta</paramValue>
+    <paramValue name="coreProteinsDir">$$coreProteinsDir$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="orthomclClades"/>
-    <depends name="getOldReleaseSeqFiles"/>
-    <depends name="getOldReleaseGroupFiles"/>
-    <depends name="SequenceOntology"/>
-    <depends name="geneOntology"/>
-    <depends name="geneOntologyEvidenceCodes"/>
-    <depends name="initClusterHomeDir"/>
-    <depends name="enzymeDB"/>
-    <depends name="mirrorCoreInterproDirToCluster"/>
+    <depends name="mirrorPeripheralInterproDirToCluster"/>
   </subgraph>
 
   <subgraph name="makeCoreGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="inputProteinFile">coreGood.fasta</paramValue>
+    <paramValue name="coreGroupsDir">$$coreGroupsDir$$</paramValue>
+    <paramValue name="inputProteinFile">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="inputTaxaDir">dontcare</paramValue>
-    <paramValue name="outputGroupsDir">$$coreGroupsDir$$</paramValue>
     <paramValue name="suffix">Core</paramValue>
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
@@ -145,13 +154,14 @@
 -->
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="bestRepresentativesFile">makeGroups/orthoFinder/master/mainresult/bestReps.fasta</paramValue>
     <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="residualGroupIdStart">$$residualGroupIdStart$$</paramValue>
     <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="coreResultsDir">$$coreGroupsDir$$/master/mainresult</paramValue>
     <depends name="makeCoreGroups"/>
   </subgraph>
 <!--
@@ -216,20 +226,25 @@
     <depends name="peripheralWorkflow"/>
   </step>
 -->
+<!--
   <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
+-->
 
-  <subgraph name="groupsSelfBlast" xmlFile="groupSelfBlast.xml">
-    <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue>
-    <paramValue name="coreProteome">coreGood.fasta</paramValue>
-    <paramValue name="peripheralProteome">peripheralToCore/master/mainresult/peripherals.fasta</paramValue>
-    <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.tsv</paramValue>
-    <paramValue name="peripheralGroupsFile">peripheralToCore/master/mainresult/groups.txt</paramValue>
-    <paramValue name="blastArgs">--dbsize 824802617</paramValue>
-    <depends name="makeGroupsSelfBlastDir"/>
-  </subgraph>
+<!--
+  <subgraph name="groupsSelfBlast" xmlFile="groupSelfBlast.xml"> 
+    <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue> 
+    <paramValue name="coreProteome">coreGood.fasta</paramValue> 
+    <paramValue name="peripheralProteome">peripheralToCore/master/mainresult/peripherals.fasta</paramValue> 
+    <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.tsv</paramValue> 
+    <paramValue name="peripheralGroupsFile">peripheralToCore/master/mainresult/groups.txt</paramValue> 
+    <paramValue name="blastArgs"> dbsize 824802617</paramValue> 
+    <depends name="makeGroupsSelfBlastDir"/> 
+  </subgraph> 
+-->
+
 <!--
   <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
     <paramValue name="inputFile">$$groupsSelfBlastDir$$/master/mainresult/blastSimilarity.out</paramValue> 

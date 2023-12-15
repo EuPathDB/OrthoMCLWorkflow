@@ -2,7 +2,7 @@
   <param name="parentDataDir"/>
   <param name="inputProteinFile"/>
   <param name="inputTaxaDir"/>
-  <param name="outputGroupsDir"/>
+  <param name="coreGroupsDir"/>
   <param name="suffix"/>
   <param name="useExistingSimSeqs"/>
   <param name="collapseClades"/>  
@@ -10,27 +10,9 @@
   <param name="groupIdPrefix"/>  
   <param name="groupIdStart"/>  
 
-  <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
-  <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
+  <constant name="localDataDir">$$parentDataDir$$/$$coreGroupsDir$$</constant>
+  <constant name="goodProteinFile">$$parentDataDir$$/$$inputProteinFile$$</constant>
 
-  <!-- make a data dir  -->
-  <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$localDataDir$$</paramValue>
-  </step>
-
-  <!-- copy protein file to our data dir -->
-  <!-- as a top-level graph (for development) this will fail. Copy to workflow's data dir, and set step to ready -->
-  <step name="copyProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-    <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
-    <paramValue name="toFile">$$goodProteinFile$$</paramValue>
-    <depends name="makeLocalDataDir"/>
-  </step>
-
-  <!-- mirror our data dir to the cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="fileOrDirToMirror">$$localDataDir$$</paramValue>
-    <depends name="copyProteinFile"/>
-  </step>
 <!--
   <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
@@ -40,11 +22,10 @@
   </step>
 -->
 
-  <subgraph name="orthoFinder" xmlFile="orthoFinder.xml" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
+  <subgraph name="orthoFinderCore" xmlFile="orthoFinderCore.xml" excludeIf="$$useExistingSimSeqs$$">
+    <paramValue name="coreDataDir">$$localDataDir$$</paramValue>
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="entry">core</paramValue>
-    <depends name="mirrorToCluster"/>
+    <paramValue name="entry">coreEntry</paramValue>
   </subgraph>
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->

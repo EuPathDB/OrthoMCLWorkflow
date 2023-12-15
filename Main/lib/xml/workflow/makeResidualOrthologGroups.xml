@@ -57,6 +57,18 @@
     <depends name="runOrthoFinderResidualClusterTask"/>
   </step>
 
+  <step name="loadGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroups">
+      <paramValue name="corePeripheralResidual">R</paramValue>
+      <paramValue name="inputGroupsFile">$$makeResidualGroupsDir$$/master/mainresult/Results/Orthogroups/Orthogroups.tsv</paramValue>
+      <depends name="mirrorFromCluster"/>
+  </step>
+
+  <step name="loadGroupSelfBlastResults" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupStatistics">
+      <paramValue name="corePeripheralResidual">R</paramValue>
+      <paramValue name="groupStatsFile">$$makeResidualGroupsDir$$/master/mainresult/groupStats.tsv</paramValue>
+      <depends name="loadGroups"/>
+  </step>
+
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
   <!-- create config file  -->
 <!--

@@ -49,4 +49,10 @@
       <depends name="runGroupSelfBlastClusterTask"/>
     </step>
 
+    <step name="loadGroupSelfBlastResults" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroupStatistics">
+      <paramValue name="corePeripheralResidual">P</paramValue>
+      <paramValue name="groupStatsFile">$$parentDataDir$$/master/mainresult/groupStats.tsv</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+
 </workflowGraph>

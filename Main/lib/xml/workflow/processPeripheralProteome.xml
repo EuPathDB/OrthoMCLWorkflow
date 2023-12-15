@@ -26,7 +26,7 @@
   </step>
 
   <step name="mirrorFastaFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$.fasta</paramValue>
     <depends name="mirrorProteomeDirToCluster"/>
   </step>
 
@@ -41,7 +41,7 @@
   </step>
   
   <subgraph name="InterproScan" xmlFile="interpro.xml">
-    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$Proteome.fasta</paramValue>
+    <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/$$datasetName$$/$$abbrev$$.fasta</paramValue>
     <paramValue name="parentDataDir">$$proteomeDatasetsDir$$/$$datasetName$$/Interpro</paramValue>
     <paramValue name="insertVersion">2</paramValue>
     <paramValue name="aaSeqTable">ExternalAASequence</paramValue>

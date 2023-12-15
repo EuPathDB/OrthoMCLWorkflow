@@ -34,6 +34,7 @@ sub run {
     $self->runCmd(0, "rm -rf $socketDir");
     $self->runCmd(0, "rm -rf $initSqlDir");
     $self->runCmd(0, "rm -rf $unpackDir");
+    $self->runCmd(0, "rm $outputDir/log.txt");
     $self->runCmd(0, "rm $outputDir/$proteomeFileName");
     $self->runCmd(0, "rm $outputDir/$ecFileName");
   } else {

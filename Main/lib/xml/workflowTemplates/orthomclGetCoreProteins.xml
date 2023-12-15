@@ -1,22 +1,22 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
-  <param name="outputGoodProteinsFile"/>
+  <param name="coreProteinsDir"/>
   <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/getCoreProteins</constant>
+  <constant name="dataDir">$$parentDataDir$$/$$coreProteinsDir$$</constant>
   <constant name="proteomesDir">$$dataDir$$/coreProteomes</constant>
   <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
   <constant name="ecMappingsDir">$$dataDir$$/ecMappings</constant>
   <constant name="coreInterproDir">$$parentDataDir$$/coreInterpro</constant>
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeCoreProteinsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
   <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="makeCoreProteinsDir"/>
   </step>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -44,7 +44,7 @@
     <depends name="mirrorProteomeDatasetsDirToCluster"/>
   </step>
 
-  <datasetTemplate class="orthomclCoreFromEbi">
+  <datasetTemplate class="orthomclCoreFromVEuPathEBI">
     <prop name="projectName"/>
     <prop name="ebiOrganismName"/>
     <prop name="ebiVersion"/>
@@ -54,7 +54,7 @@
     <prop name="ncbiTaxonId"/>
     <prop name="organismName"/>
     <prop name="ebi2gusTag"/>
-
+<!--
     <step name="${orthomclAbbrev}_insertTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertCoreTaxonNameVersion">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
@@ -63,6 +63,7 @@
       <paramValue name="organismName">${organismName}</paramValue>
       <depends name="makeEcMappingsDir"/>
     </step>
+-->
 <!--
     <step name="${orthomclAbbrev}_validateTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
@@ -70,6 +71,7 @@
       <depends name="${orthomclAbbrev}_insertTaxon"/>
     </step>
     -->
+<!--
     <subgraph name="${orthomclAbbrev}_loadCoreDataset" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
@@ -90,6 +92,7 @@
       <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <depends name="${orthomclAbbrev}_mapPreviousSeqIDs"/>
     </step>
+-->
 <!--
     <subgraph name="${orthomclAbbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
       <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
@@ -101,7 +104,12 @@
       <depends name="makeEcMappingsDir"/>
     </subgraph>    
     -->
-    <step name="${orthomclAbbrev}_runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" >
+    <step name="${orthomclAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
+      <depends name="makeEcMappingsDir"/>
+    </step>
+
+    <step name="${orthomclAbbrev}_runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" stepLoadTypes="runEbiDumper">
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
@@ -111,10 +119,10 @@
       <paramValue name="ecFileName">${orthomclAbbrev}_ecFromEbi.tab</paramValue>
       <paramValue name="proteomeFileName">${orthomclAbbrev}_.fasta</paramValue>
       <paramValue name="ebi2gusTag">${ebi2gusTag}</paramValue>
-      <depends name="${orthomclAbbrev}_mapPreviousGroupIDs"/>
+      <depends name="${orthomclAbbrev}_makeDataDir"/>
     </step>
     
-    <step name="${orthomclAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="${orthomclAbbrev}_makeInterproDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$coreInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
         <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
     </step>
@@ -126,7 +134,7 @@
       <paramValue name="proteinIdRegex">^>(\S+)</paramValue>
       <paramValue name="maxStopCodonPercent">20</paramValue>
       <paramValue name="preferredSource">sp</paramValue>
-      <depends name="${orthomclAbbrev}_makeDataDir"/>
+      <depends name="${orthomclAbbrev}_makeInterproDataDir"/>
     </step>
 
     <step name="${orthomclAbbrev}_makeAliasFile" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeAliasFile" >
@@ -147,13 +155,13 @@
 
     <step name="${orthomclAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsForSample">
       <paramValue name="proteomeFile">$$proteomesDir$$/${orthomclAbbrev}.fasta</paramValue>
-      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}_good.fasta</paramValue>
-      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}_bad.fasta</paramValue>
+      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}.fasta</paramValue>
+      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}_bad.fa</paramValue>
       <paramValue name="minLength">10</paramValue>
       <paramValue name="maxStopPercent">20</paramValue>
       <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
     </step>
-    
+<!-- 
     <step name="${orthomclAbbrev}_insertCoreSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
       <paramValue name="externalDatabaseName">${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="externalDatabaseVersion">${ebiVersion}</paramValue>
@@ -166,26 +174,27 @@
       <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
       <depends name="${orthomclAbbrev}_makeGoodProteinsFile"/>
     </step>
- 
+-->
     <step name="${orthomclAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$coreInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${orthomclAbbrev}_insertCoreSequences"/>
+        <depends name="${orthomclAbbrev}_makeGoodProteinsFile"/>
     </step>
 
     <step name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
         <depends name="${orthomclAbbrev}_mirrorToCluster"/>
     </step>
-    
+<!--    
     <subgraph name="${orthomclAbbrev}_InterproScan" xmlFile="interpro.xml">
-        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}_good.fasta</paramValue>
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}.fasta</paramValue>
         <paramValue name="parentDataDir">$$coreInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
         <paramValue name="insertVersion">2</paramValue>
         <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
         <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
         <depends name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster"/>
     </subgraph>
-
+-->
+<!--
     <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
@@ -198,7 +207,7 @@
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
       <depends name="${orthomclAbbrev}_insertAliases"/>
     </step>
- 
+-->
   </datasetTemplate>
 
   <datasetTemplate class="orthomclEuPathProteomeForCore">
@@ -212,8 +221,7 @@
       <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
-      <depends name="makeProteomesDir"/>
-      <depends name="makeProteomeDatasetsDir"/>
+      <depends name="makeEcMappingsDir"/>
     </subgraph>
 
     <step name="${abbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -223,8 +231,8 @@
 
     <step name="${abbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsForSample">
       <paramValue name="proteomeFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
-      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_good.fasta</paramValue>
-      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_bad.fasta</paramValue>
+      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_bad.fa</paramValue>
       <paramValue name="minLength">10</paramValue>
       <paramValue name="maxStopPercent">20</paramValue>
       <dependsPattern name="${abbrev}_makeDataDir"/>
@@ -241,7 +249,7 @@
     </step>
 
     <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
-        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_good.fasta</paramValue>
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
         <paramValue name="parentDataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
         <paramValue name="insertVersion">2</paramValue>
         <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
@@ -287,8 +295,8 @@
 
     <step name="${abbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsForSample">
       <paramValue name="proteomeFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
-      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_good.fasta</paramValue>
-      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_bad.fasta</paramValue>
+      <paramValue name="outputGoodProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_bad.fa</paramValue>
       <paramValue name="minLength">10</paramValue>
       <paramValue name="maxStopPercent">20</paramValue>
       <dependsPattern name="${abbrev}_makeDataDir"/>
@@ -303,22 +311,23 @@
         <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
         <depends name="${abbrev}_mirrorToCluster"/>
     </step>
-
+<!--
     <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
-        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_good.fasta</paramValue>
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
         <paramValue name="parentDataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
         <paramValue name="insertVersion">2</paramValue>
         <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
         <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
         <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
     </subgraph>
-
+-->
+<!--
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
     </step>
-
+-->
   </datasetTemplate>
 
   <datasetTemplate class="orthomclCoreFromUniprotEC">
@@ -332,19 +341,20 @@
     </subgraph>
   </datasetTemplate>
 
-  <step name="mergeProteinFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeProteinFiles">
-    <paramValue name="proteomesDir">$$proteomeDatasetsDir$$</paramValue>
-    <paramValue name="outputGoodProteinsFile">$$outputGoodProteinsFile$$</paramValue>
-    <paramValue name="outputBadProteinsFile">$$dataDir$$/bad.fasta</paramValue>
-    <paramValue name="minLength">10</paramValue>
-    <paramValue name="maxStopPercent">20</paramValue>
+  <step name="makeProteomeInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/fastas</paramValue>
     <dependsPattern name="*_makeGoodProteinsFile"/>
   </step>
 
+  <step name="MakeOrthofinderInputDir" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthofinderInputDir">
+    <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$</paramValue>
+    <depends name="makeProteomeInputDir"/>
+  </step>
+
   <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$outputGoodProteinsFile$$</paramValue>
-    <depends name="mirrorDataDirToCluster"/>
-    <depends name="mergeProteinFiles"/>
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/fastas.tar.gz</paramValue>
+    <depends name="MakeOrthofinderInputDir"/>
   </step>
 
 </workflowGraph>

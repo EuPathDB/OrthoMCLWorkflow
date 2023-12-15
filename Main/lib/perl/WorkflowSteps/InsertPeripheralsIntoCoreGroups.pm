@@ -11,13 +11,15 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $groupsFile = $self->getParamValue('inputGroupsFile');
+    my $corePeripheralResidual = $self->getParamValue('corePeripheralResidual');
 
-    my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
+    my $peripheralGroupFile = $self->getParamValue('peripheralGroupsFile');
 
-    my $args = " --orthoFile $orthoFileFullPath --extDbName OrthoMCL --extDbVersion dontcare";
+    my $orthoFileFullPath = "$workflowDataDir/$peripheralGroupFile";
 
-    $self->testInputFile('inputGroupsFile', "$orthoFileFullPath");
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertMappedPeripheralsIntoCoreGroups", $args);
+    my $args = " --peripheralGroupsFile $orthoFileFullPath --corePeripheralResidual $corePeripheralResidual";
+
+    $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertPeripheralsToGroups", $args);
 
 }
