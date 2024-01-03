@@ -55,7 +55,7 @@
     <paramValue name="coreGroupsFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
     <paramValue name="coreSimilarityToBestReps">$$coreResultsDir$$/coreSimilarityToBestReps</paramValue>
     <paramValue name="coreBestRepsSelfBlast">$$coreResultsDir$$/core_best_reps_self_blast.txt</paramValue>
-    <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir.tar.gz</paramValue>
+    <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
     <paramValue name="outdated">$$coreResultsDir$$/../../outdated.txt</paramValue>
     <depends name="CopyAndUncompressPeripheralCacheDir"/>
   </step>

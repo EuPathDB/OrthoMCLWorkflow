@@ -13,15 +13,6 @@
   <constant name="localDataDir">$$parentDataDir$$/$$coreGroupsDir$$</constant>
   <constant name="goodProteinFile">$$parentDataDir$$/$$inputProteinFile$$</constant>
 
-<!--
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
-    <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
-    <paramValue name="vendor">ncbi</paramValue>
-    <paramValue name="seqType">p</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
--->
-
   <subgraph name="orthoFinderCore" xmlFile="orthoFinderCore.xml" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="coreDataDir">$$localDataDir$$</paramValue>
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>

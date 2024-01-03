@@ -6,7 +6,6 @@
   <param name="residualGroupIdPrefix"/>
   <param name="residualGroupIdStart"/>
   <param name="proteomesFromBuild"/>
-  <!--  projectName should be changed, was orthoMCL -->
 
   <constant name="projectName">OrthoMCL</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
@@ -33,6 +32,7 @@
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </step>
+
 <!--
   <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>

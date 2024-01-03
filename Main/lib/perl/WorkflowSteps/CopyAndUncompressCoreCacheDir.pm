@@ -18,8 +18,10 @@ sub run {
       $self->runCmd(0, "mkdir $outputDir/coreCacheDir");
   }
   else {
-      $self->runCmd(0, "cp -r ${coreCacheDir} $outputDir/");
-      $self->runCmd(0, "tar -xvzf ${outputDir}/coreCacheDir.tar.gz");
+      $self->runCmd(0, "cp -r ${coreCacheDir} $outputDir/coreCacheDir.tar.gz");
+      die "$outputDir/coreCacheDir.tar.gz does not exist" unless(-e "$outputDir/coreCacheDir.tar.gz");
+      $self->runCmd(0, "tar -xvzf ${outputDir}/coreCacheDir.tar.gz -C $outputDir");
+      die "$outputDir/coreCacheDir does not exist" unless(-d "$outputDir/coreCacheDir");
       $self->runCmd(0, "rm ${outputDir}/coreCacheDir.tar.gz");
   }
 }

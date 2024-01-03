@@ -169,16 +169,17 @@
         <depends name="${orthomclAbbrev}_mirrorInterproToCluster"/>
     </step>
 
-    <!-- 
-    <subgraph name="${orthomclAbbrev}_InterproScan" xmlFile="interpro.xml"> 
-      <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}.fasta</paramValue>
-      <paramValue name="parentDataDir">$$peripheralInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
-      <paramValue name="insertVersion">2</paramValue>
-      <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
-      <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
-      <depends name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster"/>
+    <subgraph name="${orthomclAbbrev}_InterproScan" xmlFile="interpro.xml">
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/${orthomclAbbrev}.fasta</paramValue>
+        <paramValue name="parentDataDir">$$peripheralInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
+        <paramValue name="insertVersion">2</paramValue>
+        <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+        <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+        <paramValue name="ncbiTaxId">${ncbiTaxonId}</paramValue>
+        <depends name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster"/>
     </subgraph>
 
+<!--
     <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
@@ -240,6 +241,16 @@
       <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
       <depends name="${abbrev}_mirrorInterproDirToCluster"/>
     </step>
+
+    <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/${abbrev}.fasta</paramValue>
+        <paramValue name="parentDataDir">$$peripheralInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
+        <paramValue name="insertVersion">2</paramValue>
+        <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+        <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+        <paramValue name="ncbiTaxId">${ncbiTaxonId}</paramValue>
+        <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
+   </subgraph>
 
 <!--                                                                                                                                                                                                          <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">                                                                                                                                             <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>                                                                                      <paramValue name="parentDataDir">$$peripheralInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>                                                                                                   <paramValue name="insertVersion">2</paramValue>                                                                                                                                                           <paramValue name="aaSeqTable">ExternalAASequence</paramValue>                                                                                                                                             <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>                                                                                                                                                 <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>                                                                                                                                              </subgraph>                                                                                                                                                                                           -->
 
@@ -427,6 +438,16 @@
       <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
       <depends name="${abbrev}_mirrorInterproDirToCluster"/>
     </step>
+
+    <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
+        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/${abbrev}.fasta</paramValue>
+        <paramValue name="parentDataDir">$$peripheralInterproDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
+        <paramValue name="insertVersion">2</paramValue>
+        <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+        <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+        <paramValue name="ncbiTaxId">${ncbiTaxonId}</paramValue>
+        <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
+   </subgraph>
 
 <!--                                                                                                                                                                                                          <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">                                                                                                                                             <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>                                                                                      <paramValue name="parentDataDir">$$peripheralInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>                                                                                                   <paramValue name="insertVersion">2</paramValue>                                                                                                                                                           <paramValue name="aaSeqTable">ExternalAASequence</paramValue>                                                                                                                                             <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>                                                                                                                                                 <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>                                                                                                                                              </subgraph>                                                                                                                                                                                           -->
 

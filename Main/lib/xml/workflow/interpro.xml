@@ -1,0 +1,62 @@
+<workflowGraph name="interproWorkflow">
+
+    <param name="proteinsFile"/>
+    <param name="ncbiTaxId"/>
+    <param name="parentDataDir"/>
+    <param name="insertVersion" default="1"/>                    <!-- optional -->
+    <param name="aaSeqTable"    default="ExternalAASequence"/>   <!-- optional, used if version > 1 -->
+    <param name="sourceIdRegex" default="(\S+)"/>                <!-- optional, used if version > 1 -->
+
+    <constant name="dataDir">$$parentDataDir$$/interpro</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeInterproNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeIprscan5NextflowConfig">
+      <paramValue name="outputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>    
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="input">$$proteinsFile$$</paramValue>
+      <paramValue name="fastaSubsetSize">100</paramValue>
+      <paramValue name="appls">pfama</paramValue>
+      <paramValue name="outputFile">iprscan_out.tsv</paramValue>
+      <paramValue name="interproscanDatabase">/home/rdemko/interproData/data</paramValue>
+      <paramValue name="initialMemory">4000</paramValue>
+      <paramValue name="increasedMemory">12000</paramValue>
+      <paramValue name="maxForks">40</paramValue>
+      <paramValue name="maxRetries">2</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+   
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeInterproNextflowConfig"/>
+    </step>
+  
+    <step name="runInterproClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/Iprscan5</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="outputFiles">iprscan_out.tsv</paramValue>
+      <paramValue name="deleteAfterCopy">true</paramValue>
+      <depends name="runInterproClusterTask"/>
+    </step>
+
+    <step name="insertInterproResults" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertInterproResults" stepLoadTypes="plugin">
+      <paramValue name="resultsFile">$$dataDir$$/mainresult/iprscan_out.tsv</paramValue>
+      <paramValue name="transcriptSourceId">NULL</paramValue>
+      <paramValue name="geneSourceId">NULL</paramValue>
+      <paramValue name="ncbiTaxId">$$ncbiTaxId$$</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+
+</workflowGraph>
