@@ -33,54 +33,48 @@
     <depends name="initUserGroupProject"/>
   </step>
 
-<!--
   <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
-<!--
+
   <subgraph name="taxonomy" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
-<!--
+
   <subgraph name="interproscanData" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
-<!--
+
   <subgraph name="geneOntology" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
-<!--
+
   <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
-<!--
+
   <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
     <depends name="makeGlobalDataDir"/>
   </subgraph>
--->
+
   <!-- load the OrthomclTaxon table with our tree of life -->
 <!--
   <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
@@ -107,6 +101,7 @@
   <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">coreInterpro</paramValue>
     <depends name="makeGlobalDataDir"/>
+    <depends name="enzymeDB"/>
   </step>
 
   <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -210,7 +205,7 @@
     <paramValue name="ecFile">OrganismNameResources/ec_organism.txt</paramValue>
     <depends name="updateSpeciesResourcesEc"/>
   </step>
-
+-->
   <step name="makeGalaxyFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="galaxyDir">galaxyFiles</paramValue>
@@ -220,7 +215,7 @@
     <paramValue name="residualSequencesFiles">residualGroups/master/mainresult/bestReps.fasta</paramValue>
     <depends name="peripheralWorkflow"/>
   </step>
-
+<!--
   <step name="addNumMembersPeripheralGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::AddNumberMembers">
     <paramValue name="groupTypesCPR">P</paramValue>
     <depends name="peripheralWorkflow"/>
