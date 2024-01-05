@@ -183,14 +183,14 @@
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
       <depends name="${orthomclAbbrev}_InterproScan"/>
     </step>
-<!--
+
     <step name="${orthomclAbbrev}_insertEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
       <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_orthomclProteome_RSRC/${orthomclAbbrev}_ecFromEbi.tab</paramValue>
       <paramValue name="evidenceCode">EBI</paramValue>
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
       <depends name="${orthomclAbbrev}_insertAliases"/>
     </step>
--->
+
   </datasetTemplate>
 
   <datasetTemplate class="orthomclCoreFromUniprot">

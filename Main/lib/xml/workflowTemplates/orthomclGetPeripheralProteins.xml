@@ -179,20 +179,19 @@
         <depends name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster"/>
     </subgraph>
 
-<!--
     <step name="${orthomclAbbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
       <paramValue name="externalDatabase">${orthomclAbbrev}_PeripheralFromEbi_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/aliases.tab</paramValue>
-      <depends name="${orthomclAbbrev}_processProteome"/>
+      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
     </step>
 
     <step name="${orthomclAbbrev}_insertEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
       <paramValue name="inputFile">$$proteomeDatasetsDir$$/${orthomclAbbrev}_PeripheralFromEbi_RSRC/ecFromEbi.tab</paramValue>
       <paramValue name="evidenceCode">EBI</paramValue>
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
-      <depends name="${orthomclAbbrev}_runOrthoEbiDumper"/>
+      <depends name="${orthomclAbbrev}_insertAliases"/>
     </step>
--->
+
   </datasetTemplate>
 
   <datasetTemplate class="orthomclUniprotReferenceProteomeForPeripheral">
@@ -200,12 +199,7 @@
     <prop name="oldAbbrevsList"/>
     <prop name="orthomclClade"/>
     <prop name="ncbiTaxonId"/>
-<!--
-    <step name="${abbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <depends name="makeEcMappingsDir"/>
-    </step>
--->
+
     <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclPeripheralProteome.xml">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="orthomclClade">${orthomclClade}</paramValue>

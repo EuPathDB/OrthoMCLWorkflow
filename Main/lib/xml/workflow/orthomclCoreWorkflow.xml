@@ -76,14 +76,13 @@
   </subgraph>
 
   <!-- load the OrthomclTaxon table with our tree of life -->
-<!--
   <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="taxonomy"/>
   </subgraph>
--->
+
 <!--
   <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
     <paramValue name="inputDir">@@liveDownloadSite@@/$$projectName$$</paramValue>
@@ -222,45 +221,6 @@
   </step>
 -->
 <!--
-  <step name="makeGroupsSelfBlastDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="peripheralWorkflow"/>
-  </step>
--->
-
-<!--
-  <subgraph name="groupsSelfBlast" xmlFile="groupSelfBlast.xml"> 
-    <paramValue name="parentDataDir">$$groupsSelfBlastDir$$</paramValue> 
-    <paramValue name="coreProteome">coreGood.fasta</paramValue> 
-    <paramValue name="peripheralProteome">peripheralToCore/master/mainresult/peripherals.fasta</paramValue> 
-    <paramValue name="coreGroupsFile">makeGroups/orthoFinder/master/mainresult/Results/Orthogroups/Orthogroups.tsv</paramValue> 
-    <paramValue name="peripheralGroupsFile">peripheralToCore/master/mainresult/groups.txt</paramValue> 
-    <paramValue name="blastArgs"> dbsize 824802617</paramValue> 
-    <depends name="makeGroupsSelfBlastDir"/> 
-  </subgraph> 
--->
-
-<!--
-  <step name="fixZeroExponent" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::FixZeroExponent">
-    <paramValue name="inputFile">$$groupsSelfBlastDir$$/master/mainresult/blastSimilarity.out</paramValue> 
-    <paramValue name="outputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue> 
-    <paramValue name="deleteInputFile">N</paramValue>
-    <depends name="groupsSelfBlast"/>
-  </step>
-
-  <step name="installSelfBlastSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
-    <paramValue name="configFile">orthomclPairs.config</paramValue>
-    <paramValue name="suffix">SelfBlast</paramValue>
-    <depends name="fixZeroExponent"/>
-  </step>
-
-  <step name="loadSelfBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
-    <paramValue name="inputFile">$$groupsSelfBlastDir$$/blast/master/mainresult/blastSimilarityFixed.out</paramValue>
-    <paramValue name="suffix">SelfBlast</paramValue>
-    <paramValue name="dataDir">$$groupsSelfBlastDir$$</paramValue>
-    <depends name="installSelfBlastSchema"/>
-  </step>
-
   <step name="insertSimilarSequencesGroup" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertSimilarSequencesGroupWithSqlLdr">
     <paramValue name="simSeqTableSuffix">SelfBlast,peripheral,Residuals,residual</paramValue>
     <paramValue name="simSeqGroupTableSuffix">Core</paramValue>
