@@ -1,7 +1,6 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="coreProteinsDir"/>
-  <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$coreProteinsDir$$</constant>
@@ -55,42 +54,12 @@
     <prop name="organismName"/>
     <prop name="ebi2gusTag"/>
 
-<!--
-    <step name="${orthomclAbbrev}_insertTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertCoreTaxonNameVersion">
-      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
-      <paramValue name="orthomclClade">${orthomclClade}</paramValue> 
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="version">${ebiVersion}</paramValue>
-      <paramValue name="organismName">${organismName}</paramValue>
-      <depends name="makeEcMappingsDir"/>
-    </step>
-
-    <step name="${orthomclAbbrev}_validateTaxon" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::ValidateNcbiTaxonId">
-      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <depends name="${orthomclAbbrev}_insertTaxon"/>
-    </step>
--->
     <subgraph name="${orthomclAbbrev}_loadCoreDataset" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
       <depends name="makeEcMappingsDir"/>
     </subgraph>
-
-    <step name="${orthomclAbbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
-      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <depends name="${orthomclAbbrev}_loadCoreDataset"/>
-    </step>
-
-    <step name="${orthomclAbbrev}_mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
-      <paramValue name="abbrev">${orthomclAbbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <depends name="${orthomclAbbrev}_mapPreviousSeqIDs"/>
-    </step>
 
     <step name="${orthomclAbbrev}_runOrthoEbiDumper" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::RunOrthoEbiDumper" stepLoadTypes="runEbiDumper">
       <paramValue name="projectName">${projectName}</paramValue>
@@ -102,7 +71,7 @@
       <paramValue name="ecFileName">${orthomclAbbrev}_ecFromEbi.tab</paramValue>
       <paramValue name="proteomeFileName">${orthomclAbbrev}_.fasta</paramValue>
       <paramValue name="ebi2gusTag">${ebi2gusTag}</paramValue>
-      <depends name="${orthomclAbbrev}_mapPreviousGroupIDs"/>
+      <depends name="${orthomclAbbrev}_loadCoreDataset"/>
     </step>
     
     <step name="${orthomclAbbrev}_makeInterproDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -144,7 +113,7 @@
       <paramValue name="maxStopPercent">20</paramValue>
       <depends name="${orthomclAbbrev}_orgAbbrevSourceId"/>
     </step>
-<!--
+
     <step name="${orthomclAbbrev}_insertCoreSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
       <paramValue name="externalDatabaseName">${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="externalDatabaseVersion">${ebiVersion}</paramValue>
@@ -154,13 +123,14 @@
       <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
       <paramValue name="regexDesc">product=(.*)</paramValue>
       <paramValue name="regexName">gene=(\S*)</paramValue>
-      <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
+      <paramValue name="isCore">1</paramValue>
+      <paramValue name="tableName">DoTS::OrthoAASequence</paramValue>
       <depends name="${orthomclAbbrev}_makeGoodProteinsFile"/>
     </step>
--->
+
     <step name="${orthomclAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$coreInterproDir$$/${orthomclAbbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${orthomclAbbrev}_makeGoodProteinsFile"/>
+        <depends name="${orthomclAbbrev}_insertCoreSequences"/>
     </step>
 
     <step name="${orthomclAbbrev}_mirrorProteomeDatasetToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -200,20 +170,24 @@
     <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
     <prop name="organismName">The name of this organism, just used for log messages</prop>
     <prop name="kingdom">The kingdom that contains this organism (Bacteria, Archaea, or Eukaryota).</prop>
+    <prop name="version"> The version of the organism. </prop>
 
-    <subgraph name="${abbrev}_proteome" xmlFile="loadOrthomclProteome.xml">
-      <paramValue name="abbrev">${abbrev}</paramValue>
-      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
-      <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-      <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <subgraph name="${abbrev}_loadProteome" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
-      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
       <depends name="makeEcMappingsDir"/>
     </subgraph>
 
+    <step name="${abbrev}_copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="toFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
+      <depends name="${abbrev}_loadProteome"/>
+    </step>
+
     <step name="${abbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${abbrev}_proteome"/>
+        <depends name="${abbrev}_copyProteomeFile"/>
     </step>
 
     <step name="${abbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsForSample">
@@ -225,9 +199,23 @@
       <dependsPattern name="${abbrev}_makeDataDir"/>
     </step>
 
+    <step name="${abbrev}_insertCoreSequences" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
+      <paramValue name="externalDatabaseName">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="externalDatabaseVersion">${version}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="sequenceFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
+      <paramValue name="regexSourceId">^>\w+\|(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
+      <paramValue name="regexDesc">product=(.*)</paramValue>
+      <paramValue name="regexName">gene=(\S*)</paramValue>
+      <paramValue name="isCore">1</paramValue>
+      <paramValue name="tableName">DoTS::OrthoAASequence</paramValue>
+      <depends name="${abbrev}_makeGoodProteinsFile"/>
+    </step>
+
     <step name="${abbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${abbrev}_makeGoodProteinsFile"/>
+        <depends name="${abbrev}_insertCoreSequences"/>
     </step>
 
     <step name="${abbrev}_mirrorProteomeDatasetToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">

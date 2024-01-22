@@ -2,24 +2,10 @@
     <param name="abbrev"/>
     <param name="orthomclClade"/>
     <param name="oldAbbrevsList"/>
-    <param name="oldReleasesSequenceFilesDir"/>
     <param name="oldReleasesGroupFilesDir"/>
     <param name="residualFastaFilesDir"/>
     <param name="proteomeDatasetsDir"/>
     <param name="datasetName"/>
-
-    <step name="mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevSeqIDs">
-      <paramValue name="abbrev">$$abbrev$$</paramValue>
-      <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
-      <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-    </step>
-
-    <step name="mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapAndInsertPrevGroupIDs">
-      <paramValue name="abbrev">$$abbrev$$</paramValue>
-      <paramValue name="oldAbbrevsList">$$oldAbbrevsList$$</paramValue>
-      <paramValue name="inputDir">$$oldReleasesGroupFilesDir$$</paramValue>
-      <depends name="mapPreviousSeqIDs"/>
-    </step>
 
   <step name="mirrorProteomeDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/$$datasetName$$</paramValue>

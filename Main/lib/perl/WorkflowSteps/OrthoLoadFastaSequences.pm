@@ -5,7 +5,6 @@ package OrthoMCLWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -18,10 +17,11 @@ sub run {
   my $second = $self->getParamValue('regexSecondaryId');
   my $source = $self->getParamValue('regexSourceId');
   my $table = $self->getParamValue('tableName');
+  my $isCore = $self->getParamValue('isCore');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--externalDatabaseName $edn --externalDatabaseVersion $edv --sequenceFile $workflowDataDir/$file --regexSourceId '$source' --regexSecondaryId '$second' --regexName '$name' --regexDesc '$desc' --tableName \"$table\" --ncbiTaxId $ncbi ";
+  my $args = "--externalDatabaseName $edn --externalDatabaseVersion $edv --sequenceFile $workflowDataDir/$file --regexSourceId '$source' --regexSecondaryId '$second' --regexName '$name' --isCore $isCore --regexDesc '$desc' --tableName \"$table\" --ncbiTaxId $ncbi ";
 
   $args .= "--ncbiTaxId $ncbi " if ($ncbi);
 
@@ -29,7 +29,5 @@ sub run {
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::LoadFastaSequences", $args);
 }
-
-
 
 1;

@@ -2,7 +2,6 @@
   <param name="parentDataDir"/>
   <param name="residualGroupIdPrefix"/>
   <param name="residualGroupIdStart"/>
-  <param name="oldReleasesSequenceFilesDir"/>
   <param name="oldReleasesGroupFilesDir"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="projectVersionForWebsiteFiles"/>
@@ -15,19 +14,12 @@
   <constant name="makeResidualGroupsDir">$$parentDataDir$$/makeResidualGroups</constant>
   <constant name="residualGroupsDir">$$parentDataDir$$/residualGroups</constant>
   <constant name="peripheralDir">$$parentDataDir$$/peripheral</constant>
-  
-  <step name="copyOrthogroupRowsForPeripheral" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::CopyOrthoGroupTables">
-    <paramValue name="orthoGroupTable">apidb.OrthologGroup</paramValue>
-    <paramValue name="orthoGroupAaTable">apidb.OrthologGroupAaSequence</paramValue> 
-  </step>
 
   <subgraph name="getPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
     <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
     <paramValue name="residualFastaFilesDir">$$residualFastaFilesDir$$</paramValue>
-    <paramValue name="oldReleasesSequenceFilesDir">$$oldReleasesSequenceFilesDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <depends name="copyOrthogroupRowsForPeripheral"/>
   </subgraph>
 
   <step name="makePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -82,19 +74,48 @@
     <paramValue name="deleteAfterCopy">false</paramValue>
     <depends name="runOrthoFinderPeripheralClusterTask"/>
   </step>     
-<!--
-  <step name="loadGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertPeripheralsIntoCoreGroups">
-      <paramValue name="corePeripheralResidual">P</paramValue>
-      <paramValue name="peripheralGroupsFile">$$peripheralToCoreDir$$/master/mainresult/groups.txt</paramValue>
+
+  <step name="loadCoreGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroups">
+      <paramValue name="groupsFile">$$peripheralDir$$/master/mainresult/GroupsFile.txt</paramValue>
+      <paramValue name="isResidual">0</paramValue>
       <depends name="mirrorFromCluster"/>
   </step>
- -->
 
-<!--
-  <step name="insertResidualGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups">
-    <paramValue name="inputGroupsFile">$$residualGroupsDir$$/master/mainresult/Results_*/Orthogroups/Orthogroups.txt</paramValue>
-    <paramValue name="corePeripheralResidual">R</paramValue>
-    <depends name="makeResidualGroups"/>
+<!-- N0.tsv file? -->
+  <step name="loadResidualGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroups">
+    <paramValue name="groupsFile">$$peripheralDir$$/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
+    <paramValue name="isResidual">1</paramValue>
+    <depends name="loadCoreGroups"/>
   </step>
--->
+
+  <step name="loadCoreGroupAASequence" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
+      <paramValue name="groupsFile">$$peripheralDir$$/master/mainresult/GroupsFile.txt</paramValue>
+      <paramValue name="isResidual">0</paramValue>
+      <depends name="loadResidualGroups"/>
+  </step>
+
+  <step name="loadResidualGroupAASequence" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
+      <paramValue name="groupsFile">$$peripheralDir$$/master/mainresult/Results/Orthogroups/Orthogroups.txt</paramValue>
+      <paramValue name="isResidual">1</paramValue>
+      <depends name="loadCoreGroupAASequence"/>
+  </step>
+
+  <step name="insertOrthogroupCoreStats" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
+      <paramValue name="groupStatsFile">$$coreResultsDir$$/groupStats/core_stats.txt</paramValue>
+      <paramValue name="proteinSubset">C</paramValue>
+      <depends name="loadResidualGroupAASequence"/>
+  </step>
+
+  <step name="insertOrthogroupCorePeripheralStats" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
+      <paramValue name="groupStatsFile">$$peripheralDir$$/master/mainresult/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="proteinSubset">C+P</paramValue>
+      <depends name="insertOrthogroupCoreStats"/>
+  </step>
+
+  <step name="insertOrthogroupResidualStats" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
+      <paramValue name="groupStatsFile">$$peripheralDir$$/master/mainresult/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="proteinSubset">R</paramValue>
+      <depends name="insertOrthogroupCorePeripheralStats"/>
+  </step>
+
 </workflowGraph>

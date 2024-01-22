@@ -5,21 +5,22 @@ package OrthoMCLWorkflow::Main::WorkflowSteps::InsertGroups;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-
 sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $corePeripheralResidual = $self->getParamValue('corePeripheralResidual');
+    my $isResidual = $self->getParamValue('isResidual');
 
-    my $groupsFile = $self->getParamValue('inputGroupsFile');
+    my $orthoVersion = $self->getConfig('buildVersion');
+
+    my $groupsFile = $self->getParamValue('groupsFile');
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath --corePeripheralResidual $corePeripheralResidual --extDbName OrthoMCL --extDbVersion dontcare";
+    my $args = " --orthoFile $orthoFileFullPath --isResidual $isResidual --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthologousGroupsFromMcl", $args);
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthoGroups", $args);
 
 }

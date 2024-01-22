@@ -1,4 +1,4 @@
-package OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroups;
+package OrthoMCLWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,17 +10,17 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $groupsFile = $self->getParamValue('groupsFile');
+
     my $isResidual = $self->getParamValue('isResidual');
 
     my $orthoVersion = $self->getConfig('buildVersion');
 
-    my $groupsFile = $self->getParamValue('groupsFile');
-
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath --isResidual $isResidual --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare";
+    my $args = " --orthoFile $orthoFileFullPath --isResidual $isResidual --orthoVersion $orthoVersion";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
-    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthoGroups", $args);
+    $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::InsertOrthoGroupAASequence", $args);
 
 }
