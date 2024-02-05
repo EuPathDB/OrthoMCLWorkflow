@@ -89,6 +89,7 @@ SELECT x.secondary_identifier || ' | ' ||
 FROM dots.externalaasequence x, apidb.orthologgroup og, apidb.orthologgroupaasequence oga
 WHERE x.aa_sequence_id = oga.aa_sequence_id(+) and oga.ortholog_group_id = og.ortholog_group_id(+)
       and og.core_peripheral_residual in ('P','R')
+      and x.secondary_identifier not like '%-old%'
 ";
 }
 
