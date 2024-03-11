@@ -8,7 +8,7 @@
     </step>
 
     <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$coreGroupsDir$$/master/</paramValue>
+      <paramValue name="dataDir">$$coreGroupsDir$$/results/</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
@@ -23,7 +23,7 @@
     </step>
 
     <step name="makeOrthoFinderCoreNextflowConfig" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
-      <paramValue name="clusterResultDir">$$coreGroupsDir$$/master/mainresult/</paramValue>
+      <paramValue name="clusterResultDir">$$coreGroupsDir$$/results/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$coreGroupsDir$$</paramValue>
       <paramValue name="proteomes">$$inputProteinFile$$</paramValue>
@@ -42,7 +42,7 @@
 
     <step name="runOrthoFinderCoreClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
       <paramValue name="workingDir">$$coreGroupsDir$$</paramValue>
-      <paramValue name="resultsDir">$$coreGroupsDir$$/master/mainresult</paramValue>
+      <paramValue name="resultsDir">$$coreGroupsDir$$/results</paramValue>
       <paramValue name="nextflowConfigFile">$$coreGroupsDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/orthoFinder-nextflow</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
@@ -51,8 +51,8 @@
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$coreGroupsDir$$/master/mainresult</paramValue>
-      <paramValue name="outputDir">$$coreGroupsDir$$/master/mainresult</paramValue>
+      <paramValue name="fileOrDirToMirror">$$coreGroupsDir$$/results</paramValue>
+      <paramValue name="outputDir">$$coreGroupsDir$$/results</paramValue>
       <paramValue name="outputFiles"></paramValue>
       <paramValue name="deleteAfterCopy">false</paramValue>
       <depends name="runOrthoFinderCoreClusterTask"/>

@@ -13,6 +13,7 @@ sub run {
   my $analysisDir = $self->getParamValue("analysisDir");
   my $peripheralProteomes = join("/", $clusterWorkflowDataDir, $self->getParamValue("peripheralProteomes"));
   my $coreProteomes = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreProteome"));
+  my $coreBestRepsFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreBestRepsFasta"));
   my $coreBestReps = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreBestReps"));
   my $coreGroupsFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreGroupsFile"));
   my $coreSimilarityToBestReps = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreSimilarityToBestReps"));
@@ -38,6 +39,7 @@ params {
     outputDir = \"$clusterResultDir\"
     coreProteomes = \"$coreProteomes\"
     coreBestReps = \"$coreBestReps\"
+    coreBestRepsFasta = \"$coreBestRepsFasta\"
     peripheralProteomes = \"$peripheralProteomes\"
     coreGroupsFile = \"$coreGroupsFile\"
     outdatedOrganisms = \"$outdatedOrganisms\"

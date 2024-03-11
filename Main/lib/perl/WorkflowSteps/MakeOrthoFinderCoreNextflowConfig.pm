@@ -63,6 +63,11 @@ process {
     }
   }
 }
+env {
+  _JAVA_OPTIONS=\"-Xmx8192M\"
+  NXF_OPTS=\"-Xmx8192M\"
+  NXF_JVM_ARGS=\"-Xmx8192M\"
+}
 
 singularity {
   enabled = true

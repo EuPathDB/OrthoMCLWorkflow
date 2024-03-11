@@ -14,27 +14,28 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
    my $webSvcDir = "$websiteFilesDir/$webServicesDir";
 
-   my $downloadsDir = $self->getParamValue('downloadSiteDir');
+   my $coreProteinsDir = $self->getParamValue('coreProteins');
+   my $peripheralProteinsDir = $self->getParamValue('peripheralProteins');
   
-   my $release = $self->getParamValue('release');
-   my $project = $self->getParamValue('project');
-
    my $ncbiBlastPath = $self->getConfig('ncbiBlastPath');
 
    my $workflowDataDir = $self->getWorkflowDataDir();
 
-   my $seqsDownloadFileName = "$websiteFilesDir/$downloadsDir/aa_seqs_$project-$release.fasta.gz";
-
+   $self->log("Core path is $workflowDataDir/$coreProteinsDir/*");
+   $self->log("Peripheral path is $workflowDataDir/$peripheralProteinsDir/*");
 
    if ($undo) {
      $self->runCmd(0, "rm -rf $webSvcDir/blast");
    } else {
+
      $self->runCmd($test,"mkdir $webSvcDir/blast");
-     $self->runCmd($test,"cp $seqsDownloadFileName $webSvcDir/blast/proteinSeqs.gz");
-     $self->runCmd($test,"gunzip $webSvcDir/blast/proteinSeqs.gz");
+     $self->runCmd($test,"touch $webSvcDir/blast/proteinSeqs");
+     $self->log("Running cat ${workflowDataDir}/${coreProteinsDir}/* >> ${webSvcDir}/blast/proteinSeqs");
+     $self->runCmd($test,"cat ${workflowDataDir}/${coreProteinsDir}/* >> ${webSvcDir}/blast/proteinSeqs");
+     $self->runCmd($test,"cat ${workflowDataDir}/${peripheralProteinsDir}/* >> ${webSvcDir}/blast/proteinSeqs");
      $self->runCmd($test,"$ncbiBlastPath/makeblastdb  -in $webSvcDir/blast/proteinSeqs -dbtype prot");
-     $self->runCmd($test,"grep \> $webSvcDir/blast/proteinSeqs | wc > $webSvcDir/blast/proteinSeqs.count");
-     $self->runCmd($test,"rm $webSvcDir/blast/proteinSeqs");
+     $self->runCmd($test,"grep '^>' $webSvcDir/blast/proteinSeqs | wc > $webSvcDir/blast/proteinSeqs.count");
+     #$self->runCmd($test,"rm $webSvcDir/blast/proteinSeqs");
    }
  }
 

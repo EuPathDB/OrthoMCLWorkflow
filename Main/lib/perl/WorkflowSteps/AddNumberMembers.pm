@@ -5,13 +5,10 @@ package OrthoMCLWorkflow::Main::WorkflowSteps::AddNumberMembers;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
-
-  my $args = " --groupTypesCPR $groupTypesCPR";
+  my $args;
 
   $self->runPlugin($test, $undo, "OrthoMCLData::Load::Plugin::AddNumberOfMembers", $args);
 

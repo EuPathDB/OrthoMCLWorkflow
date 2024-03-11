@@ -1,5 +1,5 @@
 package OrthoMCLWorkflow::Main::WorkflowSteps::MakeDownloadFiles;
-d\
+
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
@@ -12,8 +12,8 @@ sub run {
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
   my $project = $self->getParamValue('project');
-  my $corePairsDir = $self->getParamValue('corePairsDir');
-  my $residualPairsDir = $self->getParamValue('residualPairsDir');
+  my $coreGroupsFile = $self->getParamValue('coreGroupsFile');
+  my $residualGroupsFile = $self->getParamValue('residualGroupsFile');
   my $orthomclVersion = $self->getParamValue('orthomclVersion');
   $orthomclVersion =~ s/_//g;
   my $groupFile = "$workflowDataDir/genomicSitesFiles_$orthomclVersion/orthomclGroups.txt";
@@ -28,8 +28,8 @@ sub run {
   my $groupsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/groups_$project-$release.txt";
   my $domainsDownloadFileName = "$websiteFilesDir/$relativeDownloadSiteDir/domainFreqs_$project-$release.txt";
   my $genomeSummaryFileName = "$websiteFilesDir/$relativeDownloadSiteDir/genomeSummary_$project-$release.txt";
-  my $corePairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/corePairs_$project-$release";
-  my $residualPairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/residualPairs_$project-$release";
+  my $corePairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/coreGroups_$project-$release";
+  my $residualPairsDownloadDir = "$websiteFilesDir/$relativeDownloadSiteDir/residualGroups_$project-$release";
 
   if ($undo) {
     $self->runCmd($test, "rm $seqsDownloadFileName.gz");
@@ -71,10 +71,10 @@ sub run {
 
     # pairs
     $self->runCmd($test, "mkdir -p $corePairsDownloadDir");
-    $self->runCmd($test, "cp $workflowDataDir/$corePairsDir/* $corePairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$coreGroupsFile $corePairsDownloadDir");
     $self->runCmd($test, "gzip $corePairsDownloadDir/*");
     $self->runCmd($test, "mkdir -p $residualPairsDownloadDir");
-    $self->runCmd($test, "cp $workflowDataDir/$residualPairsDir/* $residualPairsDownloadDir");
+    $self->runCmd($test, "cp $workflowDataDir/$residualGroupsFile $residualPairsDownloadDir");
     $self->runCmd($test, "gzip $residualPairsDownloadDir/*");
   }
 }
@@ -84,28 +84,31 @@ sub getSql {
 
   my $SS = $seq? ", x.sequence" : "";
 return "
-SELECT x.secondary_identifier || ' | ' ||
-       CASE WHEN og.name is null THEN 'no_group' ELSE og.name END || ' | '  || x.description$SS
-FROM dots.externalaasequence x, apidb.orthologgroup og, apidb.orthologgroupaasequence oga
-WHERE x.aa_sequence_id = oga.aa_sequence_id(+) and oga.ortholog_group_id = og.ortholog_group_id(+)
-      and og.core_peripheral_residual in ('P','R')
+SELECT x.secondary_identifier, og.group_id, x.description, x.sequence
+FROM dots.orthoaasequence x, apidb.orthologgroup og, apidb.orthologgroupaasequence oga
+WHERE x.aa_sequence_id = oga.aa_sequence_id(+) and oga.group_id = og.group_id(+) and og.IS_RESIDUAL in (0,1)
 ";
+
 }
 
 sub getDomainsSql {
   my ($self, $extDbRlsId) = @_;
 
 return "
-SELECT name as Orthomcl_Group, primary_identifier as Pfam_Name, round(count(aa_sequence_id)/number_of_members,4) as Frequency
-FROM (SELECT distinct og.name, db.primary_identifier, ogs.aa_sequence_id, og.number_of_members
-      FROM apidb.OrthologGroupAaSequence ogs, apidb.OrthologGroup og, dots.DomainFeature df,
-            dots.DbRefAaFeature dbaf, sres.DbRef db
-      WHERE og.ortholog_group_id != 0 AND ogs.ortholog_group_id = og.ortholog_group_id
-            AND og.core_peripheral_residual in ('P','R') AND df.aa_sequence_id = ogs.aa_sequence_id
-            AND dbaf.aa_feature_id = df.aa_feature_id AND db.db_ref_id = dbaf.db_ref_id
-            AND db.external_database_release_id = $extDbRlsId)
-GROUP BY name, number_of_members, primary_identifier
-ORDER BY name, frequency desc";
+SELECT name as Orthomcl_Group, primary_identifier as Pfam_Name, round(count(aa_sequence_id)/number_of_members,4) as Frequency                                                                             FROM ( 
+    SELECT distinct og.group_id as name, db.primary_identifier, ogs.aa_sequence_id, q.number_of_members                                                                                                       FROM 
+     apidb.OrthologGroupAaSequence ogs, apidb.OrthologGroup og, dots.DomainFeature df, dots.DbRefAaFeature dbaf, sres.DbRef db, 
+        (SELECT group_id, count(aa_sequence_id) as number_of_members 
+            from apidb.orthologgroupaasequence GROUP BY group_id) q
+    WHERE og.ortholog_group_id != 0 
+    AND ogs.group_id = og.group_id 
+    AND ogs.group_id = q.group_id                                                                                                            
+    AND og.is_residual in (0,1) AND df.aa_sequence_id = ogs.aa_sequence_id                                                                                                        
+    AND dbaf.aa_feature_id = df.aa_feature_id AND db.db_ref_id = dbaf.db_ref_id                                                                                                                    
+    AND db.external_database_release_id = $extDbRlsId)
+GROUP BY name, number_of_members, primary_identifier                                     
+ORDER BY name, frequency desc
+"
 }
 
 sub getGenomeSummarySql {
@@ -117,5 +120,6 @@ SELECT ot.name, ot.three_letter_abbrev,
        od.resource_name, od.resource_url
 FROM apidb.OrthomclTaxon ot, apidb.OrthomclResource od
 WHERE od.orthomcl_taxon_id(+) = ot.orthomcl_taxon_id
-       AND ot.is_species != 0                                                                                                       ORDER BY ot.name";
+       AND ot.is_species != 0 
+ORDER BY ot.name";
 }
